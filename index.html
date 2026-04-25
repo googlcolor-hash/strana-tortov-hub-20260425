@@ -61,8 +61,8 @@
     </div>
 
     <div class="row">
-      <a class="btn" href="https://github.com/__REPO__/issues/new?labels=signoff&title=%5BSignoff%5D%20SXX%20-%20Комментарий">Оставить подпись / комментарий</a>
-      <a class="btn" href="https://github.com/__REPO__/issues" >Открыть все комментарии</a>
+      <a class="btn" href="https://github.com/googlcolor-hash/strana-tortov-hub-20260425/issues/new?labels=signoff&title=%5BSignoff%5D%20SXX%20-%20Комментарий">Оставить подпись / комментарий</a>
+      <a class="btn" href="https://github.com/googlcolor-hash/strana-tortov-hub-20260425/issues" >Открыть все комментарии</a>
       <span class="muted ok">Сохранение идёт через GitHub Issues (бесплатно, в истории).</span>
     </div>
 
@@ -74,7 +74,7 @@
 
   <script>
     (async function(){
-      const repo = '__REPO__';
+      const repo = 'googlcolor-hash/strana-tortov-hub-20260425';
       const list = document.getElementById('issues-list');
       try {
         const res = await fetch(`https://api.github.com/repos/${repo}/issues?state=open&per_page=10`);
@@ -91,3 +91,4 @@
   </script>
 </body>
 </html>
+
