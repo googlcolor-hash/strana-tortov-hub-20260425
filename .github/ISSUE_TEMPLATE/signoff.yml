@@ -1,0 +1,34 @@
+name: Signoff / Комментарий по шоту
+description: Подписать или прокомментировать шот/лист
+labels: ["signoff"]
+body:
+  - type: input
+    id: shot
+    attributes:
+      label: Shot / Лист
+      description: Например S12 или Sheet 03
+      placeholder: S12
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Статус
+      options:
+        - ✅ Одобрено
+        - ⚠️ Нужны правки
+        - ❌ Не одобрено
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Комментарий
+      placeholder: Что поправить / что подтверждаем
+    validations:
+      required: true
+  - type: input
+    id: signer
+    attributes:
+      label: Подписал
+      placeholder: Имя/роль

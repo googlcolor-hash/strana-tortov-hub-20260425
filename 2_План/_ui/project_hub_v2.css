@@ -1,0 +1,93 @@
+body.hub-v2 .app {
+  gap: 12px;
+}
+
+body.hub-v2 .top,
+body.hub-v2 .summary,
+body.hub-v2 .tabs,
+body.hub-v2 .left,
+body.hub-v2 .right {
+  animation: hubFade 0.35s ease both;
+}
+
+body.hub-v2 .left,
+body.hub-v2 .right {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+#hubV2Tools {
+  border: 1px solid #5f6f90;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #333c4e, #2b3342);
+  padding: 8px;
+  display: grid;
+  grid-template-columns: auto auto auto 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+#hubV2Tools .chip,
+#hubV2Tools .go,
+#hubV2Tools .ghost {
+  border: 1px solid #6a7d9f;
+  border-radius: 10px;
+  background: #3c4760;
+  color: #edf3ff;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#hubV2Tools .chip.active {
+  border-color: #9fc4ff;
+  background: #50678f;
+}
+
+#hubV2Tools input {
+  border: 1px solid #677a9b;
+  border-radius: 10px;
+  background: #2e3544;
+  color: #f1f6ff;
+  padding: 7px 10px;
+  font-size: 12px;
+  width: 100%;
+}
+
+#hubV2Toast {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2000;
+  border: 1px solid #667b9f;
+  border-radius: 10px;
+  padding: 8px 11px;
+  background: rgba(31, 39, 53, 0.95);
+  color: #eef4ff;
+  font-size: 12px;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: 0.2s ease;
+}
+
+#hubV2Toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes hubFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1120px) {
+  #hubV2Tools {
+    grid-template-columns: 1fr 1fr;
+  }
+}

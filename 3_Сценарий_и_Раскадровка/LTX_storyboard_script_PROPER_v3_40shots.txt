@@ -1,0 +1,415 @@
+PROJECT: STRANA TORTOV — PILOT EP01
+SCRIPT_MODE: STORYBOARD_IMPORT_FOR_LTX
+VERSION: v3 (40 shots, transcript-locked dialogue)
+UPDATED_AT: 2026-04-25 19:24:32
+LANGUAGE: EN instructions + RU exact transcript lines
+ASPECT_RATIO: 16:9
+STYLE_GLOBAL: stylized cinematic 3D animation, child-safe, warm magical confectionery world
+CONSISTENCY_RULES:
+- Keep shot numbering and order fixed (S01..S40).
+- Use dialogue exactly as transcribed (do not autocorrect words).
+- Maintain consistent character identity and location continuity.
+FORMAT PER SHOT:
+SHOT XX | STORY_BEAT_EN | LOCATION | CHARACTERS_EN | CAMERA | ACTION_RU | DIALOGUE_RU_EXACT_TRANSCRIPT | DURATION_SEC | PROMPT_EN
+
+
+SHOT 01 (S01)
+STORY_BEAT_EN: Экспозиция: страна тортов над полями и облаками.
+LOCATION: Страна тортов (общий вид)
+CHARACTERS_EN: VoiceOver, Crowd
+CAMERA: Панорамный пролёт
+ACTION_RU: Лирический вход в мир пилота.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Над золочеными полями, над голубыми небесами, Средь птичьих стай и облаков, находятся страна тортов."
+DURATION_SEC: 4.8
+PROMPT_EN: Story beat: Экспозиция: страна тортов над полями и облаками.. Location: Страна тортов (общий вид). Characters: VoiceOver, Crowd. Camera: Панорамный пролёт. Action intent: Лирический вход в мир пилота.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 02 (S02)
+STORY_BEAT_EN: Представление правителя и двора.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, Vatrushki
+CAMERA: Общий в средний
+ACTION_RU: Фиксируем центр власти.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Отцарством этим правит он, царь всем тортом Наполеон. Вокруг него снуют в отружке, любимые его подружки."
+DURATION_SEC: 4.2
+PROMPT_EN: Story beat: Представление правителя и двора.. Location: Тронный зал. Characters: Napoleon, Vatrushki. Camera: Общий в средний. Action intent: Фиксируем центр власти.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 03 (S03)
+STORY_BEAT_EN: Свита развлекает царя.
+LOCATION: Тронный зал
+CHARACTERS_EN: Donut, Cookie, Eclair, Napoleon
+CAMERA: Средний план
+ACTION_RU: Музыкально-комедийный ритм двора.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Вот рядом пончик и печенья поют ему для развлечения, Играф Экклер, его советник. Он лучший друг и лучший сплетник."
+DURATION_SEC: 4.3
+PROMPT_EN: Story beat: Свита развлекает царя.. Location: Тронный зал. Characters: Donut, Cookie, Eclair, Napoleon. Camera: Средний план. Action intent: Музыкально-комедийный ритм двора.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 04 (S04)
+STORY_BEAT_EN: Военная вертикаль при троне.
+LOCATION: Тронный зал
+CHARACTERS_EN: General, Gurts, Napoleon
+CAMERA: Средний, лёгкий наезд
+ACTION_RU: Подчёркиваем силовой блок режима.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Паодль, генерал жиле, всё время он на стороже. Царя охрану возглавляет или единцами управляет."
+DURATION_SEC: 4.1
+PROMPT_EN: Story beat: Военная вертикаль при троне.. Location: Тронный зал. Characters: General, Gurts, Napoleon. Camera: Средний, лёгкий наезд. Action intent: Подчёркиваем силовой блок режима.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 05 (S05)
+STORY_BEAT_EN: Казначей в придворной иерархии.
+LOCATION: Тронный зал
+CHARACTERS_EN: Blin
+CAMERA: Средний план
+ACTION_RU: Добавляем бытовой юмор системы.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Блинка значей, развесил уши. Он по характеру капуша. Как денег нет, так сразу нужен, а так работаю загружен."
+DURATION_SEC: 4.0
+PROMPT_EN: Story beat: Казначей в придворной иерархии.. Location: Тронный зал. Characters: Blin. Camera: Средний план. Action intent: Добавляем бытовой юмор системы.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 06 (S06)
+STORY_BEAT_EN: Контрастный герой вне двора.
+LOCATION: Домик у горы
+CHARACTERS_EN: PM
+CAMERA: Средний план
+ACTION_RU: Выделяем героя как независимого.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Но есть ещё в тортовом царстве почти без статуса и власти простой торт птичи молоко. И от дворца он далеко, а все дворцовые интриги ему так чужды. Лучше книги. Он почитает в тишине, когда с собой наедине."
+DURATION_SEC: 4.4
+PROMPT_EN: Story beat: Контрастный герой вне двора.. Location: Домик у горы. Characters: PM. Camera: Средний план. Action intent: Выделяем героя как независимого.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 07 (S07)
+STORY_BEAT_EN: Утренний поворот сюжета: герой замечает сады.
+LOCATION: Край горы
+CHARACTERS_EN: PM
+CAMERA: Общий план
+ACTION_RU: Запуск главного конфликта.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Ну что такое? Ранним утром, склонившись на краю горы, торт птичи молоко заметил вдали гигантские сады."
+DURATION_SEC: 4.6
+PROMPT_EN: Story beat: Утренний поворот сюжета: герой замечает сады.. Location: Край горы. Characters: PM. Camera: Общий план. Action intent: Запуск главного конфликта.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 08 (S08)
+STORY_BEAT_EN: POV: людской сектор за облаками.
+LOCATION: Сады за облаками
+CHARACTERS_EN: Crowd, PM
+CAMERA: Общий/POV
+ACTION_RU: Показываем иной мир как угрозу и тайну.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Что это?"
+DURATION_SEC: 4.8
+PROMPT_EN: Story beat: POV: людской сектор за облаками.. Location: Сады за облаками. Characters: Crowd, PM. Camera: Общий/POV. Action intent: Показываем иной мир как угрозу и тайну.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 09 (S09)
+STORY_BEAT_EN: Первый монолог Птичьего Молока.
+LOCATION: Край скалы
+CHARACTERS_EN: PM
+CAMERA: Крупный план
+ACTION_RU: Передаём тревогу героя.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Чье же это царство? Кто вроде там в такой глуши? Наполеон или коварство? А может просто миражи?"
+DURATION_SEC: 4.2
+PROMPT_EN: Story beat: Первый монолог Птичьего Молока.. Location: Край скалы. Characters: PM. Camera: Крупный план. Action intent: Передаём тревогу героя.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 10 (S10)
+STORY_BEAT_EN: Герой видит стол и людей с тортом.
+LOCATION: Двор частного дома
+CHARACTERS_EN: PM, Crowd
+CAMERA: Средний/деталь
+ACTION_RU: Факт опасности становится очевидным.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Не сон для этом не приснился. Ведь говорили, с детства нам не место на столе торт там, а эти варвары как можно пьют чай с тортом неосторожно, вареньем заедают сласть, раскрыв пошире свою пасть."
+DURATION_SEC: 4.7
+PROMPT_EN: Story beat: Герой видит стол и людей с тортом.. Location: Двор частного дома. Characters: PM, Crowd. Camera: Средний/деталь. Action intent: Факт опасности становится очевидным.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 11 (S11)
+STORY_BEAT_EN: Монолог-решение: срочно предупредить дворец.
+LOCATION: Склон горы
+CHARACTERS_EN: PM
+CAMERA: Средний план
+ACTION_RU: Переход от наблюдения к действию.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Скорее надо во дворец. Предупредить о том, что видел, ведь для тортов такой конец и в страшном сне бы не предвидел."
+DURATION_SEC: 4.5
+PROMPT_EN: Story beat: Монолог-решение: срочно предупредить дворец.. Location: Склон горы. Characters: PM. Camera: Средний план. Action intent: Переход от наблюдения к действию.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 12 (S12)
+STORY_BEAT_EN: У ворот дворца: требование пропуска.
+LOCATION: Ворота дворца
+CHARACTERS_EN: PM, Gurts
+CAMERA: Средний план
+ACTION_RU: Вход в открытую фазу конфликта.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Эй, леденец, открой ворота. К Наполеону мне охота."
+DURATION_SEC: 4.1
+PROMPT_EN: Story beat: У ворот дворца: требование пропуска.. Location: Ворота дворца. Characters: PM, Gurts. Camera: Средний план. Action intent: Вход в открытую фазу конфликта.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 13 (S13)
+STORY_BEAT_EN: Страж блокирует вход.
+LOCATION: Ворота дворца
+CHARACTERS_EN: Gurts, PM
+CAMERA: Средний, статично
+ACTION_RU: Показываем закрытость системы.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "А что за дело? Всем тортам закрыт и двери тут и там."
+DURATION_SEC: 4.0
+PROMPT_EN: Story beat: Страж блокирует вход.. Location: Ворота дворца. Characters: Gurts, PM. Camera: Средний, статично. Action intent: Показываем закрытость системы.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 14 (S14)
+STORY_BEAT_EN: Ключевая реплика-аргумент.
+LOCATION: Ворота дворца
+CHARACTERS_EN: PM, Gurts
+CAMERA: Крупный план
+ACTION_RU: Триггер допуска во дворец.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "А ты скажи ему, что я видал, как торт едет с утра."
+DURATION_SEC: 4.0
+PROMPT_EN: Story beat: Ключевая реплика-аргумент.. Location: Ворота дворца. Characters: PM, Gurts. Camera: Крупный план. Action intent: Триггер допуска во дворец.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 15 (S15)
+STORY_BEAT_EN: Тронный зал: Наполеон встречает героя угрозой.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, PM, General, Eclair
+CAMERA: Средний план
+ACTION_RU: Антагонист сразу обесценивает сообщение.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "С момента царства моего тортов здесь не было давно. И если ты сюда явился, то лучше Богу помолился."
+DURATION_SEC: 4.6
+PROMPT_EN: Story beat: Тронный зал: Наполеон встречает героя угрозой.. Location: Тронный зал. Characters: Napoleon, PM, General, Eclair. Camera: Средний план. Action intent: Антагонист сразу обесценивает сообщение.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 16 (S16)
+STORY_BEAT_EN: Птичье Молоко просит выслушать.
+LOCATION: Тронный зал
+CHARACTERS_EN: PM, Napoleon
+CAMERA: Крупный план
+ACTION_RU: Герой отстаивает правду.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Успею я еще с мольбой. Услышь, что и лучше голос мой."
+DURATION_SEC: 4.1
+PROMPT_EN: Story beat: Птичье Молоко просит выслушать.. Location: Тронный зал. Characters: PM, Napoleon. Camera: Крупный план. Action intent: Герой отстаивает правду.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 17 (S17)
+STORY_BEAT_EN: Подробное описание увиденной угрозы.
+LOCATION: Тронный зал
+CHARACTERS_EN: PM, Napoleon, Crowd
+CAMERA: Средний план
+ACTION_RU: Подтверждаем масштаб опасности.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Сегодня, соответственно, из колы, увидел я, как там вдали за сводом и за небесами, за золоченными полями, где птицы роются в садах, там на обеденных столах, да вместе с чаем и вареньем, с большим, похожим наслаждением. Не знаю, что за существа, но поглотили два торта."
+DURATION_SEC: 5.0
+PROMPT_EN: Story beat: Подробное описание увиденной угрозы.. Location: Тронный зал. Characters: PM, Napoleon, Crowd. Camera: Средний план. Action intent: Подтверждаем масштаб опасности.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 18 (S18)
+STORY_BEAT_EN: Cookie и Donut в ужасе убегают.
+LOCATION: Тронный зал
+CHARACTERS_EN: Cookie, Donut
+CAMERA: Средний, динамика
+ACTION_RU: Реакция двора на новость.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Повсюду у меня есть уши. Ты лучше царь его не слушай."
+DURATION_SEC: 3.8
+PROMPT_EN: Story beat: Cookie и Donut в ужасе убегают.. Location: Тронный зал. Characters: Cookie, Donut. Camera: Средний, динамика. Action intent: Реакция двора на новость.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 19 (S19)
+STORY_BEAT_EN: Желе обвиняет героя в заговоре.
+LOCATION: Тронный зал
+CHARACTERS_EN: General, Napoleon, PM
+CAMERA: Крупный план
+ACTION_RU: Силовик переводит тему в репрессию.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Пробрался он сюда специально, чтобы свергнуть вас. План гениальный. Отдайте мне его скорей. Узнает сразу кто главней."
+DURATION_SEC: 4.4
+PROMPT_EN: Story beat: Желе обвиняет героя в заговоре.. Location: Тронный зал. Characters: General, Napoleon, PM. Camera: Крупный план. Action intent: Силовик переводит тему в репрессию.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 20 (S20)
+STORY_BEAT_EN: Эклер поддерживает сомнение двора.
+LOCATION: Тронный зал
+CHARACTERS_EN: Eclair, General
+CAMERA: Средний план
+ACTION_RU: Информационный саботаж правды.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Ну что за вздор, откуда здесь до тортоеды уже есть?"
+DURATION_SEC: 3.9
+PROMPT_EN: Story beat: Эклер поддерживает сомнение двора.. Location: Тронный зал. Characters: Eclair, General. Camera: Средний план. Action intent: Информационный саботаж правды.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 21 (S21)
+STORY_BEAT_EN: Птичье Молоко настаивает: проверить лично.
+LOCATION: Тронный зал
+CHARACTERS_EN: PM, Napoleon
+CAMERA: Средний план
+ACTION_RU: Последняя рациональная попытка героя.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Они не здесь, под небесами, за золоченными полями, среди садов, за облаками. Сходите и проверьте сами."
+DURATION_SEC: 4.2
+PROMPT_EN: Story beat: Птичье Молоко настаивает: проверить лично.. Location: Тронный зал. Characters: PM, Napoleon. Camera: Средний план. Action intent: Последняя рациональная попытка героя.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 22 (S22)
+STORY_BEAT_EN: Желе повышает давление.
+LOCATION: Тронный зал
+CHARACTERS_EN: General, PM
+CAMERA: Крупный план
+ACTION_RU: Подготовка к силовому выдворению.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Да ты дерзить, похоже, вздумал. Ишь, посмотри, чего думал."
+DURATION_SEC: 3.8
+PROMPT_EN: Story beat: Желе повышает давление.. Location: Тронный зал. Characters: General, PM. Camera: Крупный план. Action intent: Подготовка к силовому выдворению.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 23 (S23)
+STORY_BEAT_EN: Наполеон высмеивает и отвергает угрозу.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, PM
+CAMERA: Средний план
+ACTION_RU: Ошибочное политическое решение.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Ну ты ей Богу рассмешил. Чего ты видел, где ты был? И нам какая в том забота? Не наши, это ведь работа другие царства изучать. Своих бы слуг нам поучать."
+DURATION_SEC: 4.7
+PROMPT_EN: Story beat: Наполеон высмеивает и отвергает угрозу.. Location: Тронный зал. Characters: Napoleon, PM. Camera: Средний план. Action intent: Ошибочное политическое решение.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 24 (S24)
+STORY_BEAT_EN: Птичье Молоко предупреждает о последствиях.
+LOCATION: Тронный зал
+CHARACTERS_EN: PM, Napoleon
+CAMERA: Крупный план
+ACTION_RU: Нравственная позиция героя.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Ну как хотите, только если вас так сожрут, сожрут всех вместе, то вспомните мои слова, на то и есть ведь голова."
+DURATION_SEC: 4.1
+PROMPT_EN: Story beat: Птичье Молоко предупреждает о последствиях.. Location: Тронный зал. Characters: PM, Napoleon. Camera: Крупный план. Action intent: Нравственная позиция героя.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 25 (S25)
+STORY_BEAT_EN: Желе срывается: «надоел».
+LOCATION: Тронный зал
+CHARACTERS_EN: General, PM
+CAMERA: Крупный план
+ACTION_RU: Эмоциональная эскалация конфликта.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Всё, надоел ты мне однако, да ты еще из-за бияка?"
+DURATION_SEC: 3.7
+PROMPT_EN: Story beat: Желе срывается: «надоел».. Location: Тронный зал. Characters: General, PM. Camera: Крупный план. Action intent: Эмоциональная эскалация конфликта.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 26 (S26)
+STORY_BEAT_EN: Свисток и выход охраны.
+LOCATION: Тронный зал
+CHARACTERS_EN: General, Gurts
+CAMERA: Средний, динамика
+ACTION_RU: Переход к принуждению.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Всё, довольно."
+DURATION_SEC: 3.8
+PROMPT_EN: Story beat: Свисток и выход охраны.. Location: Тронный зал. Characters: General, Gurts. Camera: Средний, динамика. Action intent: Переход к принуждению.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 27 (S27)
+STORY_BEAT_EN: Наполеон выдворяет героя к горам.
+LOCATION: Тронный зал / выход
+CHARACTERS_EN: Napoleon, PM, Gurts
+CAMERA: Средний план
+ACTION_RU: Герой остаётся без поддержки власти.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Хватит нам. Езжай обратно ты к горам. За твое смелость отпускаю, но если я опять узнаю, что ты про это говоришь, тогда держись наш торт, малыш."
+DURATION_SEC: 4.6
+PROMPT_EN: Story beat: Наполеон выдворяет героя к горам.. Location: Тронный зал / выход. Characters: Napoleon, PM, Gurts. Camera: Средний план. Action intent: Герой остаётся без поддержки власти.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 28 (S28)
+STORY_BEAT_EN: Тайный приказ о слежке.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, General
+CAMERA: Крупный план
+ACTION_RU: Наполеон сомневается, но действует скрытно.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "И всё же вы за ним следите. И мне тихонько говорите. Вдруг что и где произойдет? А если этот торт не врет?"
+DURATION_SEC: 4.3
+PROMPT_EN: Story beat: Тайный приказ о слежке.. Location: Тронный зал. Characters: Napoleon, General. Camera: Крупный план. Action intent: Наполеон сомневается, но действует скрытно.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 29 (S29)
+STORY_BEAT_EN: Появление Казначея с проверкой инвентаря.
+LOCATION: Тронный зал
+CHARACTERS_EN: Blin, Napoleon
+CAMERA: Средний план
+ACTION_RU: Комедийная пауза в напряжённой сцене.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Простите, а у нас проверка. Читаем царский инвентарь. Утрона номерная бирка. Да и записать мне ее, царь."
+DURATION_SEC: 4.0
+PROMPT_EN: Story beat: Появление Казначея с проверкой инвентаря.. Location: Тронный зал. Characters: Blin, Napoleon. Camera: Средний план. Action intent: Комедийная пауза в напряжённой сцене.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 30 (S30)
+STORY_BEAT_EN: Наполеон переводит разговор к бюджету армии.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, Blin, General
+CAMERA: Средний план
+ACTION_RU: Готовность режима к милитаризации.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Какая нынче обстановка? И ты давай тут не юлей. Для армии нужна обновка. Мы сколько денег сберегли?"
+DURATION_SEC: 4.2
+PROMPT_EN: Story beat: Наполеон переводит разговор к бюджету армии.. Location: Тронный зал. Characters: Napoleon, Blin, General. Camera: Средний план. Action intent: Готовность режима к милитаризации.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 31 (S31)
+STORY_BEAT_EN: Казначей предлагает закрыть балы ради финансов.
+LOCATION: Тронный зал
+CHARACTERS_EN: Blin, Napoleon
+CAMERA: Крупный план
+ACTION_RU: Экономическая причина будущих ограничений.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Бой, государь, ну что вы правы? Казна пуста. Ну если надо, мы можем прекратить баллы. Финансы вырастут твой."
+DURATION_SEC: 4.0
+PROMPT_EN: Story beat: Казначей предлагает закрыть балы ради финансов.. Location: Тронный зал. Characters: Blin, Napoleon. Camera: Крупный план. Action intent: Экономическая причина будущих ограничений.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 32 (S32)
+STORY_BEAT_EN: Эклер протестует против отмены балов.
+LOCATION: Тронный зал
+CHARACTERS_EN: Eclair
+CAMERA: Средний план
+ACTION_RU: Лёгкий контрапункт перед жёстким приказом.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Жизнь без баллов. Как это грустно. Блин. Слушай, это ведь искусство."
+DURATION_SEC: 3.9
+PROMPT_EN: Story beat: Эклер протестует против отмены балов.. Location: Тронный зал. Characters: Eclair. Camera: Средний план. Action intent: Лёгкий контрапункт перед жёстким приказом.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 33 (S33)
+STORY_BEAT_EN: Танец прерывается силовой репликой Желе.
+LOCATION: Тронный зал
+CHARACTERS_EN: Eclair, General, Cookie, Donut
+CAMERA: Средний, резкая остановка
+ACTION_RU: Публичная демонстрация силы.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Искусство в поле. И в бою. Балы я лично не люблю."
+DURATION_SEC: 4.7
+PROMPT_EN: Story beat: Танец прерывается силовой репликой Желе.. Location: Тронный зал. Characters: Eclair, General, Cookie, Donut. Camera: Средний, резкая остановка. Action intent: Публичная демонстрация силы.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 34 (S34)
+STORY_BEAT_EN: Наполеон официально закрывает балы.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, Crowd
+CAMERA: Крупный план
+ACTION_RU: Закрепляем режим ограничений.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Ввиду особые обстановки. И для сохранности моей. Так же армии обновки. Балы закрыть все. Поскорей."
+DURATION_SEC: 4.2
+PROMPT_EN: Story beat: Наполеон официально закрывает балы.. Location: Тронный зал. Characters: Napoleon, Crowd. Camera: Крупный план. Action intent: Закрепляем режим ограничений.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 35 (S35)
+STORY_BEAT_EN: Придворные в шоке от решения.
+LOCATION: Тронный зал
+CHARACTERS_EN: Donut, Cookie, Vatrushki
+CAMERA: Средний план
+ACTION_RU: Эмоциональный отклик массовки.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "А знаешь, царь."
+DURATION_SEC: 3.6
+PROMPT_EN: Story beat: Придворные в шоке от решения.. Location: Тронный зал. Characters: Donut, Cookie, Vatrushki. Camera: Средний план. Action intent: Эмоциональный отклик массовки.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 36 (S36)
+STORY_BEAT_EN: Эклер сообщает о пещерном лазе.
+LOCATION: Тронный зал
+CHARACTERS_EN: Eclair, Napoleon
+CAMERA: Средний план
+ACTION_RU: Новый сюжетный инструмент.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Намед не слышал, что есть в горе пещерный лаз."
+DURATION_SEC: 4.0
+PROMPT_EN: Story beat: Эклер сообщает о пещерном лазе.. Location: Тронный зал. Characters: Eclair, Napoleon. Camera: Средний план. Action intent: Новый сюжетный инструмент.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 37 (S37)
+STORY_BEAT_EN: Наполеон требует детали шёпотом.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, Eclair
+CAMERA: Крупный план
+ACTION_RU: Переход к заговорщическому тону.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "А ну-ка подойди поближе. Поведай мне о том сейчас."
+DURATION_SEC: 3.9
+PROMPT_EN: Story beat: Наполеон требует детали шёпотом.. Location: Тронный зал. Characters: Napoleon, Eclair. Camera: Крупный план. Action intent: Переход к заговорщическому тону.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 38 (S38)
+STORY_BEAT_EN: Эклер объясняет проход в другой мир.
+LOCATION: Тронный зал
+CHARACTERS_EN: Eclair, Napoleon, General
+CAMERA: Средний план
+ACTION_RU: Связываем угрозу с конкретной точкой доступа.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Так через этот лаз возможно попасть в тот мир. Неосторожно. Ну в тот, про что он говорил."
+DURATION_SEC: 4.1
+PROMPT_EN: Story beat: Эклер объясняет проход в другой мир.. Location: Тронный зал. Characters: Eclair, Napoleon, General. Camera: Средний план. Action intent: Связываем угрозу с конкретной точкой доступа.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 39 (S39)
+STORY_BEAT_EN: Наполеон утверждает план контроля и наблюдения.
+LOCATION: Тронный зал
+CHARACTERS_EN: Napoleon, General, Eclair
+CAMERA: Крупный план
+ACTION_RU: Клиффхэнгер: скрытая подготовка режима.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "Все, понял. Ты нас убедил. Поставим мы туда охрану. И держимся такого плана. Заптичим молоком следить, но только торту не вредить."
+DURATION_SEC: 4.8
+PROMPT_EN: Story beat: Наполеон утверждает план контроля и наблюдения.. Location: Тронный зал. Characters: Napoleon, General, Eclair. Camera: Крупный план. Action intent: Клиффхэнгер: скрытая подготовка режима.. Keep child-safe stylized 3D aesthetic and stable identities.
+---
+SHOT 40 (S40)
+STORY_BEAT_EN: Финальный аккорд пилота.
+LOCATION: Тронный зал → титры
+CHARACTERS_EN: Crowd
+CAMERA: Общий план, затем затемнение
+ACTION_RU: Закрытие серии на напряжённой ноте.
+DIALOGUE_RU_EXACT_TRANSCRIPT: "А если что-нибудь случится, то генерал там отличится."
+DURATION_SEC: 4.5
+PROMPT_EN: Story beat: Финальный аккорд пилота.. Location: Тронный зал → титры. Characters: Crowd. Camera: Общий план, затем затемнение. Action intent: Закрытие серии на напряжённой ноте.. Keep child-safe stylized 3D aesthetic and stable identities.
+---

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Раскадровка 8×6 · Листы</title>
+  <style>
+    :root{
+      --bg:#181a1f;--panel:#242933;--line:#4a556c;--text:#ecf0f8;--muted:#adb8cc;--accent:#89b4ff;--ok:#8ad1b3;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;overflow:hidden}
+    body{
+      font-family:"Alegreya Sans","Trebuchet MS","Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at -10% -20%, #313747 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 0%, #2d3342 0%, transparent 58%),
+        linear-gradient(180deg,#171a20,#1e222b);
+    }
+    .app{height:100%;display:grid;grid-template-rows:auto auto 1fr;gap:10px;padding:12px}
+    .head{
+      border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(180deg,#2b3240,#232a36);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    }
+    h1{margin:0;font-size:28px;line-height:1.05}
+    .sub{font-size:12px;color:var(--muted)}
+    .links{display:flex;gap:8px}
+    .btn{border:1px solid var(--line);border-radius:10px;background:#323b4e;color:var(--text);padding:9px 12px;text-decoration:none;font-size:12px}
+    .stats{
+      border:1px solid var(--line);border-radius:12px;background:#232a36;padding:8px;
+      display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:8px
+    }
+    .stat{border:1px solid #596684;border-radius:10px;background:#2c3443;padding:8px}
+    .stat b{display:block;font-size:20px}
+    .stat span{font-size:11px;color:var(--muted)}
+    .grid{
+      min-height:0;border:1px solid var(--line);border-radius:14px;padding:10px;background:linear-gradient(180deg,#262d3a,#212733);
+      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px;
+    }
+    .card{
+      min-height:0;text-decoration:none;color:inherit;border:1px solid #596784;border-radius:12px;background:#202732;
+      display:grid;grid-template-rows:1fr auto;overflow:hidden;transition:transform .15s ease,border-color .15s ease;
+    }
+    .card:hover{transform:translateY(-2px);border-color:#84a1d5}
+    .thumb{background:#f3f6fc;display:grid;place-items:center;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .empty{font-size:12px;color:#626b80}
+    .meta{padding:8px 10px;border-top:1px solid #54617a}
+    .meta h3{margin:0;font-size:16px}
+    .meta p{margin:4px 0 0 0;font-size:12px;color:#c8d2e8}
+    @media (max-width:1320px){
+      html,body{overflow:auto}
+      .app{height:auto;min-height:100%}
+      .stats{grid-template-columns:repeat(3,minmax(120px,1fr))}
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:280px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="head">
+      <div>
+        <h1>Раскадровка · Формат 8×6</h1>
+        <div class="sub">Листы с кадрами в визуальном режиме. Детальные поля (EN/RU, локации, персонажи, реплики) — в «Короткая RU». Обновлено: 2026-04-24 07:23</div>
+      </div>
+      <div class="links">
+        <a class="btn" href="../storyboard_workboard.html">Workboard</a>
+        <a class="btn" href="../project_hub.html">Project Hub</a>
+        <a class="btn" href="../storyboard_short_ru/index.html">Короткая RU</a>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div class="stat"><b>8</b><span>Листов</span></div>
+      <div class="stat"><b>48</b><span>Кадров по плану</span></div>
+      <div class="stat"><b>48</b><span>С картинками</span></div>
+      <div class="stat"><b>8×6</b><span>Текущий формат</span></div>
+      <div class="stat"><b>0</b><span>Доп. шотов вне формата 8×6 нет</span></div>
+    </section>
+
+    <main class="grid">
+      <a class="card" href="sheet_01.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_01/S01.png' alt='sheet-1' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 1</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+<a class="card" href="sheet_02.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_02/S07.png' alt='sheet-2' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 2</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+<a class="card" href="sheet_03.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_03/S13.png' alt='sheet-3' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 3</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+<a class="card" href="sheet_04.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_04/S19.png' alt='sheet-4' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 4</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+<a class="card" href="sheet_05.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_05/S25.png' alt='sheet-5' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 5</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+<a class="card" href="sheet_06.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_06/S31.png' alt='sheet-6' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 6</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+<a class="card" href="sheet_07.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_07/S37.png' alt='sheet-7' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 7</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+<a class="card" href="sheet_08.html">
+  <div class="thumb"><img src='../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S43.png' alt='sheet-8' loading='lazy' /></div>
+  <div class="meta">
+    <h3>Лист 8</h3>
+    <p>Кадров: 6/6</p>
+  </div>
+</a>
+    </main>
+  </div>
+<script defer src="../_ui/sidebar.js"></script>
+</body>
+</html>
+

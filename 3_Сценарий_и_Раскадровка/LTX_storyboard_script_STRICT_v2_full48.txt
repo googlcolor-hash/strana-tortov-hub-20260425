@@ -1,0 +1,494 @@
+PROJECT: STRANA TORTOV | STRICT STORYBOARD SCRIPT FOR LTX
+SCRIPT_MODE: STORYBOARD
+GENERATION_TIER: PRO (final quality after Fast pass approved)
+SHOT_NUMBERING: FIXED (DO NOT RESET, DO NOT MERGE)
+LANGUAGE_INPUT: RU (exact quotes from source)
+LANGUAGE_OUTPUT_TARGET: EN
+VISUAL_STYLE: warm fairy-tale 3D, child-safe, consistent character identities
+CONSISTENCY: use ELEMENT IDs from CHARACTER_NOTES in every shot
+FRAME_ASPECT: 16:9
+NEGATIVE_GLOBAL: no horror, no photoreal gore, no text artifacts, no extra limbs
+
+FORMAT PER SHOT:
+SHOT XX | SCENE | LOCATION | CHARACTERS | CAMERA | ACTION | DIALOGUE_RU | DURATION_SEC
+
+SHOT 01 (S01)
+SCENE: Экспозиция мира: сладкая страна тортов, география и атмосфера.
+LOCATION: Страна тортов
+CHARACTER_NOTES: VOICEOVER, CROWD
+CAMERA_DIRECTION: Общий план, плавный пролёт
+ACTION: Открываем сказочный мир и тон истории.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "VoiceOver: «Над золочёными полями… Находится страна тортов»."
+DURATION_SEC: 2.6
+---
+SHOT 02 (S02)
+SCENE: Представление правителя и двора: Наполеон, свита и придворные.
+LOCATION: Тронный зал
+CHARACTER_NOTES: NAPOLEON, VATRUSHKI, ECLAIR, GENERAL, BLIN
+CAMERA_DIRECTION: Средний план, статично
+ACTION: Фиксируем властный центр конфликта.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "VoiceOver: «Царь всем тортам – Наполеон!»."
+DURATION_SEC: 2.2
+---
+SHOT 03 (S03)
+SCENE: Ввод героя-альтернативы: Птичье Молоко живёт отдельно от двора.
+LOCATION: Окраина тортового царства
+CHARACTER_NOTES: PM
+CAMERA_DIRECTION: Средний план
+ACTION: Контраст независимого героя и системы.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "VoiceOver: «Простой торт Птичье Молоко, и от дворца он далеко»."
+DURATION_SEC: 2.0
+---
+SHOT 04 (S04)
+SCENE: Наполеон закрепляет абсолютную власть.
+LOCATION: Тронный зал
+CHARACTER_NOTES: NAPOLEON
+CAMERA_DIRECTION: Крупный план
+ACTION: Политическая завязка: запрет на смену царя.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Napoleon: «Пока я жив, то править буду»."
+DURATION_SEC: 2.1
+---
+SHOT 05 (S05)
+SCENE: Птичье Молоко замечает за облаками чужой мир.
+LOCATION: Край горы
+CHARACTER_NOTES: PM
+CAMERA_DIRECTION: Общий план
+ACTION: Запуск основного приключения.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Что это? Чьё же это царство?»."
+DURATION_SEC: 2.3
+---
+SHOT 06 (S06)
+SCENE: Герой видит людей, чай и опасность для тортов.
+LOCATION: Сады за облаками
+CHARACTER_NOTES: PM, CROWD
+CAMERA_DIRECTION: Средний план
+ACTION: Шок героя и подтверждение угрозы.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Не место на столе тортам»."
+DURATION_SEC: 2.4
+---
+SHOT 07 (S07)
+SCENE: Попытка срочно доложить царю у дворцовых ворот.
+LOCATION: Ворота дворца
+CHARACTER_NOTES: PM, GURTS
+CAMERA_DIRECTION: Средний план
+ACTION: Вход в открытую фазу конфликта с властью.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Эй, леденец, открой ворота, к Наполеону мне охота!»."
+DURATION_SEC: 2.0
+---
+SHOT 08 (S08)
+SCENE: Птичье Молоко сообщает о тортоедах.
+LOCATION: Тронный зал
+CHARACTER_NOTES: PM, NAPOLEON, GENERAL, ECLAIR
+CAMERA_DIRECTION: Средний план
+ACTION: Передаём ключевую информацию власти.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Видал, как торт едят с утра»."
+DURATION_SEC: 2.5
+---
+SHOT 09 (S09)
+SCENE: Двор не верит, угрозу высмеивают.
+LOCATION: Тронный зал
+CHARACTER_NOTES: NAPOLEON, GENERAL, ECLAIR
+CAMERA_DIRECTION: Средний план
+ACTION: Фиксируем ошибочное решение антагонистов.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Napoleon: «Ну ты, ей богу, рассмешил»."
+DURATION_SEC: 2.2
+---
+SHOT 10 (S10)
+SCENE: Птичье Молоко выгоняют из дворца.
+LOCATION: Дворцовый коридор
+CHARACTER_NOTES: NAPOLEON, GURTS, PM
+CAMERA_DIRECTION: Средний план, движение
+ACTION: Герой остаётся без поддержки власти.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Napoleon: «Езжай обратно ты к горам»."
+DURATION_SEC: 1.9
+---
+SHOT 11 (S11)
+SCENE: Наполеон запускает слежку.
+LOCATION: Тронный зал
+CHARACTER_NOTES: NAPOLEON, GENERAL
+CAMERA_DIRECTION: Крупный план
+ACTION: Подготовка линии шпионажа и предательства.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Napoleon: «За Птичьим Молоком следить»."
+DURATION_SEC: 1.8
+---
+SHOT 12 (S12)
+SCENE: Возвращение к союзнику у кисельных берегов.
+LOCATION: Кисельные берега
+CHARACTER_NOTES: PM, CHAR_MEDOVIK
+CAMERA_DIRECTION: Средний план
+ACTION: Старт командной линии героев.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Торт Медовик: «Дружище, что с тобой стряслось?»."
+DURATION_SEC: 2.1
+---
+SHOT 13 (S13)
+SCENE: Герой подробно рассказывает, что видел у людей.
+LOCATION: Кисельные берега
+CHARACTER_NOTES: PM, CHAR_MEDOVIK
+CAMERA_DIRECTION: Средний план
+ACTION: Мотивация похода подтверждена.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Не знаю, что за существа, но съели ровно два торта»."
+DURATION_SEC: 2.1
+---
+SHOT 14 (S14)
+SCENE: Медовик соглашается идти вместе.
+LOCATION: Кисельные берега
+CHARACTER_NOTES: CHAR_MEDOVIK, PM
+CAMERA_DIRECTION: Крупный план
+ACTION: Формирование основного дуэта.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Торт Медовик: «Мой друг, тебе охотно верю»."
+DURATION_SEC: 2.0
+---
+SHOT 15 (S15)
+SCENE: Во дворце репрессии: конец балов, давление на Donutа.
+LOCATION: Дворец
+CHARACTER_NOTES: GENERAL, DONUT, COOKIE, VATRUSHKI
+CAMERA_DIRECTION: Средний план
+ACTION: Показываем ужесточение режима.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "General: «Конец балам»."
+DURATION_SEC: 2.0
+---
+SHOT 16 (S16)
+SCENE: Генерал вербует Donutа как наблюдателя.
+LOCATION: Служебный коридор
+CHARACTER_NOTES: GENERAL, DONUT
+CAMERA_DIRECTION: Крупный план
+ACTION: Закладываем линию двойного агента.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "General: «В темницу ты не загремишь, и денег дам тебе, малыш»."
+DURATION_SEC: 2.1
+---
+SHOT 17 (S17)
+SCENE: Donut подтверждает, что знает цель наблюдения.
+LOCATION: Караульный пост
+CHARACTER_NOTES: DONUT, GENERAL
+CAMERA_DIRECTION: Средний план
+ACTION: Усиление угрозы для героев.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Donut: «Да, знаю я его давно»."
+DURATION_SEC: 1.8
+---
+SHOT 18 (S18)
+SCENE: Птичье Молоко и Медовик готовятся к походу.
+LOCATION: Кисельные берега
+CHARACTER_NOTES: PM, CHAR_MEDOVIK
+CAMERA_DIRECTION: Средний план
+ACTION: Фактический старт миссии.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Друг Медовик, давай уж завтра с тобой отправимся мы в путь»."
+DURATION_SEC: 2.3
+---
+SHOT 19 (S19)
+SCENE: К походу присоединяется Donut; звучит цель экспедиции.
+LOCATION: Путь к горе
+CHARACTER_NOTES: PM, CHAR_MEDOVIK, DONUT
+CAMERA_DIRECTION: Общий план
+ACTION: Расширяем команду и ставки.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Идём в поход в другое царство, и это очень, знай, опасно»."
+DURATION_SEC: 2.0
+---
+SHOT 20 (S20)
+SCENE: Через лаз герои пробираются в дом Лиды.
+LOCATION: Дом Лиды
+CHARACTER_NOTES: PM, CHAR_MEDOVIK
+CAMERA_DIRECTION: Средний план
+ACTION: Переход в людское царство.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Скорей по лестнице в ту дверь, пролезем через эту щель»."
+DURATION_SEC: 2.1
+---
+SHOT 21 (S21)
+SCENE: Первый контакт: Лида просыпается от шума.
+LOCATION: Лестница в доме Лиды
+CHARACTER_NOTES: CHAR_LIDA, CHAR_MEDOVIK, PM
+CAMERA_DIRECTION: Средний план
+ACTION: Точка знакомства человека и тортов.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «Кто это бродит прямо в ночь?»."
+DURATION_SEC: 1.9
+---
+SHOT 22 (S22)
+SCENE: Торты обвиняют Лиду, что людей считали тортоедами.
+LOCATION: Комната Лиды
+CHARACTER_NOTES: PM, CHAR_LIDA
+CAMERA_DIRECTION: Крупный план
+ACTION: Конфликт восприятия перед союзом.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «За то, что братьев наших ела…»."
+DURATION_SEC: 2.0
+---
+SHOT 23 (S23)
+SCENE: Лида отвечает мирно и приветствует гостей.
+LOCATION: Комната Лиды
+CHARACTER_NOTES: CHAR_LIDA, CHAR_MEDOVIK, PM
+CAMERA_DIRECTION: Средний план
+ACTION: Разворот от конфликта к доверию.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «Вы что, живые?… Знакомству рада и гостям»."
+DURATION_SEC: 2.0
+---
+SHOT 24 (S24)
+SCENE: Лида объясняет, кто она и как люди реально живут.
+LOCATION: Комната Лиды
+CHARACTER_NOTES: CHAR_LIDA
+CAMERA_DIRECTION: Средний план
+ACTION: Подтверждаем, что Лида — союзник.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «Я – Лида, здесь живу с отцом»."
+DURATION_SEC: 2.2
+---
+SHOT 25 (S25)
+SCENE: Торты раскрывают, почему бежали от царя.
+LOCATION: Комната Лиды
+CHARACTER_NOTES: PM, CHAR_MEDOVIK, CHAR_LIDA
+CAMERA_DIRECTION: Средний план
+ACTION: Связываем личную арку с политическим конфликтом.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Несладко нынче нам живётся… Царь к абсолютной власти рвётся»."
+DURATION_SEC: 2.1
+---
+SHOT 26 (S26)
+SCENE: Лида даёт доказательство — два безе из холодильника.
+LOCATION: Кухня Лиды
+CHARACTER_NOTES: CHAR_LIDA, PM, CHAR_MEDOVIK, CHAR_MERINGUE
+CAMERA_DIRECTION: Крупный план
+ACTION: Ключевой артефакт для возвращения домой.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «Вы отнесите им безе, скажите, что у нас живых мы не едим нигде»."
+DURATION_SEC: 2.3
+---
+SHOT 27 (S27)
+SCENE: Donut признаётся в слежке и просит прощения.
+LOCATION: Дом Лиды
+CHARACTER_NOTES: DONUT, PM, CHAR_MEDOVIK
+CAMERA_DIRECTION: Средний план
+ACTION: Этический поворот персонажа Donutа.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Donut: «Выбор был мой невелик: следить иль за решётку вмиг»."
+DURATION_SEC: 2.0
+---
+SHOT 28 (S28)
+SCENE: Герои придумывают дезинформацию для генерала.
+LOCATION: Дом Лиды
+CHARACTER_NOTES: CHAR_MEDOVIK, DONUT, PM
+CAMERA_DIRECTION: Средний план
+ACTION: Контр-ход против режима.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Торт Медовик: «Ему ты скажешь: слышал уха краем, как Медовик там армию собрал»."
+DURATION_SEC: 2.0
+---
+SHOT 29 (S29)
+SCENE: Возврат через лаз: их тут же замечает Желе.
+LOCATION: Выход из лаза
+CHARACTER_NOTES: GENERAL, PM, CHAR_MEDOVIK, CHAR_MERINGUE
+CAMERA_DIRECTION: Средний план, движение
+ACTION: Переход в фазу открытого захвата.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "General: «Смотрите! Вон они ползут! Скорей ловите, ведь уйдут!»."
+DURATION_SEC: 2.0
+---
+SHOT 30 (S30)
+SCENE: У трона: Наполеон встречает беглецов.
+LOCATION: Тронный зал
+CHARACTER_NOTES: NAPOLEON, PM
+CAMERA_DIRECTION: Средний план
+ACTION: Возврат конфликта в центр власти.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Napoleon: «Ну как, сходили за границу?»."
+DURATION_SEC: 2.2
+---
+SHOT 31 (S31)
+SCENE: Приказ: безе в темницу, остальных — в заложники.
+LOCATION: Тронный зал / темница
+CHARACTER_NOTES: NAPOLEON, GENERAL, CHAR_MERINGUE, PM, CHAR_MEDOVIK
+CAMERA_DIRECTION: Крупный план
+ACTION: Режим идёт на эскалацию.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Napoleon: «Безе – в темницу и пытать»."
+DURATION_SEC: 2.4
+---
+SHOT 32 (S32)
+SCENE: Donut понимает, что надо спасать друзей.
+LOCATION: Горный перевал
+CHARACTER_NOTES: DONUT
+CAMERA_DIRECTION: Средний план, динамика
+ACTION: Старт спасательной операции.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Donut: «Скорей к пещере, к людям в царство… Мне надо их скорей спасать»."
+DURATION_SEC: 1.9
+---
+SHOT 33 (S33)
+SCENE: Donut прорывается мимо охраны через лаз.
+LOCATION: Лаз / охрана
+CHARACTER_NOTES: DONUT, GURTS
+CAMERA_DIRECTION: Средний план
+ACTION: Рискованный переход между мирами.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Gurts: «Тревога! Кто-то прошмыгнул»."
+DURATION_SEC: 2.0
+---
+SHOT 34 (S34)
+SCENE: В темнице идёт допрос безе.
+LOCATION: Темница
+CHARACTER_NOTES: GENERAL, CHAR_MERINGUE
+CAMERA_DIRECTION: Средний план
+ACTION: Нагнетаем напряжение перед штурмом.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "General: «Какая армия у вас, когда пойдёте против нас?»."
+DURATION_SEC: 2.0
+---
+SHOT 35 (S35)
+SCENE: Блин вступается за безе и останавливает пытки.
+LOCATION: Темница
+CHARACTER_NOTES: BLIN, GENERAL, CHAR_MERINGUE
+CAMERA_DIRECTION: Средний план
+ACTION: Показываем внутренний раскол при дворе.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Блин: «Оставьте их, прошу, в покое»."
+DURATION_SEC: 2.3
+---
+SHOT 36 (S36)
+SCENE: Donut у Лиды сообщает о захвате друзей.
+LOCATION: Дом Лиды
+CHARACTER_NOTES: DONUT, CHAR_LIDA
+CAMERA_DIRECTION: Средний план
+ACTION: Мотивация Лиды к прямому вмешательству.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Donut: «Схватили Птичье Молоко, Медовика и заодно твоё Безе подвергли пытке»."
+DURATION_SEC: 2.1
+---
+SHOT 37 (S37)
+SCENE: Лида собирает поход и решает идти в тортовое царство.
+LOCATION: Дом Лиды
+CHARACTER_NOTES: CHAR_LIDA, DONUT, CHAR_PUSHOK_DOG
+CAMERA_DIRECTION: Средний план
+ACTION: Подготовка человеческого отряда помощи.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «Ну что ж, тогда пойдём в поход»."
+DURATION_SEC: 2.2
+---
+SHOT 38 (S38)
+SCENE: Атака у лаза: Лида выводит сладости в бой.
+LOCATION: Лаз со стороны горы
+CHARACTER_NOTES: CHAR_LIDA, GURTS, CHAR_LOKUM, CHAR_CHOCO_BAR, CHAR_PASTILA, CHAR_CURD_SNACKS
+CAMERA_DIRECTION: Общий план, динамика
+ACTION: Освобождение прохода к дворцу.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «А ну-ка, братцы, выходите да леденцов всех прогоните!»."
+DURATION_SEC: 2.0
+---
+SHOT 39 (S39)
+SCENE: Контратака сладостей и разгром стражи.
+LOCATION: Подступы к дворцу
+CHARACTER_NOTES: CHAR_LOKUM, CHAR_CHOCO_BAR, GURTS
+CAMERA_DIRECTION: Средний план
+ACTION: Тактическая победа союзников.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лукум: «Сдавайтесь Лиде, сопляки!». Батончик: «Пришёл царю его конец»."
+DURATION_SEC: 1.8
+---
+SHOT 40 (S40)
+SCENE: General сталкивается с собаками и исчезает.
+LOCATION: Поля у дома Лиды
+CHARACTER_NOTES: GENERAL, CROWD
+CAMERA_DIRECTION: Средний план
+ACTION: Устранение второго антагониста.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "General: «Куда попал я, погибаю-ю-ю!»."
+DURATION_SEC: 2.2
+---
+SHOT 41 (S41)
+SCENE: Во дворце паника: Эклер докладывает о великане.
+LOCATION: Тронный зал
+CHARACTER_NOTES: ECLAIR, NAPOLEON
+CAMERA_DIRECTION: Средний план
+ACTION: Психологический перелом Наполеона.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Eclair: «Беда, мой царь, пришла беда!»."
+DURATION_SEC: 2.1
+---
+SHOT 42 (S42)
+SCENE: Лида требует освободить друзей.
+LOCATION: Фасад дворца
+CHARACTER_NOTES: CHAR_LIDA, NAPOLEON
+CAMERA_DIRECTION: Средний план
+ACTION: Ультиматум с внешней силой.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «Отпусти моих друзей!»."
+DURATION_SEC: 2.1
+---
+SHOT 43 (S43)
+SCENE: Donut вскрывает обман, Наполеон сдаётся.
+LOCATION: Балкон / парадный зал
+CHARACTER_NOTES: DONUT, NAPOLEON
+CAMERA_DIRECTION: Средний план
+ACTION: Кульминационная развязка.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Napoleon: «Сдаюсь, я битву проиграл»."
+DURATION_SEC: 2.4
+---
+SHOT 44 (S44)
+SCENE: Песня победы и освобождения.
+LOCATION: Площадь у дворца
+CHARACTER_NOTES: CROWD, CHAR_LIDA, DONUT, PM, CHAR_MEDOVIK, CHAR_MERINGUE
+CAMERA_DIRECTION: Общий план
+ACTION: Эмоциональная разрядка после конфликта.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Хор: «Случилось то, что мы так ждали, мы за свободу воевали»."
+DURATION_SEC: 2.2
+---
+SHOT 45 (S45)
+SCENE: Лида предлагает выбрать нового справедливого царя.
+LOCATION: Крыльцо дворца
+CHARACTER_NOTES: CHAR_LIDA
+CAMERA_DIRECTION: Средний план
+ACTION: Переход к новому устройству власти.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Лида: «Вам нужен будет новый царь, и справедливый государь»."
+DURATION_SEC: 2.0
+---
+SHOT 46 (S46)
+SCENE: Медовик предлагает кандидатуру Птичьего Молока.
+LOCATION: Крыльцо дворца
+CHARACTER_NOTES: CHAR_MEDOVIK, CROWD
+CAMERA_DIRECTION: Средний план
+ACTION: Консенсус по новому лидеру.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "Торт Медовик: «Зачем искать так далеко? Ведь это Птичье Молоко!»."
+DURATION_SEC: 2.0
+---
+SHOT 47 (S47)
+SCENE: Клятва нового правителя.
+LOCATION: Площадь / тронный зал
+CHARACTER_NOTES: PM
+CAMERA_DIRECTION: Крупный план
+ACTION: Фиксация финальной ценности истории.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "PM: «Клянусь я вами честно править… С людьми наладить диалог»."
+DURATION_SEC: 2.3
+---
+SHOT 48 (S48)
+SCENE: Эпилог: попытка реванша Наполеона, падение и праздничный финал.
+LOCATION: Лаз / праздничная площадь
+CHARACTER_NOTES: NAPOLEON, CHAR_LIDA, CHAR_PUSHOK_DOG, DONUT, VATRUSHKI, COOKIE
+CAMERA_DIRECTION: Общий план
+ACTION: Комический финальный аккорд и закрытие арки.
+AUDIO_NOTES: dialogue line present
+DIALOGUE_RU_EXACT: "VoiceOver: «Счастливый выдался денёк»."
+DURATION_SEC: 2.5
+---

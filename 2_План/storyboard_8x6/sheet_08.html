@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Раскадровка · Лист 8 / 8</title>
+  <style>
+    :root{
+      --bg:#181a1f;--panel:#242933;--line:#4a556c;--text:#ecf0f8;--muted:#adb8cc;--accent:#89b4ff;--ok:#8ad1b3;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;overflow:hidden}
+    body{
+      font-family:"Alegreya Sans","Trebuchet MS","Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at -10% -20%, #313747 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 0%, #2d3342 0%, transparent 58%),
+        linear-gradient(180deg,#171a20,#1e222b);
+    }
+    .app{height:100%;display:grid;grid-template-rows:auto 1fr;padding:10px;gap:10px}
+    .top{
+      border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:linear-gradient(180deg,#2b3240,#232a36);
+      display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;
+    }
+    .left,.right{display:flex;gap:8px;align-items:center}
+    .title{display:flex;flex-direction:column;gap:2px}
+    .title h1{margin:0;font-size:22px;line-height:1.1}
+    .title p{margin:0;font-size:12px;color:var(--muted)}
+    .pill{
+      display:inline-flex;align-items:center;gap:6px;border:1px solid #5a6a87;border-radius:999px;padding:5px 10px;
+      font-size:12px;background:#30384a;color:#dce5f8
+    }
+    .ok{color:var(--ok)}
+    .btn{
+      border:1px solid var(--line);border-radius:10px;background:#323b4e;color:var(--text);padding:8px 10px;
+      text-decoration:none;font-size:12px
+    }
+    .btn:hover{border-color:#7f95ba}
+    .btn.disabled{opacity:.4;pointer-events:none}
+    .grid{
+      min-height:0;
+      border:1px solid var(--line);border-radius:14px;padding:10px;
+      background:linear-gradient(180deg,#262d3a,#212733);
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px;
+    }
+    .card{
+      min-height:0;display:grid;grid-template-rows:auto auto 1fr auto auto;gap:6px;
+      border:1px solid #5a667f;border-radius:12px;padding:8px;background:#202732;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .meta{display:flex;justify-content:space-between;align-items:center}
+    .shot{font-weight:800;color:#ffe08f}
+    .panel{font-size:11px;color:var(--muted)}
+    h3{margin:0;font-size:14px;line-height:1.1}
+    .frame{
+      border:1px solid #64728f;border-radius:10px;overflow:hidden;position:relative;min-height:0;
+      background:#f2f5fb;display:grid;place-items:center;
+    }
+    .frame img{width:100%;height:100%;object-fit:cover;display:block}
+    .zoom{
+      position:absolute;right:6px;bottom:6px;border:1px solid #7084aa;border-radius:8px;padding:3px 8px;
+      font-size:11px;background:#2f3a4f;color:#ecf0f8;cursor:pointer;
+    }
+    .empty{font-size:12px;color:#5d6475}
+    details{border:1px solid #4f5a73;border-radius:8px;background:#252d3b;padding:5px}
+    summary{cursor:pointer;font-size:12px;color:#c7d1e6}
+    details p{margin:6px 0 0 0;font-size:11px;color:#d3dcf0;line-height:1.25}
+    .line{
+      border:1px dashed #58647e;border-radius:8px;padding:6px;font-size:11px;color:#dce4f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .overlay{
+      position:fixed;inset:0;background:rgba(12,15,20,.84);display:none;place-items:center;padding:24px;z-index:50;
+    }
+    .overlay.open{display:grid}
+    .overlay img{max-width:95vw;max-height:90vh;object-fit:contain;border:2px solid #8ea7d6;border-radius:10px;background:#f5f7fc}
+    .overlay button{
+      position:absolute;top:14px;right:16px;border:1px solid #7d8fb3;border-radius:10px;padding:8px 12px;background:#2a3346;color:#eef2fb;cursor:pointer;
+    }
+    @media (max-width:1400px){
+      html,body{overflow:auto}
+      .app{height:auto;min-height:100%}
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:minmax(380px,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="left">
+        <a class="btn" href="index.html">Все листы</a>
+        <a class="btn " href="sheet_07.html">← Лист 7</a>
+      </div>
+      <div class="title">
+        <h1>Раскадровка · Лист 8 из 8</h1>
+        <p>Формат 8×6 (визуальный режим) · Обновлено: 2026-04-24 07:23</p>
+      </div>
+      <div class="right">
+        <a class="btn" href="../storyboard_short_ru/sheet_08.html">Подробно RU</a>
+        <span class="pill"><span class="ok">●</span>Кадров: 6/6</span>
+        <a class="btn disabled" href="">Лист 9 →</a>
+      </div>
+    </header>
+
+    <main class="grid">
+      <article class="card">
+  <header class="meta">
+    <span class="shot">S43</span>
+    <span class="panel">Панель 1</span>
+  </header>
+  <h3>Tsar freed</h3>
+  <div class="frame"><img src="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S43.png" alt="S43" loading="lazy" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S43.png" />
+<button class="zoom" type="button" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S43.png">Увеличить</button></div>
+  <details>
+    <summary>Промпт</summary>
+    <p>Tsar thanks the team, medium group shot, storyboard comic panel, rough pencil sketch, grayscale with caramel accent, clean silhouettes, cinematic framing, whimsical pastry fantasy world, consistent character design, 16:9</p>
+  </details>
+  <div class="line"><b>Реплика:</b> REPLIKA_S43</div>
+</article>
+<article class="card">
+  <header class="meta">
+    <span class="shot">S44</span>
+    <span class="panel">Панель 2</span>
+  </header>
+  <h3>Square celebration</h3>
+  <div class="frame"><img src="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S44.png" alt="S44" loading="lazy" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S44.png" />
+<button class="zoom" type="button" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S44.png">Увеличить</button></div>
+  <details>
+    <summary>Промпт</summary>
+    <p>city celebration with flags, music, confetti sugar, storyboard comic panel, rough pencil sketch, grayscale with caramel accent, clean silhouettes, cinematic framing, whimsical pastry fantasy world, consistent character design, 16:9</p>
+  </details>
+  <div class="line"><b>Реплика:</b> REPLIKA_S44</div>
+</article>
+<article class="card">
+  <header class="meta">
+    <span class="shot">S45</span>
+    <span class="panel">Панель 3</span>
+  </header>
+  <h3>Hero speech</h3>
+  <div class="frame"><img src="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S45.png" alt="S45" loading="lazy" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S45.png" />
+<button class="zoom" type="button" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S45.png">Увеличить</button></div>
+  <details>
+    <summary>Промпт</summary>
+    <p>medium close-up Napoleon speech to crowd, frontal mouth visible for lip sync, storyboard comic panel, rough pencil sketch, grayscale with caramel accent, clean silhouettes, cinematic framing, whimsical pastry fantasy world, consistent character design, 16:9, frontal 15 degree face angle, mouth clearly visible for lip sync</p>
+  </details>
+  <div class="line"><b>Реплика:</b> REPLIKA_S45</div>
+</article>
+<article class="card">
+  <header class="meta">
+    <span class="shot">S46</span>
+    <span class="panel">Панель 4</span>
+  </header>
+  <h3>Teaser shadow</h3>
+  <div class="frame"><img src="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S46.png" alt="S46" loading="lazy" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S46.png" />
+<button class="zoom" type="button" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S46.png">Увеличить</button></div>
+  <details>
+    <summary>Промпт</summary>
+    <p>dark crumb-like shadow escapes in alley, ominous teaser, storyboard comic panel, rough pencil sketch, grayscale with caramel accent, clean silhouettes, cinematic framing, whimsical pastry fantasy world, consistent character design, 16:9</p>
+  </details>
+  <div class="line"><b>Реплика:</b> REPLIKA_S46</div>
+</article>
+<article class="card">
+  <header class="meta">
+    <span class="shot">S47</span>
+    <span class="panel">Панель 5</span>
+  </header>
+  <h3>Look to horizon</h3>
+  <div class="frame"><img src="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S47.png" alt="S47" loading="lazy" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S47.png" />
+<button class="zoom" type="button" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S47.png">Увеличить</button></div>
+  <details>
+    <summary>Промпт</summary>
+    <p>team on hill at sunset looking toward horizon, sequel feeling, storyboard comic panel, rough pencil sketch, grayscale with caramel accent, clean silhouettes, cinematic framing, whimsical pastry fantasy world, consistent character design, 16:9</p>
+  </details>
+  <div class="line"><b>Реплика:</b> REPLIKA_S47</div>
+</article>
+<article class="card">
+  <header class="meta">
+    <span class="shot">S48</span>
+    <span class="panel">Панель 6</span>
+  </header>
+  <h3>Final emblem</h3>
+  <div class="frame"><img src="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S48.png" alt="S48" loading="lazy" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S48.png" />
+<button class="zoom" type="button" data-full="../../4_%D0%9A%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5_%D0%BA%D0%B0%D0%B4%D1%80%D1%8B/8x6/sheet_08/S48.png">Увеличить</button></div>
+  <details>
+    <summary>Промпт</summary>
+    <p>symbolic final frame: pastry crest over kingdom skyline, clean ending, storyboard comic panel, rough pencil sketch, grayscale with caramel accent, clean silhouettes, cinematic framing, whimsical pastry fantasy world, consistent character design, 16:9</p>
+  </details>
+  <div class="line"><b>Реплика:</b> REPLIKA_S48</div>
+</article>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <button type="button" id="closeOverlay">Закрыть</button>
+    <img id="overlayImg" alt="preview" />
+  </div>
+
+  <script>
+    const overlay = document.getElementById("overlay");
+    const overlayImg = document.getElementById("overlayImg");
+    document.querySelectorAll(".zoom").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const src = btn.getAttribute("data-full");
+        if (!src) return;
+        overlayImg.src = src;
+        overlay.classList.add("open");
+      });
+    });
+    document.getElementById("closeOverlay").addEventListener("click", () => {
+      overlay.classList.remove("open");
+      overlayImg.src = "";
+    });
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove("open");
+        overlayImg.src = "";
+      }
+    });
+  </script>
+<script defer src="../_ui/sidebar.js"></script>
+</body>
+</html>
+

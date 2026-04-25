@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Страна Тортов · Project Hub</title>
+  <style>
+    :root{--bg:#171b22;--panel:#202734;--line:#3e4d67;--text:#e9f0ff;--muted:#afbdd8;--accent:#8fb0ff;--ok:#80d89a}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:radial-gradient(1200px 600px at 80% -100px,#2a3550 0%,#171b22 60%);color:var(--text)}
+    .wrap{max-width:1200px;margin:0 auto;padding:20px}
+    h1{margin:0 0 6px;font-size:28px}
+    .muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+    .card{display:block;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);text-decoration:none;color:var(--text)}
+    .card:hover{border-color:var(--accent)}
+    .title{font-size:18px;font-weight:700;margin:0 0 6px}
+    .desc{margin:0;color:var(--muted);font-size:14px;line-height:1.35}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{display:inline-block;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#2a3448;color:var(--text);text-decoration:none;font-weight:600}
+    .btn:hover{border-color:var(--accent)}
+    .ok{color:var(--ok)}
+    .issues{margin-top:16px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#1c2330}
+    .issues h2{margin:0 0 8px;font-size:18px}
+    .issues ul{margin:0;padding-left:18px}
+    .issues li{margin:4px 0}
+    .issues a{color:#b8ccff;text-decoration:none}
+    .issues a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Страна Тортов · Общий доступ</h1>
+    <div class="muted">Публичная версия для просмотра сценария, таблицы и раскадровки.</div>
+
+    <div class="grid">
+      <a class="card" href="3_Сценарий_и_Раскадровка/scenario_table_9cols.html">
+        <div class="title">Сценарная таблица</div>
+        <p class="desc">Шоты, персонажи, реплики, подробная анимация, работа камеры, готовность.</p>
+      </a>
+      <a class="card" href="2_План/storyboard_8x6/index.html">
+        <div class="title">Раскадровка 8×6</div>
+        <p class="desc">8 листов по 6 кадров с быстрым просмотром по сценам.</p>
+      </a>
+      <a class="card" href="2_План/storyboard_short_ru/index.html">
+        <div class="title">Короткая RU версия</div>
+        <p class="desc">Короткий формат описаний на русском для быстрого согласования.</p>
+      </a>
+      <a class="card" href="3_Сценарий_и_Раскадровка/LTX_storyboard_script_PROPER_v3_40shots.txt">
+        <div class="title">LTX Export (PROPER, 40)</div>
+        <p class="desc">Экспортный скрипт для LTX Studio.</p>
+      </a>
+      <a class="card" href="3_Сценарий_и_Раскадровка/LTX_storyboard_script_STRICT_v2_full48.txt">
+        <div class="title">LTX Export (STRICT, 48)</div>
+        <p class="desc">Строгий вариант по шотам для проверки соответствия.</p>
+      </a>
+      <a class="card" href="3_Сценарий_и_Раскадровка/scenario_table_9cols.csv">
+        <div class="title">CSV таблица</div>
+        <p class="desc">Табличная версия для импорта/аналитики.</p>
+      </a>
+    </div>
+
+    <div class="row">
+      <a class="btn" href="https://github.com/__REPO__/issues/new?labels=signoff&title=%5BSignoff%5D%20SXX%20-%20Комментарий">Оставить подпись / комментарий</a>
+      <a class="btn" href="https://github.com/__REPO__/issues" >Открыть все комментарии</a>
+      <span class="muted ok">Сохранение идёт через GitHub Issues (бесплатно, в истории).</span>
+    </div>
+
+    <div class="issues">
+      <h2>Последние комментарии</h2>
+      <ul id="issues-list"><li class="muted">Загрузка...</li></ul>
+    </div>
+  </div>
+
+  <script>
+    (async function(){
+      const repo = '__REPO__';
+      const list = document.getElementById('issues-list');
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repo}/issues?state=open&per_page=10`);
+        const data = await res.json();
+        if(!Array.isArray(data) || data.length===0){
+          list.innerHTML = '<li class="muted">Пока нет комментариев.</li>';
+          return;
+        }
+        list.innerHTML = data.map(i => `<li><a href="${i.html_url}">${i.title}</a> <span class="muted">#${i.number}</span></li>`).join('');
+      } catch(e){
+        list.innerHTML = '<li class="muted">Не удалось загрузить комментарии, откройте вкладку Issues вручную.</li>';
+      }
+    })();
+  </script>
+</body>
+</html>

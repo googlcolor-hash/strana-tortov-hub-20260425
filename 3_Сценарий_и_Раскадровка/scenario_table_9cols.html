@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang='ru'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Сценарий · Таблица шотов</title>
+  <style>
+    :root { --bg:#1b1f27; --panel:#222a36; --line:#4c5d79; --text:#eaf0ff; --muted:#b9c5dd; --accent:#88a8ff; }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font-family:Segoe UI, Arial, sans-serif; overflow-x:hidden; }
+    .app { padding:10px 14px; max-width:100vw; margin:0 auto; }
+    .top { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+    h1 { margin:0; font-size:20px; }
+    .meta { color:var(--muted); font-size:12px; }
+    .actions { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+    button { border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:#2f3a4c; color:var(--text); cursor:pointer; font-size:12px; }
+    button:hover { border-color:var(--accent); }
+
+    .colmenu { position:relative; }
+    .colmenu-panel {
+      position:absolute; right:0; top:34px; z-index:20; width:min(360px, 92vw);
+      border:1px solid var(--line); border-radius:10px; background:var(--panel);
+      padding:8px; display:none;
+      box-shadow:0 10px 28px rgba(0,0,0,.35);
+      max-height:50vh; overflow:auto;
+    }
+    .colmenu-panel.open { display:block; }
+    .colmenu-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; }
+    .colmenu-grid label { font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; gap:6px; align-items:center; }
+
+    .table-wrap { border:1px solid var(--line); border-radius:10px; background:var(--panel); overflow:hidden; max-height:none; }
+    table { width:100%; min-width:0; border-collapse:collapse; table-layout:fixed; }
+    th, td { border:1px solid var(--line); padding:6px; vertical-align:top; font-size:12px; word-break:break-word; }
+    th { position:sticky; top:0; z-index:2; background:#2f3a4c; }
+    td.col-shot, td.col-chron, td.col-ready { text-align:center; white-space:nowrap; }
+    .speech-italic { font-style:italic; }
+    th.col-chars, td.col-chars,
+    th.col-loc, td.col-loc { font-size:14px; font-weight:700; }
+    .col-shot { width:4%; }
+    .col-desc { width:15%; }
+    .col-chars { width:12%; }
+    .col-speech { width:24%; }
+    .col-anim { width:12%; }
+    .col-loc { width:9%; }
+    .col-cam { width:9%; }
+    .col-chron { width:4%; }
+    .col-ready { width:3%; }
+
+
+    .keyframe-cell { width:8%; min-width:8%; text-align:center; padding:4px; }
+    .kf-wrap { display:grid; gap:4px; justify-items:center; }
+    .kf-img { width:70px; height:40px; object-fit:cover; border:1px solid var(--line); border-radius:6px; background:#11161f; }
+    .kf-empty { width:70px; height:40px; border:1px dashed #627391; border-radius:6px; color:var(--muted); font-size:10px; display:grid; place-items:center; }
+    .kf-actions { display:flex; gap:4px; }
+    .kf-btn-upload, .kf-btn-clear { width:22px; height:22px; padding:0; line-height:20px; font-weight:700; }
+
+    .hidden-col { display:none !important; }
+
+    .width-tools { margin:8px 0 6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .width-tools label { font-size:12px; color:var(--muted); }
+    .width-tools select, .width-tools input {
+      height:28px; border:1px solid var(--line); border-radius:6px;
+      background:#1b2432; color:var(--text); padding:3px 6px; font-size:12px;
+    }
+    .width-tools input { width:84px; }
+
+    .col-resizer {
+      position:absolute; right:-3px; top:0; width:8px; height:100%;
+      cursor:col-resize; user-select:none; opacity:.45;
+    }
+    .col-resizer:hover { opacity:.95; }
+    .is-resizing, .is-resizing * { cursor:col-resize !important; user-select:none !important; }
+
+    .ready-cell { text-align:center; }
+    .ready-wrap { display:inline-flex; align-items:center; gap:4px; font-size:12px; color:var(--muted); }
+    .ready-check { accent-color:#79d992; transform:translateY(1px); }
+    .ready-print { display:none; font-weight:700; }
+    tr.shot-ready td.col-shot { background:rgba(121,217,146,.16); }
+
+    @media print {
+      .no-print { display:none !important; }
+      .app { padding:0; }
+      .table-wrap { max-height:none; overflow:visible; border:none; }
+      table { min-width:0; width:100%; }
+      th { position:static; }
+      body { background:white; color:black; }
+      th, td { border:1px solid #999; }
+      .ready-wrap { display:none !important; }
+      .ready-print { display:inline !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class='app'>
+    <div class='top no-print'>
+      <div>
+        <h1>Сценарий · Таблица шотов</h1>
+        <div class='meta'>40 шотов · 10 колонок</div>
+      </div>
+      <div class='actions'>
+        <div class='colmenu'>
+          <button type='button' id='toggleCols'>Столбцы ▾</button>
+          <div class='colmenu-panel' id='colPanel'>
+            <div class='actions' style='margin-bottom:6px'>
+              <button type='button' id='showAll'>Все</button>
+              <button type='button' id='hideTextCols'>Компакт</button>
+            </div>
+            <div class='width-tools'>
+              <label for='widthCol'>Ширина</label>
+              <select id='widthCol'>
+                <option value='1'>Шот</option>
+                <option value='2'>Ключевой кадр</option>
+                <option value='3'>Описание</option>
+                <option value='4'>Персонажи</option>
+                <option value='5'>Речь</option>
+                <option value='6'>Анимация</option>
+                <option value='7'>Локация</option>
+                <option value='8'>Камера</option>
+                <option value='9'>Хрон</option>
+                <option value='10'>Готовность</option>
+              </select>
+              <input type='number' id='widthPx' min='70' max='1200' step='10' value='180'>
+              <button type='button' id='applyWidth'>OK</button>
+              <button type='button' id='resetWidths'>Сброс</button>
+            </div>
+            <div class='colmenu-grid' id='colControls'>
+              <label><input type='checkbox' data-col='1' checked> <span>Шот</span></label>
+<label><input type='checkbox' data-col='2' checked> <span>Ключевой кадр</span></label>
+<label><input type='checkbox' data-col='3' checked> <span>Описание (мизансцена)</span></label>
+<label><input type='checkbox' data-col='4' checked> <span>Персонажи</span></label>
+<label><input type='checkbox' data-col='5' checked> <span>Текст речи персонажей</span></label>
+<label><input type='checkbox' data-col='6' checked> <span>Анимация</span></label>
+<label><input type='checkbox' data-col='7' checked> <span>Локация</span></label>
+<label><input type='checkbox' data-col='8' checked> <span>Работа камеры</span></label>
+<label><input type='checkbox' data-col='9' checked> <span>Хрон (сек)</span></label>
+<label><input type='checkbox' data-col='10' checked> <span>Готовность</span></label>
+            </div>
+          </div>
+        </div>
+        <button type='button' id='exportPdf'>Экспорт в PDF</button>
+      </div>
+    </div>
+
+    <div class='table-wrap'>
+      <table id='scenarioTable'>
+        <thead><tr><th class='col-shot' data-col='1'>Шот</th><th class='col-keyframe' data-col='2'>Ключевой кадр</th><th class='col-desc' data-col='3'>Описание (мизансцена)</th><th class='col-chars' data-col='4'>Персонажи</th><th class='col-speech' data-col='5'>Текст речи персонажей</th><th class='col-anim' data-col='6'>Анимация</th><th class='col-loc' data-col='7'>Локация</th><th class='col-cam' data-col='8'>Работа камеры</th><th class='col-chron' data-col='9'>Хрон (сек)</th><th class='col-ready' data-col='10'>Готовность</th></tr></thead>
+        <tbody><tr data-shot='S01'><td class='col-shot' data-col='1'>S01</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S01'><img class='kf-img' alt='keyframe S01' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S01'>+</button><button type='button' class='kf-btn-clear' data-shot='S01' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S01' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Экспозиция: страна тортов над полями и облаками.</td><td class='col-chars' data-col='4'>VoiceOver, Crowd</td><td class='col-speech speech-italic' data-col='5'>VoiceOver: Над золочеными полями, над голубыми небесами, Средь птичьих стай и облаков, находятся страна тортов.</td><td class='col-anim' data-col='6'>Камера парит над сахарными полями; Crowd движется маленькими группами по дорожкам, флажки и ленты мягко колышутся от ветра.</td><td class='col-loc' data-col='7'>Страна тортов (общий вид)</td><td class='col-cam' data-col='8'>На переднем плане пролетают облака и карамельные кроны, в среднем плане раскрывается город, на дальнем фоне холмы и рассвет; широкий воздушный пролёт.</td><td class='col-chron' data-col='9'>4.8</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S02'><td class='col-shot' data-col='1'>S02</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S02'><img class='kf-img' alt='keyframe S02' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S02'>+</button><button type='button' class='kf-btn-clear' data-shot='S02' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S02' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Представление правителя и двора.</td><td class='col-chars' data-col='4'>Napoleon, Vatrushki</td><td class='col-speech speech-italic' data-col='5'>VoiceOver: Отцарством этим правит он, царь всем тортом Наполеон. Вокруг него снуют в отружке, любимые его подружки.</td><td class='col-anim' data-col='6'>Napoleon неподвижно держит центр композиции, Vatrushki кружат вокруг трона мелкими шагами и поклонами, создавая ритуальный ритм двора.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план занимают детали трона и колонн, в среднем плане Napoleon и свита, на заднем плане глубина зала; общий кадр с плавным сближением до среднего.</td><td class='col-chron' data-col='9'>4.2</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S03'><td class='col-shot' data-col='1'>S03</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S03'><img class='kf-img' alt='keyframe S03' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S03'>+</button><button type='button' class='kf-btn-clear' data-shot='S03' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S03' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Свита развлекает царя.</td><td class='col-chars' data-col='4'>Donut, Cookie, Eclair, Napoleon</td><td class='col-speech speech-italic' data-col='5'>VoiceOver: Вот рядом пончик и печенья поют ему для развлечения, Играф Экклер, его советник. Он лучший друг и лучший сплетник.</td><td class='col-anim' data-col='6'>Donut и Cookie выступают синхронно, Eclair подсказывает из-за плеча, Napoleon наблюдает без улыбки и едва кивает в такт.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>На переднем плане микрофон/декор сцены, в среднем Donut и Cookie, на заднем Eclair и трон Napoleon; стабильный средний с лёгким боковым паном.</td><td class='col-chron' data-col='9'>4.3</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S04'><td class='col-shot' data-col='1'>S04</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S04'><img class='kf-img' alt='keyframe S04' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S04'>+</button><button type='button' class='kf-btn-clear' data-shot='S04' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S04' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Военная вертикаль при троне.</td><td class='col-chars' data-col='4'>General, Gurts, Napoleon</td><td class='col-speech speech-italic' data-col='5'>VoiceOver: Паодль, генерал жиле, всё время он на стороже. Царя охрану возглавляет или единцами управляет.</td><td class='col-anim' data-col='6'>General шагом обходит линию Gurts, проверяет стойки и жёсткими жестами выравнивает строй рядом с Napoleon.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план занимают копья/щитки Gurts, в среднем General и Napoleon, на заднем ряды охраны и стены; средний кадр с коротким наездом.</td><td class='col-chron' data-col='9'>4.1</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S05'><td class='col-shot' data-col='1'>S05</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S05'><img class='kf-img' alt='keyframe S05' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S05'>+</button><button type='button' class='kf-btn-clear' data-shot='S05' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S05' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Казначей в придворной иерархии.</td><td class='col-chars' data-col='4'>Blin</td><td class='col-speech speech-italic' data-col='5'>VoiceOver: Блинка значей, развесил уши. Он по характеру капуша. Как денег нет, так сразу нужен, а так работаю загружен.</td><td class='col-anim' data-col='6'>Blin перебирает свитки, пересчитывает записи на пальцах, останавливается, вздыхает и снова возвращается к спискам.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>На переднем плане стол с реестрами, в среднем Blin, на заднем придворные ниши; статичный средний с акцентом на руки и документы.</td><td class='col-chron' data-col='9'>4.0</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S06'><td class='col-shot' data-col='1'>S06</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S06'><img class='kf-img' alt='keyframe S06' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S06'>+</button><button type='button' class='kf-btn-clear' data-shot='S06' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S06' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Контрастный герой вне двора.</td><td class='col-chars' data-col='4'>PM</td><td class='col-speech speech-italic' data-col='5'>VoiceOver: Но есть ещё в тортовом царстве почти без статуса и власти простой торт птичи молоко. И от дворца он далеко, а все дворцовые интриги ему так чужды. Лучше книги. Он почитает в тишине, когда с собой наедине.</td><td class='col-anim' data-col='6'>PM сидит у окна с книгой, закрывает её, поднимается и медленно проходит к краю комнаты, прислушиваясь к тишине.</td><td class='col-loc' data-col='7'>Домик у горы</td><td class='col-cam' data-col='8'>На переднем плане подоконник и книги, в среднем PM в полный рост, на заднем уютный интерьер домика; спокойный средний с мягким трекингом вправо.</td><td class='col-chron' data-col='9'>4.4</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S07'><td class='col-shot' data-col='1'>S07</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S07'><img class='kf-img' alt='keyframe S07' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S07'>+</button><button type='button' class='kf-btn-clear' data-shot='S07' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S07' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Утренний поворот сюжета: герой замечает сады.</td><td class='col-chars' data-col='4'>PM</td><td class='col-speech speech-italic' data-col='5'>VoiceOver: Ну что такое? Ранним утром, склонившись на краю горы, торт птичи молоко заметил вдали гигантские сады.</td><td class='col-anim' data-col='6'>PM выходит на край горы, задерживает шаг, щурится вдаль и вытягивает корпус вперёд, заметив сады за облаками.</td><td class='col-loc' data-col='7'>Край горы</td><td class='col-cam' data-col='8'>На переднем плане край скалы, в среднем силуэт PM, на заднем бесконечные сады и облака; общий план с медленным подъёмом камеры.</td><td class='col-chron' data-col='9'>4.6</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S08'><td class='col-shot' data-col='1'>S08</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S08'><img class='kf-img' alt='keyframe S08' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S08'>+</button><button type='button' class='kf-btn-clear' data-shot='S08' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S08' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>POV: людской сектор за облаками.</td><td class='col-chars' data-col='4'>Crowd, PM</td><td class='col-speech speech-italic' data-col='5'>PM: Что это?</td><td class='col-anim' data-col='6'>PM прячется за выступом и наблюдает, Crowd-люди внизу двигаются между столами, поднимают чашки и жестами общаются.</td><td class='col-loc' data-col='7'>Сады за облаками</td><td class='col-cam' data-col='8'>Передний план занимает силуэт PM и край укрытия, в среднем столы с людьми, на дальнем фоне сады; POV-ракурс с лёгким ручным дрожанием.</td><td class='col-chron' data-col='9'>4.8</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S09'><td class='col-shot' data-col='1'>S09</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S09'><img class='kf-img' alt='keyframe S09' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S09'>+</button><button type='button' class='kf-btn-clear' data-shot='S09' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S09' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Первый монолог Птичьего Молока.</td><td class='col-chars' data-col='4'>PM</td><td class='col-speech speech-italic' data-col='5'>PM: Чье же это царство? Кто вроде там в такой глуши? Наполеон или коварство? А может просто миражи?</td><td class='col-anim' data-col='6'>PM остаётся один, взгляд мечется между горизонтом и землёй, губы шепчут монолог, затем он резко принимает решение.</td><td class='col-loc' data-col='7'>Край скалы</td><td class='col-cam' data-col='8'>На переднем плане плечо и профиль PM, в среднем лицо в эмоции, на заднем размытый край скалы; крупный статичный с микродвижением на вдохе.</td><td class='col-chron' data-col='9'>4.2</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S10'><td class='col-shot' data-col='1'>S10</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S10'><img class='kf-img' alt='keyframe S10' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S10'>+</button><button type='button' class='kf-btn-clear' data-shot='S10' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S10' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Герой видит стол и людей с тортом.</td><td class='col-chars' data-col='4'>PM, Crowd</td><td class='col-speech speech-italic' data-col='5'>PM: Не сон для этом не приснился. Ведь говорили, с детства нам не место на столе торт там, а эти варвары как можно пьют чай с тортом неосторожно, вареньем заедают сласть, раскрыв пошире свою пасть.</td><td class='col-anim' data-col='6'>PM осторожно выглядывает из укрытия, Crowd-люди режут торт и двигаются вокруг стола, PM отшатывается от увиденного.</td><td class='col-loc' data-col='7'>Двор частного дома</td><td class='col-cam' data-col='8'>Передний план — предметы на столе и край тарелок, средний — люди в действии, задний — PM в тени; средний кадр с переводом фокуса с людей на PM.</td><td class='col-chron' data-col='9'>4.7</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S11'><td class='col-shot' data-col='1'>S11</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S11'><img class='kf-img' alt='keyframe S11' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S11'>+</button><button type='button' class='kf-btn-clear' data-shot='S11' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S11' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Монолог-решение: срочно предупредить дворец.</td><td class='col-chars' data-col='4'>PM</td><td class='col-speech speech-italic' data-col='5'>PM: Скорее надо во дворец. Предупредить о том, что видел, ведь для тортов такой конец и в страшном сне бы не предвидел.</td><td class='col-anim' data-col='6'>PM сжимает кулаки, разворачивается от обзора людей и быстрым шагом уходит по склону в сторону дворца.</td><td class='col-loc' data-col='7'>Склон горы</td><td class='col-cam' data-col='8'>На переднем плане камни тропы, в среднем PM в движении, на заднем удаляющиеся сады; средний трекинг со следованием за спиной героя.</td><td class='col-chron' data-col='9'>4.5</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S12'><td class='col-shot' data-col='1'>S12</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S12'><img class='kf-img' alt='keyframe S12' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S12'>+</button><button type='button' class='kf-btn-clear' data-shot='S12' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S12' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>У ворот дворца: требование пропуска.</td><td class='col-chars' data-col='4'>PM, Gurts</td><td class='col-speech speech-italic' data-col='5'>PM: Эй, леденец, открой ворота. К Наполеону мне охота.</td><td class='col-anim' data-col='6'>PM подбегает к воротам, стучит ладонью и подаётся вперёд корпусом; Gurts настораживается и фиксирует стойку.</td><td class='col-loc' data-col='7'>Ворота дворца</td><td class='col-cam' data-col='8'>Передний план — створки ворот и решётка, средний — PM и Gurts лицом к лицу, задний — дворцовый двор; средний фронтальный кадр.</td><td class='col-chron' data-col='9'>4.1</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S13'><td class='col-shot' data-col='1'>S13</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S13'><img class='kf-img' alt='keyframe S13' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S13'>+</button><button type='button' class='kf-btn-clear' data-shot='S13' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S13' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Страж блокирует вход.</td><td class='col-chars' data-col='4'>Gurts, PM</td><td class='col-speech speech-italic' data-col='5'>Gurts: А что за дело? Всем тортам закрыт и двери тут и там.</td><td class='col-anim' data-col='6'>Gurts выставляет руку-барьер, PM делает шаг влево в поиске прохода, но останавливается под жёстким взглядом стража.</td><td class='col-loc' data-col='7'>Ворота дворца</td><td class='col-cam' data-col='8'>На переднем плане рука/копьё Gurts, в среднем PM и страж, на заднем закрытые ворота; средний статичный с лёгким контрпланом.</td><td class='col-chron' data-col='9'>4.0</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S14'><td class='col-shot' data-col='1'>S14</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S14'><img class='kf-img' alt='keyframe S14' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S14'>+</button><button type='button' class='kf-btn-clear' data-shot='S14' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S14' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Ключевая реплика-аргумент.</td><td class='col-chars' data-col='4'>PM, Gurts</td><td class='col-speech speech-italic' data-col='5'>PM: А ты скажи ему, что я видал, как торт едет с утра.</td><td class='col-anim' data-col='6'>PM наклоняется ближе, говорит тихо и настойчиво, Gurts меняет выражение лица и колеблется перед решением.</td><td class='col-loc' data-col='7'>Ворота дворца</td><td class='col-cam' data-col='8'>Передний план — плечо PM, в среднем лица PM и Gurts, на заднем текстура ворот; крупный диалоговый кадр с минимальным паном.</td><td class='col-chron' data-col='9'>4.0</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S15'><td class='col-shot' data-col='1'>S15</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S15'><img class='kf-img' alt='keyframe S15' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S15'>+</button><button type='button' class='kf-btn-clear' data-shot='S15' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S15' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Тронный зал: Наполеон встречает героя угрозой.</td><td class='col-chars' data-col='4'>Napoleon, PM, General, Eclair</td><td class='col-speech speech-italic' data-col='5'>Napoleon: С момента царства моего тортов здесь не было давно. И если ты сюда явился, то лучше Богу помолился.</td><td class='col-anim' data-col='6'>Napoleon встаёт у трона и доминирует голосом, PM держится прямо, General и Eclair обмениваются контролирующими взглядами.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — край трона, средний — Napoleon и PM в оппозиции, задний — General и Eclair; средний двухплановый кадр с медленным наездом.</td><td class='col-chron' data-col='9'>4.6</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S16'><td class='col-shot' data-col='1'>S16</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S16'><img class='kf-img' alt='keyframe S16' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S16'>+</button><button type='button' class='kf-btn-clear' data-shot='S16' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S16' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Птичье Молоко просит выслушать.</td><td class='col-chars' data-col='4'>PM, Napoleon</td><td class='col-speech speech-italic' data-col='5'>PM: Успею я еще с мольбой. Услышь, что и лучше голос мой.</td><td class='col-anim' data-col='6'>PM делает полшага вперёд, прижимает ладонь к груди и говорит сдержанно, Napoleon отворачивает голову, показывая скепсис.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — силуэт PM, в среднем PM и Napoleon, на заднем пустой тронный объём; крупный диалоговый кадр с лёгким наклоном камеры.</td><td class='col-chron' data-col='9'>4.1</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S17'><td class='col-shot' data-col='1'>S17</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S17'><img class='kf-img' alt='keyframe S17' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S17'>+</button><button type='button' class='kf-btn-clear' data-shot='S17' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S17' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Подробное описание увиденной угрозы.</td><td class='col-chars' data-col='4'>PM, Napoleon, Crowd</td><td class='col-speech speech-italic' data-col='5'>PM: Сегодня, соответственно, из колы, увидел я, как там вдали за сводом и за небесами, за золоченными полями, где птицы роются в садах, там на обеденных столах, да вместе с чаем и вареньем, с большим, похожим наслаждением. Не знаю, что за существа, но поглотили два торта.</td><td class='col-anim' data-col='6'>PM широкими жестами описывает увиденное, Crowd при дворе шепчется, Napoleon слушает с каменным лицом.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — жесты рук PM, в среднем PM и Napoleon, задний — придворная Crowd; средний кадр с мягким круговым обходом.</td><td class='col-chron' data-col='9'>5.0</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S18'><td class='col-shot' data-col='1'>S18</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S18'><img class='kf-img' alt='keyframe S18' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S18'>+</button><button type='button' class='kf-btn-clear' data-shot='S18' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S18' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Cookie и Donut в ужасе убегают.</td><td class='col-chars' data-col='4'>Cookie, Donut</td><td class='col-speech speech-italic' data-col='5'>General: Повсюду у меня есть уши. Ты лучше царь его не слушай.</td><td class='col-anim' data-col='6'>Cookie и Donut резко отскакивают от центра, переглядываются и бегут к выходу, сбивая ритм церемонии.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — разбросанный реквизит, в среднем убегающие Cookie и Donut, на заднем шокированная Crowd; динамичный средний с рывком в пане.</td><td class='col-chron' data-col='9'>3.8</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S19'><td class='col-shot' data-col='1'>S19</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S19'><img class='kf-img' alt='keyframe S19' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S19'>+</button><button type='button' class='kf-btn-clear' data-shot='S19' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S19' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Желе обвиняет героя в заговоре.</td><td class='col-chars' data-col='4'>General, Napoleon, PM</td><td class='col-speech speech-italic' data-col='5'>General: Пробрался он сюда специально, чтобы свергнуть вас. План гениальный. Отдайте мне его скорей. Узнает сразу кто главней.</td><td class='col-anim' data-col='6'>General выходит вперёд, указывает на PM обвиняющим жестом, Napoleon слушает, PM сдерживает ответ.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — указывающая рука General, в среднем General и PM, на заднем Napoleon; крупный конфликтный кадр с контровым светом.</td><td class='col-chron' data-col='9'>4.4</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S20'><td class='col-shot' data-col='1'>S20</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S20'><img class='kf-img' alt='keyframe S20' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S20'>+</button><button type='button' class='kf-btn-clear' data-shot='S20' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S20' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Эклер поддерживает сомнение двора.</td><td class='col-chars' data-col='4'>Eclair, General</td><td class='col-speech speech-italic' data-col='5'>Eclair: Ну что за вздор, откуда здесь до тортоеды уже есть?</td><td class='col-anim' data-col='6'>Eclair подхватывает линию General, говорит в полоборота к Napoleon и поднимает брови, усиливая сомнение.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — профиль Eclair, средний — Eclair и General, задний — Napoleon на троне; средний репликовый кадр с лёгким долли-ин.</td><td class='col-chron' data-col='9'>3.9</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S21'><td class='col-shot' data-col='1'>S21</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S21'><img class='kf-img' alt='keyframe S21' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S21'>+</button><button type='button' class='kf-btn-clear' data-shot='S21' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S21' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Птичье Молоко настаивает: проверить лично.</td><td class='col-chars' data-col='4'>PM, Napoleon</td><td class='col-speech speech-italic' data-col='5'>PM: Они не здесь, под небесами, за золоченными полями, среди садов, за облаками. Сходите и проверьте сами.</td><td class='col-anim' data-col='6'>PM не отступает, выпрямляется и снова просит проверку, Napoleon остаётся холодным и не меняет позы.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — PM в полуобороте, средний — PM и Napoleon, задний — глубокий зал; средний статичный кадр с короткой сменой фокуса.</td><td class='col-chron' data-col='9'>4.2</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S22'><td class='col-shot' data-col='1'>S22</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S22'><img class='kf-img' alt='keyframe S22' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S22'>+</button><button type='button' class='kf-btn-clear' data-shot='S22' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S22' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Желе повышает давление.</td><td class='col-chars' data-col='4'>General, PM</td><td class='col-speech speech-italic' data-col='5'>General: Да ты дерзить, похоже, вздумал. Ишь, посмотри, чего думал.</td><td class='col-anim' data-col='6'>General сокращает дистанцию, нависает над PM и гасит его попытку говорить, PM сохраняет стойкость.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — силуэт General, средний — PM под давлением, задний — трон и стража; средний кадр с небольшим нижним ракурсом.</td><td class='col-chron' data-col='9'>3.8</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S23'><td class='col-shot' data-col='1'>S23</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S23'><img class='kf-img' alt='keyframe S23' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S23'>+</button><button type='button' class='kf-btn-clear' data-shot='S23' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S23' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Наполеон высмеивает и отвергает угрозу.</td><td class='col-chars' data-col='4'>Napoleon, PM</td><td class='col-speech speech-italic' data-col='5'>Napoleon: Ну ты ей Богу рассмешил. Чего ты видел, где ты был? И нам какая в том забота? Не наши, это ведь работа другие царства изучать. Своих бы слуг нам поучать.</td><td class='col-anim' data-col='6'>Napoleon усмехается, делает dismiss-жест рукой и отворачивается от PM, завершая спор приказным тоном.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>На переднем плане жест Napoleon, в среднем Napoleon и PM, на заднем Eclair и General; крупный/средний переход с акцентом на реакцию PM.</td><td class='col-chron' data-col='9'>4.7</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S24'><td class='col-shot' data-col='1'>S24</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S24'><img class='kf-img' alt='keyframe S24' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S24'>+</button><button type='button' class='kf-btn-clear' data-shot='S24' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S24' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Птичье Молоко предупреждает о последствиях.</td><td class='col-chars' data-col='4'>PM, Napoleon</td><td class='col-speech speech-italic' data-col='5'>PM: Ну как хотите, только если вас так сожрут, сожрут всех вместе, то вспомните мои слова, на то и есть ведь голова.</td><td class='col-anim' data-col='6'>PM делает последний шаг к центру, предупреждает о риске и фиксирует взгляд на Napoleon, не моргая.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — лицо PM, средний — дистанция PM и Napoleon, задний — пустой тронный проход; крупный драматический кадр.</td><td class='col-chron' data-col='9'>4.1</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S25'><td class='col-shot' data-col='1'>S25</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S25'><img class='kf-img' alt='keyframe S25' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S25'>+</button><button type='button' class='kf-btn-clear' data-shot='S25' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S25' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Желе срывается: «надоел».</td><td class='col-chars' data-col='4'>General, PM</td><td class='col-speech speech-italic' data-col='5'>General: Всё, надоел ты мне однако, да ты еще из-за бияка?</td><td class='col-anim' data-col='6'>General срывается, резко выбрасывает руку вперёд и перекрывает PM путь, PM инстинктивно отступает на полшага.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — резкий жест General, средний — General и PM в столкновении, задний — охрана; крупный кадр с жёсткой остановкой камеры.</td><td class='col-chron' data-col='9'>3.7</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S26'><td class='col-shot' data-col='1'>S26</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S26'><img class='kf-img' alt='keyframe S26' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S26'>+</button><button type='button' class='kf-btn-clear' data-shot='S26' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S26' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Свисток и выход охраны.</td><td class='col-chars' data-col='4'>General, Gurts</td><td class='col-speech speech-italic' data-col='5'>General: Всё, довольно.</td><td class='col-anim' data-col='6'>General свистит, Gurts быстро входят в кадр с двух сторон и смыкают коридор вокруг PM.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — движение Gurts в расфокусе, средний — General в центре, задний — PM в кольце; средний динамичный кадр с панорамой слева направо.</td><td class='col-chron' data-col='9'>3.8</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S27'><td class='col-shot' data-col='1'>S27</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S27'><img class='kf-img' alt='keyframe S27' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S27'>+</button><button type='button' class='kf-btn-clear' data-shot='S27' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S27' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Наполеон выдворяет героя к горам.</td><td class='col-chars' data-col='4'>Napoleon, PM, Gurts</td><td class='col-speech speech-italic' data-col='5'>Napoleon: Хватит нам. Езжай обратно ты к горам. За твое смелость отпускаю, но если я опять узнаю, что ты про это говоришь, тогда держись наш торт, малыш.</td><td class='col-anim' data-col='6'>Napoleon приказывает вывести PM, Gurts берут его в сопровождение, PM уходит, оглядываясь на трон.</td><td class='col-loc' data-col='7'>Тронный зал / выход</td><td class='col-cam' data-col='8'>Передний план — плечи Gurts, средний — PM между ними, задний — Napoleon у трона; средний проводочный кадр к выходу.</td><td class='col-chron' data-col='9'>4.6</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S28'><td class='col-shot' data-col='1'>S28</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S28'><img class='kf-img' alt='keyframe S28' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S28'>+</button><button type='button' class='kf-btn-clear' data-shot='S28' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S28' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Тайный приказ о слежке.</td><td class='col-chars' data-col='4'>Napoleon, General</td><td class='col-speech speech-italic' data-col='5'>Napoleon: И всё же вы за ним следите. И мне тихонько говорите. Вдруг что и где произойдет? А если этот торт не врет?</td><td class='col-anim' data-col='6'>После ухода PM Napoleon понижает голос и даёт General скрытый приказ о наблюдении.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — край трона и тень, средний — Napoleon и General близко друг к другу, задний — пустеющий зал; крупный тайный кадр.</td><td class='col-chron' data-col='9'>4.3</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S29'><td class='col-shot' data-col='1'>S29</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S29'><img class='kf-img' alt='keyframe S29' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S29'>+</button><button type='button' class='kf-btn-clear' data-shot='S29' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S29' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Появление Казначея с проверкой инвентаря.</td><td class='col-chars' data-col='4'>Blin, Napoleon</td><td class='col-speech speech-italic' data-col='5'>Blin: Простите, а у нас проверка. Читаем царский инвентарь. Утрона номерная бирка. Да и записать мне ее, царь.</td><td class='col-anim' data-col='6'>Blin осторожно входит со свитком, показывает инвентарь и мнётся, Napoleon нетерпеливо ждёт цифры.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — свиток/печать в руках Blin, средний — Blin и Napoleon, задний — стража у колонн; средний деловой кадр.</td><td class='col-chron' data-col='9'>4.0</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S30'><td class='col-shot' data-col='1'>S30</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S30'><img class='kf-img' alt='keyframe S30' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S30'>+</button><button type='button' class='kf-btn-clear' data-shot='S30' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S30' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Наполеон переводит разговор к бюджету армии.</td><td class='col-chars' data-col='4'>Napoleon, Blin, General</td><td class='col-speech speech-italic' data-col='5'>Napoleon: Какая нынче обстановка? И ты давай тут не юлей. Для армии нужна обновка. Мы сколько денег сберегли?</td><td class='col-anim' data-col='6'>Napoleon разворачивается к Blin и General, жёстко формулирует запрос по бюджету и военным расходам.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — Napoleon в полуфигуре, средний — Blin и General как адресаты, задний — трон; средний трёхфигурный кадр с лёгким зумом.</td><td class='col-chron' data-col='9'>4.2</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S31'><td class='col-shot' data-col='1'>S31</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S31'><img class='kf-img' alt='keyframe S31' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S31'>+</button><button type='button' class='kf-btn-clear' data-shot='S31' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S31' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Казначей предлагает закрыть балы ради финансов.</td><td class='col-chars' data-col='4'>Blin, Napoleon</td><td class='col-speech speech-italic' data-col='5'>Blin: Бой, государь, ну что вы правы? Казна пуста. Ну если надо, мы можем прекратить баллы. Финансы вырастут твой.</td><td class='col-anim' data-col='6'>Blin считает на пальцах, предлагает урезать балы и показывает расчёт на листе Napoleon.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — лист с цифрами, средний — Blin и Napoleon, задний — зал в полутьме; крупно-средний кадр с акцентом на документ.</td><td class='col-chron' data-col='9'>4.0</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S32'><td class='col-shot' data-col='1'>S32</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S32'><img class='kf-img' alt='keyframe S32' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S32'>+</button><button type='button' class='kf-btn-clear' data-shot='S32' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S32' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Эклер протестует против отмены балов.</td><td class='col-chars' data-col='4'>Eclair</td><td class='col-speech speech-italic' data-col='5'>Eclair: Жизнь без баллов. Как это грустно. Блин. Слушай, это ведь искусство.</td><td class='col-anim' data-col='6'>Eclair эмоционально возражает, разводит руки и делает шаг к центру, защищая придворные традиции.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — лицо Eclair, средний — его жесты, задний — размытый трон и стража; средний портретный кадр.</td><td class='col-chron' data-col='9'>3.9</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S33'><td class='col-shot' data-col='1'>S33</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S33'><img class='kf-img' alt='keyframe S33' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S33'>+</button><button type='button' class='kf-btn-clear' data-shot='S33' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S33' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Танец прерывается силовой репликой Желе.</td><td class='col-chars' data-col='4'>Eclair, General, Cookie, Donut</td><td class='col-speech speech-italic' data-col='5'>General: Искусство в поле. И в бою. Балы я лично не люблю.</td><td class='col-anim' data-col='6'>General жёстко прерывает танец, Cookie и Donut останавливаются на полушаге, Eclair замолкает.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — застывшие ноги танцующих, средний — General и Eclair, задний — Crowd в стоп-реакции; средний кадр с резким стоп-паном.</td><td class='col-chron' data-col='9'>4.7</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S34'><td class='col-shot' data-col='1'>S34</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S34'><img class='kf-img' alt='keyframe S34' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S34'>+</button><button type='button' class='kf-btn-clear' data-shot='S34' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S34' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Наполеон официально закрывает балы.</td><td class='col-chars' data-col='4'>Napoleon, Crowd</td><td class='col-speech speech-italic' data-col='5'>Napoleon: Ввиду особые обстановки. И для сохранности моей. Так же армии обновки. Балы закрыть все. Поскорей.</td><td class='col-anim' data-col='6'>Napoleon официально объявляет закрытие балов, Crowd замирает и переглядывается.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — Napoleon в доминирующем ракурсе, средний — придворная Crowd, задний — тронная ось; крупный приказной кадр.</td><td class='col-chron' data-col='9'>4.2</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S35'><td class='col-shot' data-col='1'>S35</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S35'><img class='kf-img' alt='keyframe S35' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S35'>+</button><button type='button' class='kf-btn-clear' data-shot='S35' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S35' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Crowd в шоке от решения.</td><td class='col-chars' data-col='4'>Donut, Cookie, Vatrushki</td><td class='col-speech speech-italic' data-col='5'>Eclair: А знаешь, царь.</td><td class='col-anim' data-col='6'>Donut, Cookie и Vatrushki обмениваются тревожными взглядами, шепчутся и отходят в сторону.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — лица Donut и Cookie, средний — Vatrushki, задний — глубина зала и трон; средний реакционный кадр.</td><td class='col-chron' data-col='9'>3.6</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S36'><td class='col-shot' data-col='1'>S36</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S36'><img class='kf-img' alt='keyframe S36' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S36'>+</button><button type='button' class='kf-btn-clear' data-shot='S36' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S36' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Эклер сообщает о пещерном лазе.</td><td class='col-chars' data-col='4'>Eclair, Napoleon</td><td class='col-speech speech-italic' data-col='5'>Eclair: Намед не слышал, что есть в горе пещерный лаз.</td><td class='col-anim' data-col='6'>Eclair наклоняется к Napoleon и сообщает о лазе, Napoleon быстро переводит внимание на него.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — профиль Eclair, средний — Eclair и Napoleon, задний — колонны тронного зала; средний заговорщический кадр.</td><td class='col-chron' data-col='9'>4.0</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S37'><td class='col-shot' data-col='1'>S37</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S37'><img class='kf-img' alt='keyframe S37' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S37'>+</button><button type='button' class='kf-btn-clear' data-shot='S37' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S37' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Наполеон требует детали шёпотом.</td><td class='col-chars' data-col='4'>Napoleon, Eclair</td><td class='col-speech speech-italic' data-col='5'>Napoleon: А ну-ка подойди поближе. Поведай мне о том сейчас.</td><td class='col-anim' data-col='6'>Napoleon жестом подзывает Eclair ближе, оба переходят на полушёпот и закрывают позу от остальных.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — рука Napoleon в приглашающем жесте, средний — пара Napoleon/Eclair, задний — размытая охрана; крупный приватный кадр.</td><td class='col-chron' data-col='9'>3.9</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S38'><td class='col-shot' data-col='1'>S38</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S38'><img class='kf-img' alt='keyframe S38' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S38'>+</button><button type='button' class='kf-btn-clear' data-shot='S38' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S38' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Эклер объясняет проход в другой мир.</td><td class='col-chars' data-col='4'>Eclair, Napoleon, General</td><td class='col-speech speech-italic' data-col='5'>Eclair: Так через этот лаз возможно попасть в тот мир. Неосторожно. Ну в тот, про что он говорил.</td><td class='col-anim' data-col='6'>Eclair подробно объясняет маршрут, General вслушивается и кивает, Napoleon обдумывает план.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — карта/жест Eclair, средний — Eclair, Napoleon и General, задний — тёмный проход зала; средний информационный кадр.</td><td class='col-chron' data-col='9'>4.1</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S39'><td class='col-shot' data-col='1'>S39</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S39'><img class='kf-img' alt='keyframe S39' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S39'>+</button><button type='button' class='kf-btn-clear' data-shot='S39' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S39' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Наполеон утверждает план контроля и наблюдения.</td><td class='col-chars' data-col='4'>Napoleon, General, Eclair</td><td class='col-speech speech-italic' data-col='5'>Napoleon: Все, понял. Ты нас убедил. Поставим мы туда охрану. И держимся такого плана. Заптичим молоком следить, но только торту не вредить.</td><td class='col-anim' data-col='6'>Napoleon окончательно утверждает план, General принимает приказ стойкой «к исполнению», Eclair подтверждает.</td><td class='col-loc' data-col='7'>Тронный зал</td><td class='col-cam' data-col='8'>Передний план — Napoleon в резком свете, средний — General и Eclair, задний — трон и баннеры; крупный финализирующий кадр.</td><td class='col-chron' data-col='9'>4.8</td><td class='col-ready' data-col='10'>☐</td></tr><tr data-shot='S40'><td class='col-shot' data-col='1'>S40</td><td class='col-keyframe keyframe-cell' data-col='2'><div class='kf-wrap' data-shot='S40'><img class='kf-img' alt='keyframe S40' style='display:none'/><div class='kf-empty'>нет</div><div class='kf-actions no-print'><button type='button' class='kf-btn-upload' data-shot='S40'>+</button><button type='button' class='kf-btn-clear' data-shot='S40' title='Очистить'>×</button><input type='file' accept='image/*' class='kf-input' data-shot='S40' style='display:none'/></div></div></td><td class='col-desc' data-col='3'>Финальный аккорд пилота.</td><td class='col-chars' data-col='4'>Crowd</td><td class='col-speech speech-italic' data-col='5'>Napoleon: А если что-нибудь случится, то генерал там отличится.</td><td class='col-anim' data-col='6'>Crowd остаётся в напряжённой тишине; в зале чувствуется подготовка к скрытым действиям после приказа.</td><td class='col-loc' data-col='7'>Тронный зал → титры</td><td class='col-cam' data-col='8'>Передний план — силуэты Crowd, средний — пустеющий центр зала, задний — трон в полумраке; общий план с мягким затемнением.</td><td class='col-chron' data-col='9'>4.5</td><td class='col-ready' data-col='10'>☐</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const table = document.getElementById('scenarioTable');
+      const colPanel = document.getElementById('colPanel');
+      const toggleColsBtn = document.getElementById('toggleCols');
+      const controls = document.getElementById('colControls');
+      const checks = Array.from(controls.querySelectorAll('input[type="checkbox"][data-col]'));
+
+      const keyStoreKey = 'torts_keyframe_inline_v1';
+      const readyStoreKey = 'torts_ready_state_v1';
+      const widthStoreKey = 'torts_col_widths_v1';
+
+      const widthCol = document.getElementById('widthCol');
+      const widthPx = document.getElementById('widthPx');
+      const applyWidthBtn = document.getElementById('applyWidth');
+      const resetWidthsBtn = document.getElementById('resetWidths');
+
+      function loadJson(key) {
+        try { return JSON.parse(localStorage.getItem(key) || '{}'); }
+        catch { return {}; }
+      }
+      function saveJson(key, obj) {
+        localStorage.setItem(key, JSON.stringify(obj));
+      }
+
+      const keyframeStore = loadJson(keyStoreKey);
+      const readyStore = loadJson(readyStoreKey);
+      const widthStore = loadJson(widthStoreKey);
+
+      function applyVisibility() {
+        const rows = table.querySelectorAll('tr');
+        rows.forEach((row) => {
+          const cells = row.children;
+          checks.forEach((ch) => {
+            const idx = Number(ch.dataset.col) - 1;
+            if (!cells[idx]) return;
+            cells[idx].classList.toggle('hidden-col', !ch.checked);
+          });
+        });
+      }
+
+      checks.forEach((ch) => ch.addEventListener('change', applyVisibility));
+
+      toggleColsBtn.addEventListener('click', () => {
+        colPanel.classList.toggle('open');
+      });
+      document.addEventListener('click', (e) => {
+        if (!colPanel.classList.contains('open')) return;
+        if (e.target === toggleColsBtn || colPanel.contains(e.target)) return;
+        colPanel.classList.remove('open');
+      });
+
+      document.getElementById('showAll').addEventListener('click', () => {
+        checks.forEach((c) => c.checked = true);
+        applyVisibility();
+      });
+
+      document.getElementById('hideTextCols').addEventListener('click', () => {
+        checks.forEach((c) => {
+          const col = Number(c.dataset.col);
+          c.checked = ![5,6,8].includes(col);
+        });
+        applyVisibility();
+      });
+
+      document.getElementById('exportPdf').addEventListener('click', () => window.print());
+
+      function applyColumnWidth(col, width, persist = true) {
+        const parsed = Number(width);
+        if (!Number.isFinite(parsed)) return;
+        const w = Math.max(70, Math.min(1200, Math.round(parsed)));
+        const cells = table.querySelectorAll('[data-col="' + col + '"]');
+        cells.forEach((cell) => {
+          cell.style.width = w + 'px';
+          cell.style.minWidth = w + 'px';
+        });
+        if (persist) {
+          widthStore[col] = w;
+          saveJson(widthStoreKey, widthStore);
+        }
+      }
+
+      function getColumnWidth(col) {
+        const th = table.querySelector('thead th[data-col="' + col + '"]');
+        return th ? Math.round(th.getBoundingClientRect().width) : 180;
+      }
+
+      function syncWidthInputs(col) {
+        if (!widthCol || !widthPx) return;
+        widthCol.value = String(col);
+        widthPx.value = String(getColumnWidth(col));
+      }
+
+      Object.keys(widthStore).forEach((col) => {
+        applyColumnWidth(Number(col), Number(widthStore[col]), false);
+      });
+
+      const headers = Array.from(table.querySelectorAll('thead th[data-col]'));
+      headers.forEach((th) => {
+        const grip = document.createElement('span');
+        grip.className = 'col-resizer no-print';
+        grip.title = 'Потяните для изменения ширины';
+        th.appendChild(grip);
+
+        grip.addEventListener('mousedown', (downEvent) => {
+          downEvent.preventDefault();
+          const col = Number(th.dataset.col);
+          const startX = downEvent.clientX;
+          const startW = getColumnWidth(col);
+          document.body.classList.add('is-resizing');
+
+          function onMove(moveEvent) {
+            applyColumnWidth(col, startW + (moveEvent.clientX - startX), false);
+            if (widthCol && Number(widthCol.value) === col) {
+              widthPx.value = String(getColumnWidth(col));
+            }
+          }
+
+          function onUp(upEvent) {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            document.body.classList.remove('is-resizing');
+            applyColumnWidth(col, startW + (upEvent.clientX - startX), true);
+            syncWidthInputs(col);
+          }
+
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+        });
+      });
+
+      if (widthCol && widthPx && applyWidthBtn && resetWidthsBtn) {
+        syncWidthInputs(Number(widthCol.value || 1));
+
+        widthCol.addEventListener('change', () => {
+          syncWidthInputs(Number(widthCol.value || 1));
+        });
+
+        applyWidthBtn.addEventListener('click', () => {
+          applyColumnWidth(Number(widthCol.value || 1), Number(widthPx.value || 180), true);
+          syncWidthInputs(Number(widthCol.value || 1));
+        });
+
+        resetWidthsBtn.addEventListener('click', () => {
+          Object.keys(widthStore).forEach((k) => delete widthStore[k]);
+          saveJson(widthStoreKey, widthStore);
+          table.querySelectorAll('[data-col]').forEach((cell) => {
+            cell.style.width = '';
+            cell.style.minWidth = '';
+          });
+          syncWidthInputs(Number(widthCol.value || 1));
+        });
+      }
+
+      const wraps = Array.from(document.querySelectorAll('.kf-wrap[data-shot]'));
+      wraps.forEach((wrap) => {
+        const shot = wrap.dataset.shot;
+        const img = wrap.querySelector('.kf-img');
+        const empty = wrap.querySelector('.kf-empty');
+        const input = wrap.querySelector('.kf-input');
+        const up = wrap.querySelector('.kf-btn-upload');
+        const clr = wrap.querySelector('.kf-btn-clear');
+
+        function render() {
+          const data = keyframeStore[shot];
+          if (data) {
+            img.src = data;
+            img.style.display = 'block';
+            empty.style.display = 'none';
+          } else {
+            img.removeAttribute('src');
+            img.style.display = 'none';
+            empty.style.display = 'grid';
+          }
+        }
+
+        up.addEventListener('click', () => input.click());
+        clr.addEventListener('click', () => {
+          delete keyframeStore[shot];
+          saveJson(keyStoreKey, keyframeStore);
+          render();
+        });
+
+        input.addEventListener('change', () => {
+          const f = input.files && input.files[0];
+          if (!f) return;
+          const rd = new FileReader();
+          rd.onload = () => {
+            keyframeStore[shot] = String(rd.result || '');
+            saveJson(keyStoreKey, keyframeStore);
+            render();
+          };
+          rd.readAsDataURL(f);
+          input.value = '';
+        });
+
+        render();
+      });
+
+      const rows = Array.from(table.querySelectorAll('tbody tr[data-shot]'));
+      rows.forEach((row) => {
+        const shot = row.dataset.shot;
+        const cell = row.querySelector('td.col-ready[data-col="10"]');
+        if (!cell) return;
+
+        cell.classList.add('ready-cell');
+        cell.innerHTML = "<label class='ready-wrap no-print'><input type='checkbox' class='ready-check' data-shot='" + shot + "'><span>готов</span></label><span class='ready-print'></span>";
+
+        const check = cell.querySelector('.ready-check');
+        const printMark = cell.querySelector('.ready-print');
+
+        function paint(isReady) {
+          row.classList.toggle('shot-ready', isReady);
+          if (printMark) printMark.textContent = isReady ? '✓' : '';
+        }
+
+        check.checked = !!readyStore[shot];
+        paint(check.checked);
+
+        check.addEventListener('change', () => {
+          if (check.checked) readyStore[shot] = 1;
+          else delete readyStore[shot];
+          saveJson(readyStoreKey, readyStore);
+          paint(check.checked);
+        });
+      });
+
+      applyVisibility();
+    })();
+  </script>
+</body>
+</html>
