@@ -126,7 +126,7 @@
     <div class='top no-print'>
       <div>
         <h1>Сценарий · Таблица шотов</h1>
-        <div class='meta'>40 шотов · 7 колонок</div>
+        <div class='meta'>40 шотов · 7 колонок · общая длительность: <span id='totalDurationLabel'>—</span></div>
       </div>
       <div class='actions'>
         <div class='colmenu'>
@@ -624,6 +624,22 @@
 
       sharedShotAudio.addEventListener('ended', stopShotAudioUi);
       sharedShotAudio.addEventListener('pause', stopShotAudioUi);
+      function formatDuration(totalSec) {
+        const seconds = Math.max(0, Number(totalSec || 0));
+        const rounded = Math.round(seconds);
+        const mm = Math.floor(rounded / 60);
+        const ss = rounded % 60;
+        return mm + ':' + String(ss).padStart(2, '0');
+      }
+
+      const totalAudioSeconds = Object.values(audioSegments).reduce((sum, seg) => {
+        return sum + Number(seg.actualSec || 0);
+      }, 0);
+      const totalDurationLabel = document.getElementById('totalDurationLabel');
+      if (totalDurationLabel) {
+        totalDurationLabel.textContent = formatDuration(totalAudioSeconds) + ' (аудио)';
+        totalDurationLabel.title = totalAudioSeconds.toFixed(1).replace('.', ',') + ' сек';
+      }
 
       function applyVisibility() {
         const rows = table.querySelectorAll('tr');
@@ -953,4 +969,5 @@
   </script>
 </body>
 </html>
+
 
