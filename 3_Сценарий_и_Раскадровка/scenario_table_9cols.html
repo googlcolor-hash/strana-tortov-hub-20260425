@@ -126,7 +126,7 @@
     <div class='top no-print'>
       <div>
         <h1>Сценарий · Таблица шотов</h1>
-        <div class='meta'>40 шотов · 7 колонок · общая длительность: <span id='totalDurationLabel'>—</span></div>
+        <div class='meta'><span id='shotCountLabel'>40</span> шотов · 7 колонок · общая длительность: <span id='totalDurationLabel'>—</span></div>
       </div>
       <div class='actions'>
         <div class='colmenu'>
@@ -613,8 +613,11 @@
 };
       const sharedShotAudio = new Audio();
       let activeAudioBtn = null;
+      let playbackStopAt = null;
+      const expandedAudioSegments = {};
 
       function stopShotAudioUi() {
+        playbackStopAt = null;
         if (activeAudioBtn) {
           activeAudioBtn.classList.remove('playing');
           activeAudioBtn.textContent = activeAudioBtn.dataset.label || '▶ Аудио';
@@ -624,6 +627,146 @@
 
       sharedShotAudio.addEventListener('ended', stopShotAudioUi);
       sharedShotAudio.addEventListener('pause', stopShotAudioUi);
+      sharedShotAudio.addEventListener('timeupdate', () => {
+        if (playbackStopAt == null) return;
+        if (sharedShotAudio.currentTime >= playbackStopAt - 0.03) {
+          sharedShotAudio.pause();
+        }
+      });
+
+      function ensureAudioMetadata(audio) {
+        if (audio.readyState >= 1) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          const onOk = () => {
+            audio.removeEventListener('loadedmetadata', onOk);
+            audio.removeEventListener('error', onErr);
+            resolve();
+          };
+          const onErr = () => {
+            audio.removeEventListener('loadedmetadata', onOk);
+            audio.removeEventListener('error', onErr);
+            reject(new Error('Audio metadata load failed'));
+          };
+          audio.addEventListener('loadedmetadata', onOk);
+          audio.addEventListener('error', onErr);
+        });
+      }
+
+      function getSplitPartsCount(seconds) {
+        const sec = Number(seconds || 0);
+        if (sec > 12) return 3;
+        if (sec > 5) return 2;
+        return 1;
+      }
+
+      function splitSpeechText(text, parts) {
+        const src = String(text || '').trim();
+        if (!src || parts <= 1) return [src];
+
+        const sentences = src.split(/(?<=[.!?…])\s+/).filter(Boolean);
+        if (sentences.length >= parts) {
+          const groups = Array.from({ length: parts }, () => []);
+          sentences.forEach((s, idx) => {
+            const bucket = Math.min(parts - 1, Math.floor((idx * parts) / sentences.length));
+            groups[bucket].push(s);
+          });
+          return groups.map((g) => g.join(' ').trim() || src);
+        }
+
+        const words = src.split(/\s+/).filter(Boolean);
+        const chunk = Math.ceil(words.length / parts);
+        return Array.from({ length: parts }, (_, i) => {
+          return words.slice(i * chunk, (i + 1) * chunk).join(' ').trim() || src;
+        });
+      }
+
+      function updateShotIdentifiers(row, shotCode) {
+        row.dataset.shot = shotCode;
+        row.querySelectorAll('[data-shot]').forEach((el) => {
+          el.dataset.shot = shotCode;
+        });
+        const codeEl = row.querySelector('.shot-code');
+        if (codeEl) codeEl.textContent = shotCode;
+      }
+
+      function splitLongShotsInTable() {
+        const body = table.querySelector('tbody');
+        const baseRows = Array.from(body.querySelectorAll('tr[data-shot]'));
+
+        baseRows.forEach((row) => {
+          const baseShot = row.dataset.shot;
+          const baseSegment = audioSegments[baseShot];
+          if (!baseSegment) return;
+
+          const totalSec = Number(baseSegment.actualSec || 0);
+          const parts = getSplitPartsCount(totalSec);
+          const speechCell = row.querySelector("td.col-speech[data-col='4']");
+          const speechBase = speechCell ? speechCell.textContent : '';
+          const speechParts = splitSpeechText(speechBase, parts);
+
+          const durations = [];
+          let consumed = 0;
+          for (let i = 0; i < parts; i++) {
+            let partDur = Number((totalSec / parts).toFixed(3));
+            if (i === parts - 1) {
+              partDur = Number((totalSec - consumed).toFixed(3));
+            }
+            consumed += partDur;
+            durations.push(partDur);
+          }
+
+          const generatedRows = [];
+          let offset = 0;
+          for (let i = 0; i < parts; i++) {
+            const suffix = String.fromCharCode(65 + i);
+            const splitShot = parts === 1 ? baseShot : baseShot + suffix;
+            const partStart = Number(offset.toFixed(3));
+            const partDur = durations[i];
+            const partEnd = Number((partStart + partDur).toFixed(3));
+            offset = partEnd;
+
+            expandedAudioSegments[splitShot] = {
+              file: baseSegment.file,
+              actualSec: partDur,
+              baseShot: baseShot,
+              partIndex: i + 1,
+              partTotal: parts,
+              clipStartSec: partStart,
+              clipEndSec: partEnd
+            };
+
+            const rowForPart = i === 0 ? row : row.cloneNode(true);
+            updateShotIdentifiers(rowForPart, splitShot);
+
+            const speechPartCell = rowForPart.querySelector("td.col-speech[data-col='4']");
+            if (speechPartCell && speechParts[i]) {
+              speechPartCell.textContent = speechParts[i];
+            }
+
+            const miseEl = rowForPart.querySelector('td.col-scene .mise-text');
+            if (miseEl && parts > 1) {
+              const cleaned = miseEl.textContent.replace(/\s*\(часть\s+\d+\/\d+\)\s*$/i, '').trim();
+              miseEl.textContent = (cleaned ? cleaned + ' ' : '') + '(часть ' + (i + 1) + '/' + parts + ')';
+            }
+
+            generatedRows.push(rowForPart);
+          }
+
+          if (generatedRows.length > 1) {
+            for (let i = 1; i < generatedRows.length; i++) {
+              generatedRows[i - 1].insertAdjacentElement('afterend', generatedRows[i]);
+            }
+          }
+        });
+
+        const shotCountLabel = document.getElementById('shotCountLabel');
+        if (shotCountLabel) {
+          shotCountLabel.textContent = String(Object.keys(expandedAudioSegments).length);
+        }
+      }
+
+      splitLongShotsInTable();
+
       function formatDuration(totalSec) {
         const seconds = Math.max(0, Number(totalSec || 0));
         const rounded = Math.round(seconds);
@@ -816,7 +959,7 @@
         const shot = row.dataset.shot;
         const shotCell = row.querySelector("td.col-shot[data-col='1']");
         const durationEl = shotCell ? shotCell.querySelector('.shot-duration') : null;
-        const segment = audioSegments[shot];
+        const segment = expandedAudioSegments[shot];
 
         if (segment && durationEl) {
           const val = Number(segment.actualSec || 0);
@@ -847,12 +990,15 @@
                 activeAudioBtn.textContent = activeAudioBtn.dataset.label || '▶ Аудио';
               }
 
-              const src = segment.file + '?v=20260425a';
+              const src = segment.file + '?v=20260425b';
               if (!sharedShotAudio.src || !sharedShotAudio.src.includes(segment.file)) {
                 sharedShotAudio.src = src;
-              } else {
-                sharedShotAudio.currentTime = 0;
               }
+              await ensureAudioMetadata(sharedShotAudio);
+              const clipStart = Number(segment.clipStartSec || 0);
+              const clipEnd = Number(segment.clipEndSec || segment.actualSec || 0);
+              sharedShotAudio.currentTime = Math.max(0, clipStart);
+              playbackStopAt = clipEnd;
 
               btn.classList.add('playing');
               btn.textContent = '⏸ ' + shot;
