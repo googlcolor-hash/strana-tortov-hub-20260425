@@ -36,12 +36,6 @@
     .speech-italic { font-style:italic; }
     .shot-code { font-weight:700; }
     .shot-duration { font-size:11px; color:var(--muted); margin-top:2px; }
-    .shot-audio { margin-top:6px; }
-    .shot-audio-btn {
-      width:100%; padding:4px 6px; border-radius:6px; font-size:11px;
-      border:1px solid var(--line); background:#283349; color:var(--text);
-    }
-    .shot-audio-btn.playing { border-color:#79d992; color:#d8ffe8; background:#1f3b2d; }
         td.col-scene .char-name { display:block; font-size:14px; font-weight:700; }
     td.col-scene .loc-name { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-top:4px; }
     td.col-scene .mise-text { display:block; font-size:12px; font-weight:500; margin-top:6px; color:var(--text); }
@@ -569,61 +563,6 @@
       const keyframeStore = loadJson(keyStoreKey);
       const readyStore = loadJson(readyStoreKey);
       const widthStore = loadJson(widthStoreKey);
-      const audioSegments = {
-  'S01': { file: 'audio_shots/S01.mp3', actualSec: 7.8, fromSec: 0, toSec: 7.8 },
-  'S02': { file: 'audio_shots/S02.mp3', actualSec: 7.9, fromSec: 7.8, toSec: 15.7 },
-  'S03': { file: 'audio_shots/S03.mp3', actualSec: 8.7, fromSec: 15.7, toSec: 24.4 },
-  'S04': { file: 'audio_shots/S04.mp3', actualSec: 7.2, fromSec: 24.4, toSec: 31.6 },
-  'S05': { file: 'audio_shots/S05.mp3', actualSec: 8.4, fromSec: 31.6, toSec: 40 },
-  'S06': { file: 'audio_shots/S06.mp3', actualSec: 15.8, fromSec: 40, toSec: 55.8 },
-  'S07': { file: 'audio_shots/S07.mp3', actualSec: 8, fromSec: 56, toSec: 64 },
-  'S08': { file: 'audio_shots/S08.mp3', actualSec: 1, fromSec: 64, toSec: 65 },
-  'S09': { file: 'audio_shots/S09.mp3', actualSec: 8, fromSec: 65, toSec: 73 },
-  'S10': { file: 'audio_shots/S10.mp3', actualSec: 12.6, fromSec: 73, toSec: 85.6 },
-  'S11': { file: 'audio_shots/S11.mp3', actualSec: 7.2, fromSec: 86, toSec: 93.2 },
-  'S12': { file: 'audio_shots/S12.mp3', actualSec: 2.9, fromSec: 93.2, toSec: 96.1 },
-  'S13': { file: 'audio_shots/S13.mp3', actualSec: 3.1, fromSec: 96.1, toSec: 99.2 },
-  'S14': { file: 'audio_shots/S14.mp3', actualSec: 4.8, fromSec: 99.2, toSec: 104 },
-  'S15': { file: 'audio_shots/S15.mp3', actualSec: 7.5, fromSec: 104, toSec: 111.5 },
-  'S16': { file: 'audio_shots/S16.mp3', actualSec: 3.1, fromSec: 111.5, toSec: 114.6 },
-  'S17': { file: 'audio_shots/S17.mp3', actualSec: 17.1, fromSec: 114.6, toSec: 131.7 },
-  'S18': { file: 'audio_shots/S18.mp3', actualSec: 4.3, fromSec: 131.7, toSec: 136 },
-  'S19': { file: 'audio_shots/S19.mp3', actualSec: 8.7, fromSec: 136, toSec: 144.7 },
-  'S20': { file: 'audio_shots/S20.mp3', actualSec: 4, fromSec: 144.7, toSec: 148.7 },
-  'S21': { file: 'audio_shots/S21.mp3', actualSec: 5.8, fromSec: 148.7, toSec: 154.5 },
-  'S22': { file: 'audio_shots/S22.mp3', actualSec: 3.7, fromSec: 154.5, toSec: 158.2 },
-  'S23': { file: 'audio_shots/S23.mp3', actualSec: 10.4, fromSec: 158.2, toSec: 168.6 },
-  'S24': { file: 'audio_shots/S24.mp3', actualSec: 6.9, fromSec: 168.6, toSec: 175.5 },
-  'S25': { file: 'audio_shots/S25.mp3', actualSec: 3.4, fromSec: 175.5, toSec: 178.9 },
-  'S26': { file: 'audio_shots/S26.mp3', actualSec: 1.4, fromSec: 178.9, toSec: 180.3 },
-  'S27': { file: 'audio_shots/S27.mp3', actualSec: 11.2, fromSec: 180.3, toSec: 191.5 },
-  'S28': { file: 'audio_shots/S28.mp3', actualSec: 7.2, fromSec: 191.5, toSec: 198.7 },
-  'S29': { file: 'audio_shots/S29.mp3', actualSec: 8.5, fromSec: 198.9, toSec: 207.4 },
-  'S30': { file: 'audio_shots/S30.mp3', actualSec: 7.3, fromSec: 207.4, toSec: 214.7 },
-  'S31': { file: 'audio_shots/S31.mp3', actualSec: 9.2, fromSec: 214.7, toSec: 223.9 },
-  'S32': { file: 'audio_shots/S32.mp3', actualSec: 6.8, fromSec: 223.9, toSec: 230.7 },
-  'S33': { file: 'audio_shots/S33.mp3', actualSec: 5.1, fromSec: 231.7, toSec: 236.8 },
-  'S34': { file: 'audio_shots/S34.mp3', actualSec: 8.9, fromSec: 236.8, toSec: 245.7 },
-  'S35': { file: 'audio_shots/S35.mp3', actualSec: 1.2, fromSec: 246.2, toSec: 247.4 },
-  'S36': { file: 'audio_shots/S36.mp3', actualSec: 3.2, fromSec: 247.4, toSec: 250.6 },
-  'S37': { file: 'audio_shots/S37.mp3', actualSec: 2.9, fromSec: 250.6, toSec: 253.5 },
-  'S38': { file: 'audio_shots/S38.mp3', actualSec: 5.9, fromSec: 253.5, toSec: 259.4 },
-  'S39': { file: 'audio_shots/S39.mp3', actualSec: 9.4, fromSec: 259.4, toSec: 268.8 },
-  'S40': { file: 'audio_shots/S40.mp3', actualSec: 4.2, fromSec: 268.8, toSec: 273 }
-};
-      const sharedShotAudio = new Audio();
-      let activeAudioBtn = null;
-
-      function stopShotAudioUi() {
-        if (activeAudioBtn) {
-          activeAudioBtn.classList.remove('playing');
-          activeAudioBtn.textContent = activeAudioBtn.dataset.label || '▶ Аудио';
-          activeAudioBtn = null;
-        }
-      }
-
-      sharedShotAudio.addEventListener('ended', stopShotAudioUi);
-      sharedShotAudio.addEventListener('pause', stopShotAudioUi);
 
       function applyVisibility() {
         const rows = table.querySelectorAll('tr');
@@ -798,60 +737,6 @@
       const rows = Array.from(table.querySelectorAll('tbody tr[data-shot]'));
       rows.forEach((row) => {
         const shot = row.dataset.shot;
-        const shotCell = row.querySelector("td.col-shot[data-col='1']");
-        const durationEl = shotCell ? shotCell.querySelector('.shot-duration') : null;
-        const segment = audioSegments[shot];
-
-        if (segment && durationEl) {
-          const val = Number(segment.actualSec || 0);
-          if (Number.isFinite(val) && val > 0) {
-            durationEl.textContent = val.toFixed(1).replace('.', ',') + ' сек (аудио)';
-            durationEl.title = 'По реальному таймингу читки';
-          }
-        }
-
-        if (segment && shotCell && !shotCell.querySelector('.shot-audio-btn')) {
-          const wrap = document.createElement('div');
-          wrap.className = 'shot-audio no-print';
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'shot-audio-btn';
-          btn.dataset.label = '▶ ' + shot;
-          btn.textContent = btn.dataset.label;
-
-          btn.addEventListener('click', async () => {
-            try {
-              if (activeAudioBtn === btn && !sharedShotAudio.paused) {
-                sharedShotAudio.pause();
-                return;
-              }
-
-              if (activeAudioBtn && activeAudioBtn !== btn) {
-                activeAudioBtn.classList.remove('playing');
-                activeAudioBtn.textContent = activeAudioBtn.dataset.label || '▶ Аудио';
-              }
-
-              const src = segment.file + '?v=20260425a';
-              if (!sharedShotAudio.src || !sharedShotAudio.src.includes(segment.file)) {
-                sharedShotAudio.src = src;
-              } else {
-                sharedShotAudio.currentTime = 0;
-              }
-
-              btn.classList.add('playing');
-              btn.textContent = '⏸ ' + shot;
-              activeAudioBtn = btn;
-              await sharedShotAudio.play();
-            } catch (e) {
-              console.error('Audio play failed for', shot, e);
-              stopShotAudioUi();
-            }
-          });
-
-          wrap.appendChild(btn);
-          shotCell.appendChild(wrap);
-        }
-
         const cell = row.querySelector('td.col-ready[data-col="7"]');
         if (!cell) return;
 
@@ -876,6 +761,7 @@
           paint(check.checked);
         });
       });
+
       applyVisibility();
     })();
   </script>
@@ -953,4 +839,3 @@
   </script>
 </body>
 </html>
-
