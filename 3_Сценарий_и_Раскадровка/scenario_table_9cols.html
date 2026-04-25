@@ -654,7 +654,7 @@
 
       function getSplitPartsCount(seconds) {
         const sec = Number(seconds || 0);
-        if (sec > 12) return 3;
+        if (sec >= 15) return 3;
         if (sec > 5) return 2;
         return 1;
       }
