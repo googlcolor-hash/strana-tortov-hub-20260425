@@ -968,7 +968,61 @@
         render();
       });
 
-      function buildPromptTextForRow(row) {
+      function normKey(text) {
+        return String(text || '')
+          .toLowerCase()
+          .replace(/ё/g, 'е')
+          .replace(/[^a-zа-я0-9]+/g, ' ')
+          .trim();
+      }
+
+      function buildGlossaryMaps() {
+        const charMap = new Map();
+        const locMap = new Map();
+
+        function fillMap(tableId, targetMap) {
+          const rows = Array.from(document.querySelectorAll('#' + tableId + ' tbody tr'));
+          rows.forEach((tr) => {
+            const name = (tr.querySelector('input.g-input')?.value || '').trim();
+            const areas = tr.querySelectorAll('textarea.g-text');
+            const description = (areas[0]?.value || '').trim();
+            const prompt = (areas[1]?.value || '').trim();
+            const key = normKey(name);
+            if (!key) return;
+            targetMap.set(key, { name, description, prompt });
+          });
+        }
+
+        fillMap('charactersGlossary', charMap);
+        fillMap('locationsGlossary', locMap);
+        return { charMap, locMap };
+      }
+
+      function findGlossaryEntry(map, rawName, aliasMap) {
+        let key = normKey(rawName);
+        if (!key) return null;
+        if (aliasMap && aliasMap[key]) {
+          key = normKey(aliasMap[key]);
+        }
+        if (map.has(key)) return map.get(key);
+
+        let best = null;
+        for (const [k, v] of map.entries()) {
+          if (key.includes(k) || k.includes(key)) {
+            if (!best || k.length > best.k.length) best = { k, v };
+          }
+        }
+        return best ? best.v : null;
+      }
+
+      function humanCharacterName(name) {
+        const k = normKey(name);
+        if (k === 'crowd') return 'Жители Страны Тортов';
+        if (k === 'voiceover') return 'Голос за кадром';
+        return name;
+      }
+
+      function buildPromptTextForRow(row, glossary) {
         const shot = row.dataset.shot || '';
         const chars = (row.querySelector('td.col-scene .char-name')?.textContent || '').trim();
         const loc = (row.querySelector('td.col-scene .loc-name')?.textContent || '').trim();
@@ -977,10 +1031,68 @@
         const anim = (row.querySelector("td.col-anim[data-col='5']")?.textContent || '').trim();
         const cam = (row.querySelector("td.col-cam[data-col='6']")?.textContent || '').trim();
 
+        const locAlias = {
+          'тронный зал': 'Дворец Наполеона / Тронный зал',
+          'тронный зал выход': 'Дворец Наполеона / Тронный зал',
+          'тронный зал титры': 'Дворец Наполеона / Тронный зал',
+          'ворота дворца': 'Дворец Наполеона / Тронный зал',
+          'домик у горы': 'Карамельная гора / Отвесная скала',
+          'край горы': 'Карамельная гора / Отвесная скала',
+          'край скалы': 'Карамельная гора / Отвесная скала',
+          'склон горы': 'Карамельная гора / Отвесная скала',
+          'сады за облаками': 'Страна тортов (общий вид)',
+          'двор частного дома': 'Мир людей (дом Лиды и окрестности)'
+        };
+
+        const charAlias = {
+          'жители страны тортов': 'Crowd',
+          'crowd': 'Crowd'
+        };
+
+        const charList = chars.split(',').map((s) => s.trim()).filter(Boolean);
+        const charBlocks = [];
+        charList.forEach((charName, idx) => {
+          const displayName = humanCharacterName(charName);
+          if (normKey(charName) === 'voiceover') {
+            charBlocks.push(
+              (idx + 1) + '. ' + displayName + '\n' +
+              'Описание: Служебная роль, голос за кадром. Отдельного персонажа в кадре не рисовать, если это не указано в мизансцене.\n' +
+              'Prompt: Off-screen narrator voice only, no separate visible character unless explicitly required by scene action.'
+            );
+            return;
+          }
+
+          const entry = findGlossaryEntry(glossary.charMap, charName, charAlias);
+          if (entry) {
+            charBlocks.push(
+              (idx + 1) + '. ' + displayName + '\n' +
+              'Описание: ' + (entry.description || '—') + '\n' +
+              'Prompt: ' + (entry.prompt || '—')
+            );
+          } else {
+            charBlocks.push(
+              (idx + 1) + '. ' + displayName + '\n' +
+              'Описание: Персонаж не найден в глоссарии.\n' +
+              'Prompt: Использовать консистентность с утвержденными референсами.'
+            );
+          }
+        });
+
+        const locEntry = findGlossaryEntry(glossary.locMap, loc, locAlias);
+        const locBlock = locEntry
+          ? 'Локация: ' + loc + '\nОписание: ' + (locEntry.description || '—') + '\nPrompt: ' + (locEntry.prompt || '—')
+          : 'Локация: ' + loc + '\nОписание: Локация не найдена в глоссарии.\nPrompt: Сохранить стиль мира «Страна тортов», консистентность и читаемость.';
+
         const lines = [
           'Shot: ' + shot,
-          'Characters: ' + chars,
-          'Location: ' + loc,
+          '',
+          '[Подробный блок персонажей из глоссария]',
+          charBlocks.join('\n\n'),
+          '',
+          '[Подробный блок локации из глоссария]',
+          locBlock,
+          '',
+          '[Контекст шота]',
           'Scene: ' + mise,
           'Action: ' + anim,
           'Camera: ' + cam,
@@ -991,19 +1103,24 @@
       }
 
       function ensurePromptCells() {
+        const glossary = buildGlossaryMaps();
         const bodyRows = Array.from(table.querySelectorAll('tbody tr[data-shot]'));
         bodyRows.forEach((row) => {
-          if (row.querySelector("td.col-prompt[data-col='8']")) return;
-          const cell = document.createElement('td');
-          cell.className = 'col-prompt';
-          cell.dataset.col = '8';
+          let cell = row.querySelector("td.col-prompt[data-col='8']");
+          if (!cell) {
+            cell = document.createElement('td');
+            cell.className = 'col-prompt';
+            cell.dataset.col = '8';
+            row.appendChild(cell);
+          }
 
-          const box = document.createElement('div');
-          box.className = 'prompt-mini';
-          box.textContent = buildPromptTextForRow(row);
-
-          cell.appendChild(box);
-          row.appendChild(cell);
+          let box = cell.querySelector('.prompt-mini');
+          if (!box) {
+            box = document.createElement('div');
+            box.className = 'prompt-mini';
+            cell.appendChild(box);
+          }
+          box.textContent = buildPromptTextForRow(row, glossary);
         });
       }
 
