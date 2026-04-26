@@ -77,6 +77,10 @@
       max-height:120px;
       overflow:auto;
     }
+    .prompt-actions { display:flex; justify-content:flex-end; margin-bottom:4px; }
+    .prompt-copy-btn { font-size:11px; padding:4px 8px; border-radius:6px; background:#2a3750; }
+    .prompt-copy-btn.done { border-color:#79d992; color:#d8ffe8; background:#1f3b2d; }
+    .prompt-copy-btn.fail { border-color:#ff8b8b; color:#ffe3e3; background:#4b2525; }
 
 
     .keyframe-cell { width:8%; min-width:8%; text-align:center; padding:4px; }
@@ -1119,7 +1123,7 @@
 
 
 
-function buildPromptTextForRow(row, glossary) {
+      function buildPromptTextForRow(row, glossary) {
         const shot = row.dataset.shot || '';
         const syncedPrompt = getWorkerBSyncedPrompt(shot);
         const chars = (row.querySelector('td.col-scene .char-name')?.textContent || '').trim();
@@ -1203,6 +1207,36 @@ function buildPromptTextForRow(row, glossary) {
         return detailedPrompt;
       }
 
+      async function copyTextToClipboard(text) {
+        const payload = String(text || '');
+        if (!payload) return false;
+
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(payload);
+            return true;
+          } catch (_) {}
+        }
+
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = payload;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          ta.style.pointerEvents = 'none';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return !!ok;
+        } catch (_) {
+          return false;
+        }
+      }
+
       function ensurePromptCells() {
         const glossary = buildGlossaryMaps();
         const bodyRows = Array.from(table.querySelectorAll('tbody tr[data-shot]'));
@@ -1221,6 +1255,53 @@ function buildPromptTextForRow(row, glossary) {
           if (!box) {
             box = document.createElement('div');
             box.className = 'prompt-mini';
+            cell.appendChild(box);
+          }
+
+          let actions = cell.querySelector('.prompt-actions');
+          if (!actions) {
+            actions = document.createElement('div');
+            actions.className = 'prompt-actions no-print';
+
+            const copyBtn = document.createElement('button');
+            copyBtn.type = 'button';
+            copyBtn.className = 'prompt-copy-btn';
+            copyBtn.textContent = 'Копировать';
+            copyBtn.title = 'Скопировать промпт шота';
+            copyBtn.addEventListener('click', async () => {
+              const sourceText = (box.textContent || '').trim();
+              const original = 'Копировать';
+              copyBtn.disabled = true;
+              copyBtn.classList.remove('done', 'fail');
+
+              if (!sourceText) {
+                copyBtn.textContent = 'Пусто';
+                copyBtn.classList.add('fail');
+                setTimeout(() => {
+                  copyBtn.disabled = false;
+                  copyBtn.textContent = original;
+                  copyBtn.classList.remove('done', 'fail');
+                }, 1200);
+                return;
+              }
+
+              const ok = await copyTextToClipboard(sourceText);
+              copyBtn.textContent = ok ? 'Скопировано' : 'Ошибка';
+              copyBtn.classList.add(ok ? 'done' : 'fail');
+              setTimeout(() => {
+                copyBtn.disabled = false;
+                copyBtn.textContent = original;
+                copyBtn.classList.remove('done', 'fail');
+              }, 1200);
+            });
+
+            actions.appendChild(copyBtn);
+            cell.insertBefore(actions, box);
+          } else if (actions.nextSibling !== box) {
+            cell.insertBefore(actions, box);
+          }
+
+          if (!cell.contains(box)) {
             cell.appendChild(box);
           }
           box.textContent = buildPromptTextForRow(row, glossary);
