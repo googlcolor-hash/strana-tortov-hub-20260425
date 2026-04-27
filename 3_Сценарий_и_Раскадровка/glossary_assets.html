@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Глоссарий · Персонажи и Локации</title>
+  <style>
+    :root{
+      --bg:#171b23;
+      --panel:#212938;
+      --panel2:#283247;
+      --line:#4f6285;
+      --text:#eaf0ff;
+      --muted:#b8c5de;
+      --accent:#8cb2ff;
+      --ok:#77d89c;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif}
+    .app{max-width:1680px;margin:0 auto;padding:12px}
+    .top{
+      position:sticky;top:0;z-index:20;
+      border:1px solid var(--line);border-radius:12px;
+      background:linear-gradient(180deg,#29344a,#20293a);
+      padding:10px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap
+    }
+    .title{margin:0;font-size:21px;font-weight:800}
+    .meta{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:6px;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid var(--line);border-radius:9px;padding:6px 11px;
+      text-decoration:none;color:var(--text);background:#2d3850;font-size:12px;font-weight:600
+    }
+    .btn:hover{border-color:var(--accent)}
+    .section{
+      margin-top:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden
+    }
+    .section > summary{
+      cursor:pointer;list-style:none;padding:10px 12px;background:var(--panel2);font-weight:800
+    }
+    .section > summary::-webkit-details-marker{display:none}
+    .cards{
+      padding:10px;display:grid;gap:10px;
+      grid-template-columns:repeat(auto-fit,minmax(420px,1fr))
+    }
+    .card{
+      border:1px solid var(--line);border-radius:10px;background:#1c2432;padding:9px;
+      display:grid;gap:8px
+    }
+    .card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .name{font-size:18px;font-weight:800;line-height:1.1}
+    .badge{
+      border:1px solid #4f6a95;border-radius:999px;padding:2px 8px;
+      font-size:11px;color:#dbe8ff;background:#24324b
+    }
+    .desc{margin:0;font-size:12px;line-height:1.38;color:#dce7ff}
+    .prompt{
+      margin:0;padding:7px;border:1px solid var(--line);border-radius:8px;
+      background:#162033;font-size:12px;line-height:1.35;color:#d2e0ff;white-space:pre-wrap
+    }
+    .gallery{
+      margin:0;padding:0;list-style:none;display:grid;gap:8px;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr))
+    }
+    .frame{
+      border:1px solid var(--line);border-radius:8px;padding:5px;background:#111824
+    }
+    .img{
+      display:block;width:100%;height:148px;object-fit:cover;border-radius:6px;background:#0b111a
+    }
+    .cap{margin-top:4px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .empty{
+      border:1px dashed #66799d;border-radius:8px;padding:14px;text-align:center;
+      color:var(--muted);font-size:12px
+    }
+    .note{
+      margin-top:10px;border:1px solid #456084;background:#1b2738;border-radius:10px;padding:9px;
+      font-size:12px;color:#d5e2ff
+    }
+    @media (max-width: 980px){
+      .cards{grid-template-columns:1fr}
+      .gallery{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+      .img{height:128px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="top">
+      <div>
+        <h1 class="title">Глоссарий Персонажей и Локаций</h1>
+        <div class="meta">Новые референсы подключены из папок `Gen02_TG_20260427` · размер превью увеличен</div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="./scenario_table_9cols.html">К таблице шотов</a>
+        <a class="btn" href="../2_План/project_hub.html">Project Hub</a>
+      </div>
+    </div>
+
+    <details class="section" open>
+      <summary>Персонажи</summary>
+      <div class="cards" id="charactersCards"></div>
+    </details>
+
+    <details class="section" open>
+      <summary>Локации</summary>
+      <div class="cards" id="locationsCards"></div>
+    </details>
+
+    <div class="note">Разделы собраны по подписи файлов. Имена персонажей и локаций указаны по-русски, как в ваших материалах.</div>
+  </div>
+
+  <script>
+    (function () {
+      const charsBase = "../_MATS/Персонажи/Gen02_TG_20260427/";
+      const locBase = "../_MATS/Локации/Gen02_TG_20260427/";
+
+      const characters = [
+        { name: "ПМ", description: "Подборка по подписи файлов «ПМ».", prompt: "", images: ["ПМ.jpg", "ПМ сзади.jpg"] },
+        { name: "Птичка", description: "Отдельная карточка по подписи «Птичка».", prompt: "", images: ["Птичка.jpeg"] },
+        { name: "Наполеон", description: "Подборка по подписи файлов «Наполеон».", prompt: "", images: ["Наполеон бш.jpeg", "Наполеон сзади.png", "Наполеон +Эклер.jpg"] },
+        { name: "Эклер", description: "Подборка по подписи файлов «Эклер».", prompt: "", images: ["Эклер .jpg", "Эклер все ракурсы.jpg", "Наполеон +Эклер.jpg"] },
+        { name: "Желе", description: "Подборка по подписи файла «Желе».", prompt: "", images: ["Желе.jpeg"] },
+        { name: "Блин", description: "Подборка по подписи файлов «Блин».", prompt: "", images: ["Блин 3.jpeg", "Блин левый бок.jpg"] },
+        {
+          name: "Ватрушки",
+          description: "Подборка по подписям «Ватрушка/Ватрушки».",
+          prompt: "",
+          images: [
+            "Ватрушки .jpg",
+            "Ватрушки глаза.jpg",
+            "Ватрушка открытые глаза.jpg",
+            "Ватрушка открытые глаза 2.jpg",
+            "Ватрушка Изюм ракурсы.jpg",
+            "Ватрушка Изюм ракурсы 2.jpg",
+            "Ватрушка Изюм ракурсы 3.jpg",
+            "Ватрушка Цукат открытые глаза .jpg",
+            "Ватрушка Цукат открытые глаза 2 .jpg",
+            "Ватрушка Цукат ракурсы.jpg"
+          ]
+        },
+        {
+          name: "Печенье",
+          description: "Подборка по подписям «Печенье/Печенья».",
+          prompt: "",
+          images: ["Печенье усы.jpeg", "Печенье левый бок.jpg", "Печенье правый бок.jpg", "Печенье сзади кисти.jpg", "Печенья.jpeg"]
+        },
+        { name: "Пончик", description: "Подборка по подписи «Пончик».", prompt: "", images: ["Пончик и баян.jpeg"] },
+        { name: "Леденец / Стража", description: "Подборка по подписям «Леденец» и «Стража».", prompt: "", images: ["Леденец ракурсы.jpg", "Стража 3.jpg"] },
+        { name: "Медовик", description: "Подборка по подписи «Медовик».", prompt: "", images: ["Медовик .jpg", "Медовик ракурсы Итог.jpg", "Медовик ракурсы Итог 2.jpg"] },
+        { name: "Курабьев", description: "Подборка по подписи «Курабьев».", prompt: "", images: ["Курабьев все ракурсы.jpg"] },
+        { name: "Стая Бизе / Массовка", description: "Подборка по подписям «Стая».", prompt: "", images: ["Стая 5 Бизе 2.png", "Стая 5 М.png"] }
+      ];
+
+      const locations = [
+        { name: "Общий план", description: "Подборка по подписи «Общий план».", prompt: "", images: ["Общий план .jpg", "Общий план 3.jpg"] },
+        { name: "Дворец", description: "Подборка по подписи «Дворец».", prompt: "", images: ["Дворец ИТог.png", "Дворец крупно .jpg", "Дворец.png"] },
+        { name: "Тронный зал", description: "Подборка по подписи «Тронный зал».", prompt: "", images: ["Тронный зал.jpg"] },
+        { name: "Гора", description: "Подборка по подписи «Гора».", prompt: "", images: ["Гора .jpg", "Гора  (1).jpg", "Гора + ПМ 7.jpg"] },
+        { name: "Деревня", description: "Подборка по подписи «Деревня».", prompt: "", images: ["Деревня 3.jpg", "Деревня 3 (1).jpg"] },
+        {
+          name: "Домик ПМ",
+          description: "Подборка по подписи «Домик ПМ».",
+          prompt: "",
+          images: ["Домик ПМ 5.jpg", "Домик ПМ 5 улыбка.jpg", "Домик ПМ 5 смех.jpg", "Домик ПМ 5 грусть.jpg"]
+        },
+        { name: "Карамельный лес", description: "Подборка по подписи «Карамельный лес».", prompt: "", images: ["Карамельный лес 1.jpg"] },
+        { name: "ПМ читает лес", description: "Подборка по подписи «ПМ читает лес».", prompt: "", images: ["ПМ читает лес 3.jpg", "ПМ читает лес 3 (1).jpg"] },
+        { name: "Пристань / лодка", description: "Подборка по подписям «Пристань» и «Пара + лодка».", prompt: "", images: ["Пристань .png", "Пара + лодка.png"] },
+        { name: "Площадь / статуя", description: "Подборка по подписям «Площадь и статуя» и «Статуя».", prompt: "", images: ["Площаль и статуя.jpg", "Статуя.jpg"] },
+        { name: "Церковь", description: "Подборка по подписи «Церковь».", prompt: "", images: ["Церковь .png"] }
+      ];
+
+      function esc(text) {
+        return String(text || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function imgSrc(base, file) {
+        return encodeURI(base + file).replace(/#/g, "%23");
+      }
+
+      function imageCell(base, file) {
+        const safeName = esc(file);
+        return "<li class='frame'>" +
+          "<img class='img' loading='lazy' src='" + imgSrc(base, file) + "' alt='" + safeName + "'>" +
+          "<div class='cap'>" + safeName + "</div>" +
+        "</li>";
+      }
+
+      function renderCards(containerId, data, kind, base) {
+        const root = document.getElementById(containerId);
+        if (!root) return;
+        root.innerHTML = data.map(function (item) {
+          const images = Array.isArray(item.images) ? item.images : [];
+          const gallery = images.length
+            ? "<ul class='gallery'>" + images.map(function (f) { return imageCell(base, f); }).join("") + "</ul>"
+            : "<div class='empty'>Нет прикреплённых изображений</div>";
+          const promptBlock = item.prompt
+            ? ("<pre class='prompt'>" + esc(item.prompt) + "</pre>")
+            : "";
+          return (
+            "<article class='card'>" +
+              "<div class='card-head'>" +
+                "<div class='name'>" + esc(item.name) + "</div>" +
+                "<div class='badge'>" + kind + "</div>" +
+              "</div>" +
+              "<p class='desc'>" + esc(item.description) + "</p>" +
+              promptBlock +
+              gallery +
+            "</article>"
+          );
+        }).join("");
+      }
+
+      renderCards("charactersCards", characters, "персонаж", charsBase);
+      renderCards("locationsCards", locations, "локация", locBase);
+    })();
+  </script>
+</body>
+</html>

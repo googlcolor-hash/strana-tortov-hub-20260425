@@ -1,0 +1,7 @@
+{
+  "policy": "ALWAYS_USE_LOCAL_MASTER_68",
+  "canonical_csv": "C:\\133_TORTS\\3_Сценарий_и_Раскадровка\\prompt_package_68_master.csv",
+  "enforced_row_count": 68,
+  "enforced_at": "2026-04-27 21:02:18",
+  "notes": "Любые агенты и страницы работают только от 68-шотной версии."
+}
