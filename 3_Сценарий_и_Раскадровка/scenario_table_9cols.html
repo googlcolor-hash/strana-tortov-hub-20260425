@@ -161,7 +161,7 @@
     <div class='top no-print'>
       <div>
         <h1>Сценарий · Таблица шотов</h1>
-        <div class='meta'>$168</span> шотов · 8 колонок · LOCK:68 · общая длительность: <span id='totalDurationLabel'>—</span></div>
+        <div class='meta'><span id='shotCountLabel'>68</span> шотов · 8 колонок · LOCK:68 · общая длительность: <span id='totalDurationLabel'>—</span></div>
       </div>
       <div class='actions'>
         <div class='colmenu'>
@@ -852,9 +852,62 @@ const audioSegments = {
           }
         });
 
+        // If rows are already split as S01A/S01B... (68-shot mode), build audio map without cloning rows.
+        if (!Object.keys(expandedAudioSegments).length) {
+          const grouped = {};
+          baseRows.forEach((row) => {
+            const shot = String(row.dataset.shot || '').toUpperCase().trim();
+            const m = shot.match(/^(S\d{2,3})([A-Z])$/);
+            if (!m) return;
+            const base = m[1];
+            const letter = m[2];
+            if (!grouped[base]) grouped[base] = [];
+            grouped[base].push({ shot, order: letter.charCodeAt(0) - 65 });
+          });
+
+          Object.keys(grouped).forEach((baseShot) => {
+            const baseSegment = audioSegments[baseShot];
+            if (!baseSegment) return;
+
+            const items = grouped[baseShot].sort((a, b) => a.order - b.order);
+            const parts = items.length;
+            const totalSec = Number(baseSegment.actualSec || 0);
+            const durations = [];
+            let consumed = 0;
+            for (let i = 0; i < parts; i++) {
+              let partDur = Number((totalSec / parts).toFixed(3));
+              if (i === parts - 1) {
+                partDur = Number((totalSec - consumed).toFixed(3));
+              }
+              consumed += partDur;
+              durations.push(partDur);
+            }
+
+            let offset = 0;
+            items.forEach((it, i) => {
+              const partStart = Number(offset.toFixed(3));
+              const partDur = durations[i];
+              const partEnd = Number((partStart + partDur).toFixed(3));
+              offset = partEnd;
+
+              expandedAudioSegments[it.shot] = {
+                file: baseSegment.file,
+                actualSec: partDur,
+                baseShot: baseShot,
+                partIndex: i + 1,
+                partTotal: parts,
+                clipStartSec: partStart,
+                clipEndSec: partEnd
+              };
+            });
+          });
+        }
+
         const shotCountLabel = document.getElementById('shotCountLabel');
         if (shotCountLabel) {
-          shotCountLabel.textContent = String(Object.keys(expandedAudioSegments).length);
+          const fallbackRows = body.querySelectorAll('tr[data-shot]').length;
+          const calculated = Object.keys(expandedAudioSegments).length;
+          shotCountLabel.textContent = String(calculated || fallbackRows);
         }
       }
 
