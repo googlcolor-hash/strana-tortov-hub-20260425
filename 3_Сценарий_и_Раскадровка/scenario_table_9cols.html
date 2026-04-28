@@ -46,7 +46,7 @@
     td.col-scene .loc-name { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-top:4px; }
     td.col-scene .mise-text { display:block; font-size:12px; font-weight:500; margin-top:6px; color:var(--text); }
     .col-shot { width:8%; }
-    .col-keyframe { width:8%; }
+    .col-keyframe { width:12%; }
     .col-scene { width:33%; }
     .col-speech { width:20%; }
     .col-anim { width:13%; }
@@ -83,14 +83,14 @@
     .prompt-copy-btn.fail { border-color:#ff8b8b; color:#ffe3e3; background:#4b2525; }
 
 
-    .keyframe-cell { width:8%; min-width:8%; text-align:center; padding:4px; }
+    .keyframe-cell { width:12%; min-width:12%; text-align:center; padding:4px; }
     .kf-wrap { display:grid; gap:4px; justify-items:center; position:relative; overflow:visible; }
     .kf-img {
-      width:70px; height:40px; object-fit:cover; border:1px solid var(--line); border-radius:6px; background:#11161f;
+      width:116px; height:66px; object-fit:cover; border:1px solid var(--line); border-radius:6px; background:#11161f;
       cursor:zoom-in; transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease; transform-origin:center;
     }
     .kf-img:hover, .kf-img:focus-visible { transform:scale(3); z-index:30; border-color:var(--accent); box-shadow:0 10px 24px rgba(0,0,0,.5); }
-    .kf-empty { width:70px; height:40px; border:1px dashed #627391; border-radius:6px; color:var(--muted); font-size:10px; display:grid; place-items:center; }
+    .kf-empty { width:116px; height:66px; border:1px dashed #627391; border-radius:6px; color:var(--muted); font-size:10px; display:grid; place-items:center; }
     .kf-actions { display:flex; gap:4px; }
     .kf-btn-upload, .kf-btn-clear { width:22px; height:22px; padding:0; line-height:20px; font-weight:700; }
 
@@ -154,6 +154,12 @@
     }
     .g-input { min-height:30px; }
     .g-text { min-height:68px; resize:vertical; }
+
+    @media (max-width: 1500px) {
+      .col-keyframe { width:10%; }
+      .keyframe-cell { width:10%; min-width:10%; }
+      .kf-img, .kf-empty { width:96px; height:54px; }
+    }
 
     @media print {
       .no-print { display:none !important; }
@@ -631,6 +637,33 @@
       const keyframeStore = loadJson(keyStoreKey);
       const readyStore = loadJson(readyStoreKey);
       const widthStore = loadJson(widthStoreKey);
+      const imageOverlay = document.getElementById('imgOverlay');
+      const imageOverlayImage = document.getElementById('imgOverlayImage');
+      const imageOverlayCaption = document.getElementById('imgOverlayCaption');
+      const imageOverlayClose = document.getElementById('imgOverlayClose');
+      function openImagePreview(src, caption) {
+        if (!src || !imageOverlay || !imageOverlayImage) return;
+        imageOverlayImage.src = src;
+        imageOverlayImage.alt = caption || 'preview';
+        if (imageOverlayCaption) imageOverlayCaption.textContent = caption || '';
+        imageOverlay.classList.add('open');
+        imageOverlay.setAttribute('aria-hidden', 'false');
+      }
+      function closeImagePreview() {
+        if (!imageOverlay) return;
+        imageOverlay.classList.remove('open');
+        imageOverlay.setAttribute('aria-hidden', 'true');
+      }
+      window.openProjectImagePreview = openImagePreview;
+      if (imageOverlayClose) imageOverlayClose.addEventListener('click', closeImagePreview);
+      if (imageOverlay) {
+        imageOverlay.addEventListener('click', (e) => {
+          if (e.target === imageOverlay) closeImagePreview();
+        });
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeImagePreview();
+      });
       function toFileUri(path) {
         return 'file:///' + String(path || '').replace(/\\/g, '/');
       }
@@ -1148,6 +1181,11 @@ const audioSegments = {
           saveJson(keyStoreKey, keyframeStore);
           render();
         });
+        img.addEventListener('click', () => {
+          if (img.style.display !== 'none' && img.src) {
+            openImagePreview(img.src, 'Кадр ' + shot);
+          }
+        });
 
         input.addEventListener('change', () => {
           const f = input.files && input.files[0];
@@ -1526,6 +1564,12 @@ const audioSegments = {
         const upload = row.querySelector('.gimg-upload');
         const clear = row.querySelector('.gimg-clear');
         if (!img || !empty || !input || !upload || !clear) return;
+        img.addEventListener('click', () => {
+          if (img.style.display !== 'none' && img.src && typeof window.openProjectImagePreview === 'function') {
+            const name = row.querySelector('.g-input')?.value?.trim() || 'Глоссарий';
+            window.openProjectImagePreview(img.src, name);
+          }
+        });
 
         function showEmpty() {
           img.style.display = 'none';
