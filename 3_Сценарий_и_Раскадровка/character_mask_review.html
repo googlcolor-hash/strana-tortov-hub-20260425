@@ -1,0 +1,3264 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Страна Тортов · Маски персонажей</title>
+  <style>
+    :root{--bg:#0e1118;--bg2:#151b27;--panel:#1b2332;--line:#34445f;--text:#edf3ff;--muted:#a4b1c8;--accent:#8fc0ff;--accent2:#ffd28e;--side:260px;--shadow:0 26px 68px rgba(0,0,0,.35)}
+    *{box-sizing:border-box} html,body{margin:0;padding:0;background:radial-gradient(circle at top left, rgba(255,210,142,.08), transparent 28%), radial-gradient(circle at 88% 0%, rgba(143,192,255,.10), transparent 34%), var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);background-size:36px 36px;mask-image:linear-gradient(180deg, rgba(0,0,0,.4), transparent 80%);opacity:.16}
+    .layout{display:grid;grid-template-columns:var(--side) minmax(0,1fr);min-height:100vh}
+    .sidebar{position:sticky;top:0;height:100vh;padding:20px 16px;background:linear-gradient(180deg, rgba(31,38,53,.94), rgba(15,18,27,.94));backdrop-filter:blur(14px);border-right:1px solid rgba(255,255,255,.08);overflow:auto}
+    .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2)}
+    .brand h1{margin:8px 0 6px;font:700 28px/1.04 Georgia,'Times New Roman',serif}
+    .brand p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+    .nav{display:grid;gap:8px;margin:18px 0}
+    .nav a,.nav button{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--text);text-decoration:none;cursor:pointer}
+    .nav a:hover,.nav button:hover{border-color:rgba(143,192,255,.45);transform:translateX(2px)}
+    .legend{display:grid;gap:10px;margin-top:14px}
+    .legend-item{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:12px}
+    .sw{width:18px;height:18px;border-radius:6px;border:1px solid rgba(255,255,255,.22)}
+    .sidebar-note{margin-top:14px;padding:12px;border-radius:14px;background:rgba(255,210,142,.08);border:1px solid rgba(255,210,142,.18);color:#ffe8c5;font-size:12px;line-height:1.45}
+    .main{padding:22px}
+    .hero{padding:20px 22px;border-radius:24px;background:linear-gradient(135deg, rgba(39,50,72,.94), rgba(18,23,33,.98));border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);display:grid;gap:16px}
+    .hero-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .hero h2{margin:0;font:700 38px/1.02 Georgia,'Times New Roman',serif}
+    .hero p{margin:0;color:var(--muted);max-width:880px;line-height:1.55}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .hero-actions a,.hero-actions button{padding:11px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:#243049;color:var(--text);text-decoration:none;cursor:pointer;font-weight:600}
+    .hero-actions .accent{background:linear-gradient(135deg,#7eaefc,#9ecaff);color:#0f1520;border:none}
+    .toolbar{position:sticky;top:10px;z-index:15;margin-top:18px;padding:12px;border-radius:20px;background:rgba(23,30,43,.92);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:1.1fr 1fr auto auto;gap:10px;box-shadow:0 12px 34px rgba(0,0,0,.18)}
+    .toolbar input,.toolbar select,.toolbar button{height:44px;border-radius:13px;border:1px solid rgba(255,255,255,.08);background:#111825;color:var(--text);padding:0 12px;font-size:14px}
+    .toolbar button{cursor:pointer;background:#202a3c}
+    .toolbar button.active{border-color:rgba(143,192,255,.48);background:#273650}
+    .counter{display:grid;align-items:center;padding:0 12px;border-radius:13px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:13px;color:var(--muted)}
+    .grid{margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .card{display:grid;gap:12px;padding:14px;border-radius:22px;background:linear-gradient(180deg, rgba(28,36,50,.98), rgba(20,26,38,.98));border:1px solid rgba(255,255,255,.08);box-shadow:0 18px 44px rgba(0,0,0,.22)}
+    .card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .shot{font:700 22px/1.02 Georgia,'Times New Roman',serif}
+    .sub{color:var(--muted);font-size:12px;line-height:1.45}
+    .badge{padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:rgba(143,192,255,.10);color:#dce9ff}
+    .stage{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#0c111b;border:1px solid rgba(255,255,255,.08)}
+    .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .18s ease}
+    .mask-layer{position:absolute;inset:0}
+    .mask-shape{position:absolute;border-radius:999px;outline:1px solid rgba(255,255,255,.28);box-shadow:0 0 0 1px rgba(0,0,0,.22) inset;backdrop-filter:blur(2px)}
+    .mask-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);white-space:nowrap}
+    .band{border-radius:24px}
+    .mode-tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .mode-tabs button{padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#1c2434;color:var(--text);cursor:pointer;font-size:12px}
+    .mode-tabs button.active{background:#28405e;border-color:rgba(143,192,255,.46)}
+    .chips{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{padding:6px 9px;border-radius:999px;background:#101623;border:1px solid rgba(255,255,255,.08);font-size:11px}
+    .meta{display:grid;gap:8px}
+    .meta b{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent2)}
+    .meta span{font-size:13px;line-height:1.5}
+    .empty{display:none;margin-top:18px;padding:30px;border-radius:22px;border:1px dashed rgba(255,255,255,.16);text-align:center;color:var(--muted)}
+    @media (max-width:1280px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr auto}.layout{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}}
+    @media (max-width:760px){.toolbar{grid-template-columns:1fr}.hero h2{font-size:30px}}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="eyebrow">Mask Review</div>
+        <h1>Страна Тортов</h1>
+        <p>Композиционные маски по ключевым кадрам. Цвет каждого героя фиксирован и используется как ориентир для будущих правок, регенераций и масочного пайплайна.</p>
+      </div>
+      <div class="nav">
+        <a href="./scenario_table_9cols.html">Таблица шотов <small>68</small></a>
+        <a href="./keyframes_presentation.html">Ключевые кадры <small>review</small></a>
+        <a href="../2_%D0%9F%D0%BB%D0%B0%D0%BD/project_hub.html">Project Hub <small>главная</small></a>
+      </div>
+      <div id="legend" class="legend"></div>
+      <div class="sidebar-note">Первый проход сейчас автоматический: маски показывают композиционную раскладку персонажей по шотам. Поверх них будут доливаться более точные позиции после агентного разбора.</div>
+    </aside>
+    <main class="main">
+      <section class="hero">
+        <div class="hero-top">
+          <div>
+            <div class="eyebrow">GitHub Live Review</div>
+            <h2>Маски персонажей по всем 68 шотам</h2>
+            <p>Слева закреплена палитра персонажей, в кадрах можно переключать режимы <b>Overlay</b> и <b>Mask only</b>. Это быстрый слой, чтобы сразу видеть, кто где находится композиционно и не путать роли при следующих генерациях.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="accent" href="./keyframes_presentation.html">Открыть витрину кадров</a>
+            <a href="https://googlcolor-hash.github.io/strana-tortov-hub-20260425/3_%D0%A1%D0%A6%D0%95%D0%9D%D0%90%D0%A0%D0%98%D0%99_%D0%B8_%D0%A0%D0%B0%D1%81%D0%BA%D0%B0%D0%B4%D1%80%D0%BE%D0%B2%D0%BA%D0%B0/character_mask_review.html" target="_blank" rel="noopener">Публичная ссылка</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar">
+        <input id="searchInput" type="search" placeholder="Поиск по шоту, сцене, локации, персонажу">
+        <select id="charFilter"><option value="">Все персонажи</option></select>
+        <button id="overlayBtn" class="active" type="button">Overlay</button>
+        <button id="maskBtn" type="button">Mask only</button>
+      </section>
+
+      <div id="counter" class="counter" style="margin-top:10px">Загрузка…</div>
+      <section id="grid" class="grid"></section>
+      <section id="empty" class="empty">Ничего не найдено по текущему фильтру.</section>
+    </main>
+  </div>
+
+  <script id="maskManifestData" type="application/json">{
+  "generated_at": "2026-04-28T15:33:13",
+  "source": "C:\\133_TORTS\\3_Сценарий_и_Раскадровка\\shot_packages_68",
+  "palette": {
+    "PM": "#4FC3F7",
+    "Napoleon": "#FFB74D",
+    "General": "#FF6B6B",
+    "Eclair": "#BA68C8",
+    "Donut": "#81C784",
+    "Cookie": "#64B5F6",
+    "Blin": "#FFD54F",
+    "Vatrushki": "#AED581",
+    "Gurts": "#F06292",
+    "Crowd": "#90A4AE",
+    "VoiceOver": "#B0BEC5"
+  },
+  "labels": {
+    "PM": "ПМ",
+    "Napoleon": "Наполеон",
+    "General": "Генерал",
+    "Eclair": "Эклер",
+    "Donut": "Донат",
+    "Cookie": "Куки",
+    "Blin": "Блин",
+    "Vatrushki": "Ватрушки",
+    "Gurts": "Гуртс",
+    "Crowd": "Жители",
+    "VoiceOver": "Голос за кадром"
+  },
+  "shots": [
+    {
+      "index": 1,
+      "shot_id": "S01A",
+      "scene": "Экспозиция: страна тортов над полями и облаками. (часть 1/2)",
+      "location": "Страна тортов (общий вид)",
+      "dialogue": "VoiceOver: Над золочеными полями, над голубыми небесами, Средь",
+      "characters": [
+        "VoiceOver",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S01A_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "Crowd",
+        "label": "Жители",
+        "color": "#90A4AE",
+        "x": 50.0,
+        "y": 82.0,
+        "w": 94.0,
+        "h": 20.0,
+        "depth": "bg",
+        "size": "large",
+        "opacity": 0.18,
+        "note": "auto-crowd-band"
+      }
+    },
+    {
+      "index": 2,
+      "shot_id": "S01B",
+      "scene": "Экспозиция: страна тортов над полями и облаками. (часть 2/2)",
+      "location": "Страна тортов (общий вид)",
+      "dialogue": "птичьих стай и облаков, находятся страна тортов.",
+      "characters": [
+        "VoiceOver",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S01B_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "Crowd",
+        "label": "Жители",
+        "color": "#90A4AE",
+        "x": 50.0,
+        "y": 82.0,
+        "w": 94.0,
+        "h": 20.0,
+        "depth": "bg",
+        "size": "large",
+        "opacity": 0.18,
+        "note": "auto-crowd-band"
+      }
+    },
+    {
+      "index": 3,
+      "shot_id": "S02A",
+      "scene": "Представление правителя и двора. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "VoiceOver: Отцарством этим правит он, царь всем тортом Наполеон.",
+      "characters": [
+        "Napoleon",
+        "Vatrushki"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S02A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "Vatrushki",
+          "label": "Ватрушки",
+          "color": "#AED581",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "shot_id": "S02B",
+      "scene": "Представление правителя и двора. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Вокруг него снуют в отружке, любимые его подружки.",
+      "characters": [
+        "Napoleon",
+        "Vatrushki"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S02B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "Vatrushki",
+          "label": "Ватрушки",
+          "color": "#AED581",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "shot_id": "S03A",
+      "scene": "Свита развлекает царя. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "VoiceOver: Вот рядом пончик и печенья поют ему для развлечения, Играф Экклер, его советник.",
+      "characters": [
+        "Donut",
+        "Cookie",
+        "Eclair",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S03A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Donut",
+          "label": "Донат",
+          "color": "#81C784",
+          "x": 16.0,
+          "y": 66.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-outer"
+        },
+        {
+          "key": "Cookie",
+          "label": "Куки",
+          "color": "#64B5F6",
+          "x": 34.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-inner"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 50.0,
+          "y": 54.0,
+          "w": 22.0,
+          "h": 32.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 66.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right-inner"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "shot_id": "S03B",
+      "scene": "Свита развлекает царя. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Он лучший друг и лучший сплетник.",
+      "characters": [
+        "Donut",
+        "Cookie",
+        "Eclair",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S03B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Donut",
+          "label": "Донат",
+          "color": "#81C784",
+          "x": 16.0,
+          "y": 66.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-outer"
+        },
+        {
+          "key": "Cookie",
+          "label": "Куки",
+          "color": "#64B5F6",
+          "x": 34.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-inner"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 50.0,
+          "y": 54.0,
+          "w": 22.0,
+          "h": 32.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 66.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right-inner"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "shot_id": "S04A",
+      "scene": "Военная вертикаль при троне. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "VoiceOver: Паодль, генерал жиле, всё время он на стороже.",
+      "characters": [
+        "General",
+        "Gurts",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S04A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "shot_id": "S04B",
+      "scene": "Военная вертикаль при троне. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Царя охрану возглавляет или единцами управляет.",
+      "characters": [
+        "General",
+        "Gurts",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S04B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "shot_id": "S05A",
+      "scene": "Казначей в придворной иерархии. (часть 1/2)",
+      "location": "Тронный зал (казначейский стол)",
+      "dialogue": "VoiceOver: Блинка значей, развесил уши. Он по характеру капуша.",
+      "characters": [
+        "Blin"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S05A_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "Blin",
+        "label": "Блин",
+        "color": "#FFD54F",
+        "x": 50.0,
+        "y": 58.0,
+        "w": 26.0,
+        "h": 42.0,
+        "depth": "mg",
+        "size": "large",
+        "opacity": 0.38,
+        "note": "auto-single"
+      }
+    },
+    {
+      "index": 10,
+      "shot_id": "S05B",
+      "scene": "Казначей в придворной иерархии. (часть 2/2)",
+      "location": "Тронный зал (казначейский стол)",
+      "dialogue": "Как денег нет, так сразу нужен, а так работаю загружен.",
+      "characters": [
+        "Blin"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S05B_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "Blin",
+        "label": "Блин",
+        "color": "#FFD54F",
+        "x": 50.0,
+        "y": 58.0,
+        "w": 26.0,
+        "h": 42.0,
+        "depth": "mg",
+        "size": "large",
+        "opacity": 0.38,
+        "note": "auto-single"
+      }
+    },
+    {
+      "index": 11,
+      "shot_id": "S06A",
+      "scene": "Контрастный герой вне двора. (часть 1/3)",
+      "location": "Домик у горы",
+      "dialogue": "VoiceOver: Но есть ещё в тортовом царстве почти без статуса и власти простой торт птичи молоко. И от дворца он далеко, а все дворцовые интриги ему так чужды.",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S06A_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 12,
+      "shot_id": "S06B",
+      "scene": "Контрастный герой вне двора. (часть 2/3)",
+      "location": "Домик у горы",
+      "dialogue": "Лучше книги.",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S06B_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 13,
+      "shot_id": "S06C",
+      "scene": "Контрастный герой вне двора. (часть 3/3)",
+      "location": "Домик у горы",
+      "dialogue": "Он почитает в тишине, когда с собой наедине.",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S06C_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 14,
+      "shot_id": "S07A",
+      "scene": "Утренний поворот сюжета: герой замечает сады. (часть 1/2)",
+      "location": "Край горы",
+      "dialogue": "VoiceOver: Ну что такое?",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S07A_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 15,
+      "shot_id": "S07B",
+      "scene": "Утренний поворот сюжета: герой замечает сады. (часть 2/2)",
+      "location": "Край горы",
+      "dialogue": "Ранним утром, склонившись на краю горы, торт птичи молоко заметил вдали гигантские сады.",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S07B_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 16,
+      "shot_id": "S08",
+      "scene": "POV: людской сектор за облаками.",
+      "location": "Сады за облаками",
+      "dialogue": "PM: Что это?",
+      "characters": [
+        "Crowd",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S08_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 26.0,
+          "h": 42.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "auto-single"
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "shot_id": "S09A",
+      "scene": "Первый монолог Птичьего Молока. (часть 1/2)",
+      "location": "Край скалы",
+      "dialogue": "PM: Чье же это царство? Кто вроде там в такой глуши?",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S09A_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 18,
+      "shot_id": "S09B",
+      "scene": "Первый монолог Птичьего Молока. (часть 2/2)",
+      "location": "Край скалы",
+      "dialogue": "Наполеон или коварство? А может просто миражи?",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S09B_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 19,
+      "shot_id": "S10A",
+      "scene": "Герой видит стол и людей с тортом. (часть 1/2)",
+      "location": "Двор частного дома",
+      "dialogue": "PM: Не сон для этом не приснился.",
+      "characters": [
+        "PM",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S10A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 26.0,
+          "h": 42.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "auto-single"
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "shot_id": "S10B",
+      "scene": "Герой видит стол и людей с тортом. (часть 2/2)",
+      "location": "Двор частного дома",
+      "dialogue": "Ведь говорили, с детства нам не место на столе торт там, а эти варвары как можно пьют чай с тортом неосторожно, вареньем заедают сласть, раскрыв пошире свою пасть.",
+      "characters": [
+        "PM",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S10B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 26.0,
+          "h": 42.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "auto-single"
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "shot_id": "S11A",
+      "scene": "Монолог-решение: срочно предупредить дворец. (часть 1/2)",
+      "location": "Склон горы",
+      "dialogue": "PM: Скорее надо во дворец.",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S11A_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 22,
+      "shot_id": "S11B",
+      "scene": "Монолог-решение: срочно предупредить дворец. (часть 2/2)",
+      "location": "Склон горы",
+      "dialogue": "Предупредить о том, что видел, ведь для тортов такой конец и в страшном сне бы не предвидел.",
+      "characters": [
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S11B_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "PM",
+        "label": "ПМ",
+        "color": "#4FC3F7",
+        "x": 72.0,
+        "y": 74.0,
+        "w": 18.0,
+        "h": 26.0,
+        "depth": "mg",
+        "size": "small",
+        "opacity": 0.38,
+        "note": "edge-hero"
+      }
+    },
+    {
+      "index": 23,
+      "shot_id": "S12",
+      "scene": "У ворот дворца: требование пропуска.",
+      "location": "Двери дворца",
+      "dialogue": "PM: Эй, леденец, открой ворота. К Наполеону мне охота.",
+      "characters": [
+        "PM",
+        "Gurts"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S12_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 30.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 70.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 24,
+      "shot_id": "S13",
+      "scene": "Страж блокирует вход.",
+      "location": "Двери дворца",
+      "dialogue": "Gurts: А что за дело? Всем тортам закрыт и двери тут и там.",
+      "characters": [
+        "Gurts",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S13_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 30.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 70.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 25,
+      "shot_id": "S14",
+      "scene": "Ключевая реплика-аргумент.",
+      "location": "Двери дворца",
+      "dialogue": "PM: А ты скажи ему, что я видал, как торт едет с утра.",
+      "characters": [
+        "PM",
+        "Gurts"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S14_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 30.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 70.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 26,
+      "shot_id": "S15A",
+      "scene": "Тронный зал: Наполеон встречает героя угрозой. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Napoleon: С момента царства моего тортов здесь не было давно.",
+      "characters": [
+        "Napoleon",
+        "PM",
+        "General",
+        "Eclair"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S15A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 16.0,
+          "y": 66.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-outer"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 34.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-inner"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 50.0,
+          "y": 54.0,
+          "w": 22.0,
+          "h": 32.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 66.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right-inner"
+        }
+      ]
+    },
+    {
+      "index": 27,
+      "shot_id": "S15B",
+      "scene": "Тронный зал: Наполеон встречает героя угрозой. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "И если ты сюда явился, то лучше Богу помолился.",
+      "characters": [
+        "Napoleon",
+        "PM",
+        "General",
+        "Eclair"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S15B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 16.0,
+          "y": 66.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-outer"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 34.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-inner"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 50.0,
+          "y": 54.0,
+          "w": 22.0,
+          "h": 32.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 66.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right-inner"
+        }
+      ]
+    },
+    {
+      "index": 28,
+      "shot_id": "S16",
+      "scene": "Птичье Молоко просит выслушать.",
+      "location": "Тронный зал",
+      "dialogue": "PM: Успею я еще с мольбой. Услышь, что и лучше голос мой.",
+      "characters": [
+        "PM",
+        "Napoleon",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S16_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 29,
+      "shot_id": "S17A",
+      "scene": "Подробное описание увиденной угрозы. (часть 1/3)",
+      "location": "Тронный зал",
+      "dialogue": "PM: Сегодня, соответственно, из колы, увидел я, как там вдали за сводом и за небесами, за",
+      "characters": [
+        "PM",
+        "Napoleon",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S17A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 30,
+      "shot_id": "S17B",
+      "scene": "Подробное описание увиденной угрозы. (часть 2/3)",
+      "location": "Тронный зал",
+      "dialogue": "золоченными полями, где птицы роются в садах, там на обеденных столах, да вместе с чаем и",
+      "characters": [
+        "PM",
+        "Napoleon",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S17B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 31,
+      "shot_id": "S17C",
+      "scene": "Подробное описание увиденной угрозы. (часть 3/3)",
+      "location": "Тронный зал",
+      "dialogue": "вареньем, с большим, похожим наслаждением. Не знаю, что за существа, но поглотили два торта.",
+      "characters": [
+        "PM",
+        "Napoleon",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S17C_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 32,
+      "shot_id": "S18",
+      "scene": "Тронный зал: Наполеон на троне, ПМ под конвоем стражи, генерал докладывает.",
+      "location": "Тронный зал",
+      "dialogue": "General: Повсюду у меня есть уши. Ты лучше царь его не слушай.",
+      "characters": [
+        "Napoleon",
+        "General",
+        "Gurts",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S18_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 16.0,
+          "y": 66.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-outer"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 34.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-inner"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 50.0,
+          "y": 54.0,
+          "w": 22.0,
+          "h": 32.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 66.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right-inner"
+        }
+      ]
+    },
+    {
+      "index": 33,
+      "shot_id": "S19A",
+      "scene": "Желе обвиняет героя в заговоре. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "General: Пробрался он сюда специально, чтобы свергнуть вас. План гениальный.",
+      "characters": [
+        "General",
+        "Napoleon",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S19A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 34,
+      "shot_id": "S19B",
+      "scene": "Желе обвиняет героя в заговоре. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Отдайте мне его скорей. Узнает сразу кто главней.",
+      "characters": [
+        "General",
+        "Napoleon",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S19B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 35,
+      "shot_id": "S20",
+      "scene": "Эклер поддерживает сомнение двора.",
+      "location": "Тронный зал",
+      "dialogue": "Eclair: Ну что за вздор, откуда здесь до тортоеды уже есть?",
+      "characters": [
+        "Eclair",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S20_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 30.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 70.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 36,
+      "shot_id": "S21A",
+      "scene": "Птичье Молоко настаивает: проверить лично. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "PM: Они не здесь, под небесами, за золоченными полями, среди садов, за облаками.",
+      "characters": [
+        "PM",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S21A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 37,
+      "shot_id": "S21B",
+      "scene": "Птичье Молоко настаивает: проверить лично. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Сходите и проверьте сами.",
+      "characters": [
+        "PM",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S21B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 38,
+      "shot_id": "S22",
+      "scene": "Желе повышает давление.",
+      "location": "Тронный зал",
+      "dialogue": "General: Да ты дерзить, похоже, вздумал. Ишь, посмотри, чего думал.",
+      "characters": [
+        "General",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S22_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 30.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 70.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 39,
+      "shot_id": "S23A",
+      "scene": "Наполеон высмеивает и отвергает угрозу. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Napoleon: Ну ты ей Богу рассмешил. Чего ты видел, где ты был? И нам какая в том забота?",
+      "characters": [
+        "Napoleon",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S23A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        }
+      ]
+    },
+    {
+      "index": 40,
+      "shot_id": "S23B",
+      "scene": "Наполеон высмеивает и отвергает угрозу. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Не наши, это ведь работа другие царства изучать. Своих бы слуг нам поучать.",
+      "characters": [
+        "Napoleon",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S23B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        }
+      ]
+    },
+    {
+      "index": 41,
+      "shot_id": "S24A",
+      "scene": "Птичье Молоко предупреждает о последствиях. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "PM: Ну как хотите, только если вас так сожрут, сожрут всех",
+      "characters": [
+        "PM",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S24A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 42,
+      "shot_id": "S24B",
+      "scene": "Птичье Молоко предупреждает о последствиях. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "вместе, то вспомните мои слова, на то и есть ведь голова.",
+      "characters": [
+        "PM",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S24B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 43,
+      "shot_id": "S25",
+      "scene": "Желе срывается: «надоел».",
+      "location": "Тронный зал",
+      "dialogue": "General: Всё, надоел ты мне однако, да ты еще из-за бияка?",
+      "characters": [
+        "General",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S25_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 30.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 70.0,
+          "y": 60.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 44,
+      "shot_id": "S26",
+      "scene": "Резкий сигнал и выход охраны.",
+      "location": "Тронный зал",
+      "dialogue": "General: Всё, довольно.",
+      "characters": [
+        "General",
+        "Gurts",
+        "PM"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S26_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 50.0,
+          "y": 72.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "trapped-center"
+        }
+      ]
+    },
+    {
+      "index": 45,
+      "shot_id": "S27A",
+      "scene": "Наполеон выдворяет героя к горам. (часть 1/2)",
+      "location": "Тронный зал / выход",
+      "dialogue": "Napoleon: Хватит нам. Езжай обратно ты к горам.",
+      "characters": [
+        "Napoleon",
+        "PM",
+        "Gurts"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S27A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 46,
+      "shot_id": "S27B",
+      "scene": "Наполеон выдворяет героя к горам. (часть 2/2)",
+      "location": "Тронный зал / выход",
+      "dialogue": "За твое смелость отпускаю, но если я опять узнаю, что ты про это говоришь, тогда держись наш торт, малыш.",
+      "characters": [
+        "Napoleon",
+        "PM",
+        "Gurts"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S27B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "PM",
+          "label": "ПМ",
+          "color": "#4FC3F7",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Gurts",
+          "label": "Гуртс",
+          "color": "#F06292",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 47,
+      "shot_id": "S28A",
+      "scene": "Тайный приказ о слежке. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Napoleon: И всё же вы за ним следите. И мне тихонько говорите.",
+      "characters": [
+        "Napoleon",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S28A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        }
+      ]
+    },
+    {
+      "index": 48,
+      "shot_id": "S28B",
+      "scene": "Тайный приказ о слежке. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Вдруг что и где произойдет? А если этот торт не врет?",
+      "characters": [
+        "Napoleon",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S28B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        }
+      ]
+    },
+    {
+      "index": 49,
+      "shot_id": "S29A",
+      "scene": "Появление Казначея с проверкой инвентаря. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Blin: Простите, а у нас проверка. Читаем царский инвентарь.",
+      "characters": [
+        "Blin",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S29A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Blin",
+          "label": "Блин",
+          "color": "#FFD54F",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 50,
+      "shot_id": "S29B",
+      "scene": "Появление Казначея с проверкой инвентаря. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Утрона номерная бирка. Да и записать мне ее, царь.",
+      "characters": [
+        "Blin",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S29B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Blin",
+          "label": "Блин",
+          "color": "#FFD54F",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 51,
+      "shot_id": "S30A",
+      "scene": "Наполеон переводит разговор к бюджету армии. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Napoleon: Какая нынче обстановка? И ты давай тут не юлей.",
+      "characters": [
+        "Napoleon",
+        "Blin",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S30A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "Blin",
+          "label": "Блин",
+          "color": "#FFD54F",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 52,
+      "shot_id": "S30B",
+      "scene": "Наполеон переводит разговор к бюджету армии. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Для армии нужна обновка. Мы сколько денег сберегли?",
+      "characters": [
+        "Napoleon",
+        "Blin",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S30B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "Blin",
+          "label": "Блин",
+          "color": "#FFD54F",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 53,
+      "shot_id": "S31A",
+      "scene": "Казначей предлагает закрыть балы ради финансов. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Blin: Бой, государь, ну что вы правы? Казна пуста.",
+      "characters": [
+        "Blin",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S31A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Blin",
+          "label": "Блин",
+          "color": "#FFD54F",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 54,
+      "shot_id": "S31B",
+      "scene": "Казначей предлагает закрыть балы ради финансов. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Ну если надо, мы можем прекратить баллы. Финансы вырастут твой.",
+      "characters": [
+        "Blin",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S31B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Blin",
+          "label": "Блин",
+          "color": "#FFD54F",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 55,
+      "shot_id": "S32A",
+      "scene": "Эклер протестует против отмены балов. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Eclair: Жизнь без баллов. Как это грустно.",
+      "characters": [
+        "Eclair"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S32A_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "Eclair",
+        "label": "Эклер",
+        "color": "#BA68C8",
+        "x": 50.0,
+        "y": 58.0,
+        "w": 26.0,
+        "h": 42.0,
+        "depth": "mg",
+        "size": "large",
+        "opacity": 0.38,
+        "note": "auto-single"
+      }
+    },
+    {
+      "index": 56,
+      "shot_id": "S32B",
+      "scene": "Эклер протестует против отмены балов. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Блин. Слушай, это ведь искусство.",
+      "characters": [
+        "Eclair"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S32B_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "Eclair",
+        "label": "Эклер",
+        "color": "#BA68C8",
+        "x": 50.0,
+        "y": 58.0,
+        "w": 26.0,
+        "h": 42.0,
+        "depth": "mg",
+        "size": "large",
+        "opacity": 0.38,
+        "note": "auto-single"
+      }
+    },
+    {
+      "index": 57,
+      "shot_id": "S33A",
+      "scene": "Баловая суета прерывается силовой репликой Желе. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "General: Искусство в поле. И в бою.",
+      "characters": [
+        "Eclair",
+        "General",
+        "Cookie",
+        "Donut",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S33A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 16.0,
+          "y": 66.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-outer"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 34.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-inner"
+        },
+        {
+          "key": "Cookie",
+          "label": "Куки",
+          "color": "#64B5F6",
+          "x": 50.0,
+          "y": 54.0,
+          "w": 22.0,
+          "h": 32.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Donut",
+          "label": "Донат",
+          "color": "#81C784",
+          "x": 66.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right-inner"
+        }
+      ]
+    },
+    {
+      "index": 58,
+      "shot_id": "S33B",
+      "scene": "Баловая суета прерывается силовой репликой Желе. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Балы я лично не люблю.",
+      "characters": [
+        "Eclair",
+        "General",
+        "Cookie",
+        "Donut",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S33B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 16.0,
+          "y": 66.0,
+          "w": 16.0,
+          "h": 24.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-outer"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 34.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left-inner"
+        },
+        {
+          "key": "Cookie",
+          "label": "Куки",
+          "color": "#64B5F6",
+          "x": 50.0,
+          "y": 54.0,
+          "w": 22.0,
+          "h": 32.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Donut",
+          "label": "Донат",
+          "color": "#81C784",
+          "x": 66.0,
+          "y": 60.0,
+          "w": 18.0,
+          "h": 28.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right-inner"
+        }
+      ]
+    },
+    {
+      "index": 59,
+      "shot_id": "S34A",
+      "scene": "Наполеон официально закрывает балы. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Napoleon: Ввиду особые обстановки. И для сохранности моей. Так же армии обновки.",
+      "characters": [
+        "Napoleon",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S34A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 60,
+      "shot_id": "S34B",
+      "scene": "Наполеон официально закрывает балы. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Балы закрыть все. Поскорей.",
+      "characters": [
+        "Napoleon",
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S34B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Crowd",
+          "label": "Жители",
+          "color": "#90A4AE",
+          "x": 50.0,
+          "y": 82.0,
+          "w": 94.0,
+          "h": 20.0,
+          "depth": "bg",
+          "size": "large",
+          "opacity": 0.18,
+          "note": "auto-crowd-band"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 61,
+      "shot_id": "S35",
+      "scene": "Crowd в шоке от решения.",
+      "location": "Тронный зал",
+      "dialogue": "Eclair: А знаешь, царь.",
+      "characters": [
+        "Donut",
+        "Cookie",
+        "Vatrushki"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S35_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Donut",
+          "label": "Донат",
+          "color": "#81C784",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Cookie",
+          "label": "Куки",
+          "color": "#64B5F6",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Vatrushki",
+          "label": "Ватрушки",
+          "color": "#AED581",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 62,
+      "shot_id": "S36",
+      "scene": "Эклер сообщает о пещерном лазе.",
+      "location": "Тронный зал",
+      "dialogue": "Eclair: Намед не слышал, что есть в горе пещерный лаз.",
+      "characters": [
+        "Eclair",
+        "Napoleon"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S36_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 28.0,
+          "y": 66.0,
+          "w": 20.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "support-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 52.0,
+          "y": 48.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        }
+      ]
+    },
+    {
+      "index": 63,
+      "shot_id": "S37",
+      "scene": "Наполеон требует детали шёпотом при General.",
+      "location": "Тронный зал",
+      "dialogue": "Napoleon: А ну-ка подойди поближе. Поведай мне о том сейчас.",
+      "characters": [
+        "Napoleon",
+        "Eclair",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S37_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 64,
+      "shot_id": "S38A",
+      "scene": "Эклер объясняет проход в другой мир. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Eclair: Так через этот лаз возможно попасть в тот мир. Неосторожно.",
+      "characters": [
+        "Eclair",
+        "Napoleon",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S38A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 65,
+      "shot_id": "S38B",
+      "scene": "Эклер объясняет проход в другой мир. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "Ну в тот, про что он говорил.",
+      "characters": [
+        "Eclair",
+        "Napoleon",
+        "General"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S38B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 24.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-left"
+        },
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 66,
+      "shot_id": "S39A",
+      "scene": "Наполеон утверждает план контроля и наблюдения. (часть 1/2)",
+      "location": "Тронный зал",
+      "dialogue": "Napoleon: Все, понял. Ты нас убедил. Поставим мы туда охрану.",
+      "characters": [
+        "Napoleon",
+        "General",
+        "Eclair"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S39A_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 67,
+      "shot_id": "S39B",
+      "scene": "Наполеон утверждает план контроля и наблюдения. (часть 2/2)",
+      "location": "Тронный зал",
+      "dialogue": "И держимся такого плана. Заптичим молоком следить, но только торту не вредить.",
+      "characters": [
+        "Napoleon",
+        "General",
+        "Eclair"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S39B_control.png",
+      "mask_status": "auto",
+      "occupants": [
+        {
+          "key": "Napoleon",
+          "label": "Наполеон",
+          "color": "#FFB74D",
+          "x": 50.0,
+          "y": 46.0,
+          "w": 24.0,
+          "h": 36.0,
+          "depth": "mg",
+          "size": "large",
+          "opacity": 0.38,
+          "note": "throne-anchor"
+        },
+        {
+          "key": "General",
+          "label": "Генерал",
+          "color": "#FF6B6B",
+          "x": 50.0,
+          "y": 58.0,
+          "w": 22.0,
+          "h": 34.0,
+          "depth": "mg",
+          "size": "medium",
+          "opacity": 0.38,
+          "note": "auto-center"
+        },
+        {
+          "key": "Eclair",
+          "label": "Эклер",
+          "color": "#BA68C8",
+          "x": 76.0,
+          "y": 62.0,
+          "w": 18.0,
+          "h": 30.0,
+          "depth": "mg",
+          "size": "small",
+          "opacity": 0.38,
+          "note": "auto-right"
+        }
+      ]
+    },
+    {
+      "index": 68,
+      "shot_id": "S40",
+      "scene": "Финальный аккорд пилота.",
+      "location": "Тронный зал → титры",
+      "dialogue": "Napoleon: А если что-нибудь случится, то генерал там отличится.",
+      "characters": [
+        "Crowd"
+      ],
+      "image": "../4_Ключевые_кадры/control_20260426/S40_control.png",
+      "mask_status": "auto",
+      "occupants": {
+        "key": "Crowd",
+        "label": "Жители",
+        "color": "#90A4AE",
+        "x": 50.0,
+        "y": 82.0,
+        "w": 94.0,
+        "h": 20.0,
+        "depth": "bg",
+        "size": "large",
+        "opacity": 0.18,
+        "note": "auto-crowd-band"
+      }
+    }
+  ]
+}</script>
+  <script src="./character_mask_manifest.js"></script>
+  <script>
+    const state = { shots: [], palette: {}, labels: {}, mode: 'overlay', char: '', q: '' };
+    const els = {
+      legend: document.getElementById('legend'),
+      grid: document.getElementById('grid'),
+      empty: document.getElementById('empty'),
+      counter: document.getElementById('counter'),
+      searchInput: document.getElementById('searchInput'),
+      charFilter: document.getElementById('charFilter'),
+      overlayBtn: document.getElementById('overlayBtn'),
+      maskBtn: document.getElementById('maskBtn')
+    };
+
+    function esc(v){return String(v ?? '').replace(/[&<>\"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));}
+    function norm(v){return String(v || '').toLowerCase();}
+
+    function renderLegend(){
+      const keys = Object.keys(state.palette);
+      els.legend.innerHTML = keys.map(key => `
+        <div class="legend-item">
+          <span class="sw" style="background:${state.palette[key]}"></span>
+          <div>${esc(state.labels[key] || key)}</div>
+        </div>
+      `).join('');
+      const chars = Array.from(new Set(state.shots.flatMap(s => s.characters || []).filter(Boolean)));
+      els.charFilter.innerHTML = '<option value="">Все персонажи</option>' + chars.map(c => `<option value="${esc(c)}">${esc(state.labels[c] || c)}</option>`).join('');
+    }
+
+    function createMask(shot){
+      const occupants = Array.isArray(shot.occupants) ? shot.occupants : (shot.occupants ? [shot.occupants] : []);
+      return occupants.map(o => {
+        const cls = o.key === 'Crowd' ? 'mask-shape band' : 'mask-shape';
+        const style = `left:${o.x - o.w/2}%;top:${o.y - o.h/2}%;width:${o.w}%;height:${o.h}%;background:${o.color};opacity:${o.opacity};`;
+        return `<div class="${cls}" style="${style}"><div class="mask-label">${esc(o.label || o.key)}</div></div>`;
+      }).join('');
+    }
+
+    function matches(shot){
+      const text = norm([shot.shot_id, shot.scene, shot.location, ...(shot.characters || [])].join(' '));
+      if (state.char && !(shot.characters || []).includes(state.char)) return false;
+      if (state.q && !text.includes(state.q)) return false;
+      return true;
+    }
+
+    function render(){
+      const rows = state.shots.filter(matches);
+      els.counter.textContent = `Показано: ${rows.length} / ${state.shots.length} · Режим: ${state.mode === 'overlay' ? 'overlay' : 'mask only'}`;
+      els.grid.innerHTML = rows.map(shot => `
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <div class="shot">${esc(shot.shot_id)}</div>
+              <div class="sub">${esc(shot.location || '')}</div>
+            </div>
+            <div class="badge">${esc(shot.mask_status || 'auto')}</div>
+          </div>
+          <div class="stage" data-mode="${esc(state.mode)}">
+            <img src="${esc(shot.image)}" alt="${esc(shot.shot_id)}" style="opacity:${state.mode === 'overlay' ? '1' : '.12'}">
+            <div class="mask-layer">${createMask(shot)}</div>
+          </div>
+          <div class="chips">${(shot.characters || []).map(c => `<span class="chip" style="border-color:${state.palette[c] || '#ffffff33'};box-shadow:inset 0 0 0 1px ${state.palette[c] || '#ffffff22'}">${esc(state.labels[c] || c)}</span>`).join('')}</div>
+          <div class="meta"><b>Сцена</b><span>${esc(shot.scene || '')}</span></div>
+          <div class="meta"><b>Реплика</b><span>${esc(shot.dialogue || '')}</span></div>
+        </article>
+      `).join('');
+      els.empty.style.display = rows.length ? 'none' : 'block';
+      els.overlayBtn.classList.toggle('active', state.mode === 'overlay');
+      els.maskBtn.classList.toggle('active', state.mode === 'mask');
+    }
+
+    async function resolveManifest(){
+      const inlineNode = document.getElementById('maskManifestData');
+      if (inlineNode && inlineNode.textContent && inlineNode.textContent.trim()) {
+        return JSON.parse(inlineNode.textContent);
+      }
+      if (window.__characterMaskManifest && Array.isArray(window.__characterMaskManifest.shots)) {
+        return window.__characterMaskManifest;
+      }
+      const res = await fetch('./character_mask_manifest.json?ts=' + Date.now());
+      return await res.json();
+    }
+
+    async function boot(){
+      const data = await resolveManifest();
+      state.shots = data.shots || [];
+      state.palette = data.palette || {};
+      state.labels = data.labels || {};
+      renderLegend();
+      render();
+    }
+
+    els.searchInput.addEventListener('input', e => { state.q = norm(e.target.value); render(); });
+    els.charFilter.addEventListener('change', e => { state.char = e.target.value; render(); });
+    els.overlayBtn.addEventListener('click', () => { state.mode = 'overlay'; render(); });
+    els.maskBtn.addEventListener('click', () => { state.mode = 'mask'; render(); });
+    boot().catch(err => {
+      els.counter.textContent = 'Ошибка загрузки manifest: ' + (err && err.message ? err.message : String(err));
+      console.error(err);
+    });
+  </script>
+</body>
+</html>
+
