@@ -244,6 +244,7 @@
     tr.row-frame-auto td.col-shot { box-shadow: inset 3px 0 0 rgba(240,202,134,.84); }
     tr.row-frame-manual td.col-shot { box-shadow: inset 3px 0 0 rgba(121,217,146,.84); }
     tr.row-hidden-by-filter { display:none !important; }
+    tr.row-focus-flash td { background:rgba(142,184,255,.16); transition:background .2s ease; }
     .glossary-wrap { margin-top:12px; display:grid; gap:10px; }
     .glossary-block { border:1px solid var(--line); border-radius:10px; background:var(--panel); overflow:hidden; }
     .glossary-block summary { cursor:pointer; list-style:none; padding:10px 12px; font-weight:700; background:#2f3a4c; }
@@ -321,10 +322,64 @@
 </head>
 <body>
   <div class='app'>
+    <div class='topbar no-print'>
+      <div class='eyebrow'>TORTS storyboard review surface</div>
+      <div class='actions'>
+        <a class='action-link' href='glossary_assets.html'>Глоссарий</a>
+        <a class='action-link' href='shot_location_character_scheme.html'>Схема шотов</a>
+        <button type='button' id='exportPdf'>Экспорт в PDF</button>
+      </div>
+    </div>
+
+    <section class='hero no-print'>
+      <div class='hero-grid'>
+        <div>
+          <div class='eyebrow'>Главный экран показа keyframes / storyboard</div>
+          <h1 class='hero-title'>Страна Тортов. Быстрый обзор шотов, control-кадров и готовности к показу.</h1>
+          <p class='hero-subtitle'>Один экран для срочного просмотра: крупные контрольные кадры, быстрый переход к нужному шоту, компактная фильтрация и мгновенное открытие кадра без ухода в дублирующие страницы.</p>
+          <div class='hero-pills'>
+            <div class='pill'><span>LOCK</span><strong>68</strong></div>
+            <div class='pill'><span>Шоты</span><strong id='shotCountLabel'>68</strong></div>
+            <div class='pill'><span>Длительность</span><strong id='totalDurationLabel'>—</strong></div>
+            <div class='pill'><span>Режим</span><strong>Frame-first review</strong></div>
+          </div>
+        </div>
+        <div class='hero-side'>
+          <div class='hero-stats'>
+            <div class='stat-card'>
+              <div class='stat-label'>Control / auto</div>
+              <div class='stat-value' id='autoFrameCount'>—</div>
+              <div class='stat-note'>автоподхваченные control или wave кадры</div>
+            </div>
+            <div class='stat-card'>
+              <div class='stat-label'>Ручные / uploaded</div>
+              <div class='stat-value' id='manualFrameCount'>—</div>
+              <div class='stat-note'>кадры, подложенные вручную</div>
+            </div>
+            <div class='stat-card'>
+              <div class='stat-label'>Без кадра</div>
+              <div class='stat-value' id='emptyFrameCount'>—</div>
+              <div class='stat-note'>сразу видно, что ещё пусто</div>
+            </div>
+            <div class='stat-card'>
+              <div class='stat-label'>Ready</div>
+              <div class='stat-value' id='readyFrameCount'>—</div>
+              <div class='stat-note'>отмечены как готовые</div>
+            </div>
+          </div>
+          <div class='hero-actions'>
+            <button type='button' id='focusPresentation' class='button-strong'>Перейти к кадрам</button>
+            <button type='button' id='toggleControlOnly'>Только control / wave</button>
+            <button type='button' id='jumpFirstMissing'>Первый пустой шот</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <div class='top no-print'>
       <div>
         <h1>Сценарий · Таблица шотов</h1>
-        <div class='meta'><span id='shotCountLabel'>68</span> шотов · 8 колонок · LOCK:68 · общая длительность: <span id='totalDurationLabel'>—</span></div>
+        <div class='meta'>Единая рабочая таблица для keyframes, сцены, речи, камеры и prompt-блока.</div>
       </div>
       <div class='actions'>
         <div class='colmenu'>
@@ -358,14 +413,37 @@
 <label><input type='checkbox' data-col='5' checked> <span>Анимация</span></label>
 <label><input type='checkbox' data-col='6' checked> <span>Работа камеры</span></label>
 <label><input type='checkbox' data-col='7' checked> <span>Готово</span></label>
-<label><input type='checkbox' data-col='8' checked> <span>Промпт</span></label>
+              <label><input type='checkbox' data-col='8' checked> <span>Промпт</span></label>
             </div>
           </div>
         </div>
-        <button type='button' onclick="location.href='keyframes_presentation.html'">Презентация кадров</button>
-        <button type='button' onclick="location.href='glossary_assets.html'">Глоссарий (отд.)</button>
-        <button type='button' onclick="location.href='shot_location_character_scheme.html'">Схема шотов</button>
-        <button type='button' id='exportPdf'>Экспорт в PDF</button>
+        <button type='button' id='presentationModeBtn' class='button-strong'>Презентация кадров</button>
+        <button type='button' id='compactModeBtn'>Компактный просмотр</button>
+      </div>
+    </div>
+
+    <div class='quickbar no-print' id='presentationGrid'>
+      <div class='quick-card'>
+        <div>
+          <div class='quick-label'>Быстрый фильтр</div>
+          <div class='actions'>
+            <button type='button' class='filter-chip active' data-frame-filter='all'>Все <span class='count' id='countAll'>—</span></button>
+            <button type='button' class='filter-chip' data-frame-filter='auto'>Control / wave <span class='count' id='countAuto'>—</span></button>
+            <button type='button' class='filter-chip' data-frame-filter='manual'>Ручные <span class='count' id='countManual'>—</span></button>
+            <button type='button' class='filter-chip' data-frame-filter='empty'>Пустые <span class='count' id='countEmpty'>—</span></button>
+            <button type='button' class='filter-chip' data-frame-filter='ready'>Ready <span class='count' id='countReady'>—</span></button>
+          </div>
+        </div>
+      </div>
+      <div class='quick-card'>
+        <div>
+          <div class='quick-label'>Прыжок по шоту</div>
+          <div class='jump-controls'>
+            <input type='text' id='shotJumpInput' class='jump-input' placeholder='Например, S18 или S39B'>
+            <button type='button' id='jumpShotBtn'>Перейти</button>
+            <button type='button' id='nextAutoBtn'>Следующий control</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1105,8 +1183,7 @@ const audioSegments = {
         const shotCountLabel = document.getElementById('shotCountLabel');
         if (shotCountLabel) {
           const fallbackRows = body.querySelectorAll('tr[data-shot]').length;
-          const calculated = Object.keys(expandedAudioSegments).length;
-          shotCountLabel.textContent = String(calculated || fallbackRows);
+          shotCountLabel.textContent = String(fallbackRows);
         }
       }
 
@@ -1141,6 +1218,86 @@ const audioSegments = {
         });
       }
 
+      const frameFilterButtons = Array.from(document.querySelectorAll('[data-frame-filter]'));
+      const focusPresentationBtn = document.getElementById('focusPresentation');
+      const presentationModeBtn = document.getElementById('presentationModeBtn');
+      const compactModeBtn = document.getElementById('compactModeBtn');
+      const toggleControlOnlyBtn = document.getElementById('toggleControlOnly');
+      const jumpFirstMissingBtn = document.getElementById('jumpFirstMissing');
+      const jumpShotBtn = document.getElementById('jumpShotBtn');
+      const shotJumpInput = document.getElementById('shotJumpInput');
+      const nextAutoBtn = document.getElementById('nextAutoBtn');
+      const presentationGrid = document.getElementById('presentationGrid');
+      let currentFrameFilter = 'all';
+
+      function scrollToTableTop() {
+        if (presentationGrid) presentationGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function normalizeShotCode(value) {
+        return String(value || '').toUpperCase().replace(/\s+/g, '').trim();
+      }
+
+      function getShotRows() {
+        return Array.from(table.querySelectorAll('tbody tr[data-shot]'));
+      }
+
+      function findShotRow(shotCode) {
+        const normalized = normalizeShotCode(shotCode);
+        if (!normalized) return null;
+        return getShotRows().find((row) => normalizeShotCode(row.dataset.shot) === normalized) || null;
+      }
+
+      function focusRow(row) {
+        if (!row) return false;
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        row.classList.add('row-focus-flash');
+        window.setTimeout(() => row.classList.remove('row-focus-flash'), 1400);
+        return true;
+      }
+
+      function updatePresentationStats() {
+        const rows = getShotRows();
+        const totals = { all: rows.length, auto: 0, manual: 0, empty: 0, ready: 0 };
+        rows.forEach((row) => {
+          const state = row.dataset.frameState || 'empty';
+          if (state === 'auto') totals.auto += 1;
+          else if (state === 'manual') totals.manual += 1;
+          else totals.empty += 1;
+          if (row.classList.contains('shot-ready')) totals.ready += 1;
+        });
+
+        const setText = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = String(value);
+        };
+        setText('autoFrameCount', totals.auto);
+        setText('manualFrameCount', totals.manual);
+        setText('emptyFrameCount', totals.empty);
+        setText('readyFrameCount', totals.ready);
+        setText('countAll', totals.all);
+        setText('countAuto', totals.auto);
+        setText('countManual', totals.manual);
+        setText('countEmpty', totals.empty);
+        setText('countReady', totals.ready);
+      }
+
+      function applyFrameFilter(filterName) {
+        currentFrameFilter = filterName || 'all';
+        const rows = getShotRows();
+        rows.forEach((row) => {
+          const state = row.dataset.frameState || 'empty';
+          const isReady = row.classList.contains('shot-ready');
+          let visible = true;
+          if (currentFrameFilter === 'auto') visible = state === 'auto';
+          else if (currentFrameFilter === 'manual') visible = state === 'manual';
+          else if (currentFrameFilter === 'empty') visible = state === 'empty';
+          else if (currentFrameFilter === 'ready') visible = isReady;
+          row.classList.toggle('row-hidden-by-filter', !visible);
+        });
+        frameFilterButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.frameFilter === currentFrameFilter));
+      }
+
       checks.forEach((ch) => ch.addEventListener('change', applyVisibility));
 
       toggleColsBtn.addEventListener('click', () => {
@@ -1163,6 +1320,42 @@ const audioSegments = {
           c.checked = ![4,5,6,8].includes(col);
         });
         applyVisibility();
+      });
+
+      frameFilterButtons.forEach((btn) => {
+        btn.addEventListener('click', () => applyFrameFilter(btn.dataset.frameFilter || 'all'));
+      });
+
+      if (focusPresentationBtn) focusPresentationBtn.addEventListener('click', scrollToTableTop);
+      if (presentationModeBtn) presentationModeBtn.addEventListener('click', scrollToTableTop);
+      if (compactModeBtn) compactModeBtn.addEventListener('click', () => document.getElementById('hideTextCols').click());
+      if (toggleControlOnlyBtn) toggleControlOnlyBtn.addEventListener('click', () => {
+        const nextFilter = currentFrameFilter === 'auto' ? 'all' : 'auto';
+        applyFrameFilter(nextFilter);
+        scrollToTableTop();
+      });
+      if (jumpFirstMissingBtn) jumpFirstMissingBtn.addEventListener('click', () => {
+        applyFrameFilter('all');
+        const firstEmpty = getShotRows().find((row) => (row.dataset.frameState || 'empty') === 'empty');
+        if (firstEmpty) focusRow(firstEmpty);
+      });
+      if (jumpShotBtn) jumpShotBtn.addEventListener('click', () => {
+        applyFrameFilter('all');
+        focusRow(findShotRow(shotJumpInput && shotJumpInput.value));
+      });
+      if (shotJumpInput) shotJumpInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          jumpShotBtn && jumpShotBtn.click();
+        }
+      });
+      if (nextAutoBtn) nextAutoBtn.addEventListener('click', () => {
+        applyFrameFilter('all');
+        const rows = getShotRows().filter((row) => (row.dataset.frameState || 'empty') === 'auto');
+        if (!rows.length) return;
+        const currentY = window.scrollY + 120;
+        const nextRow = rows.find((row) => row.getBoundingClientRect().top + window.scrollY > currentY) || rows[0];
+        focusRow(nextRow);
       });
 
       document.getElementById('exportPdf').addEventListener('click', () => window.print());
@@ -1270,11 +1463,30 @@ const audioSegments = {
       const wraps = Array.from(document.querySelectorAll('.kf-wrap[data-shot]'));
       wraps.forEach((wrap) => {
         const shot = wrap.dataset.shot;
+        const row = wrap.closest('tr[data-shot]');
         const img = wrap.querySelector('.kf-img');
         const empty = wrap.querySelector('.kf-empty');
         const input = wrap.querySelector('.kf-input');
         const up = wrap.querySelector('.kf-btn-upload');
         const clr = wrap.querySelector('.kf-btn-clear');
+        let badge = wrap.querySelector('.kf-badge');
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.className = 'kf-badge';
+          wrap.appendChild(badge);
+        }
+
+        function setFrameState(state, label) {
+          wrap.dataset.frameState = state;
+          if (row) {
+            row.dataset.frameState = state;
+            row.classList.toggle('row-frame-auto', state === 'auto');
+            row.classList.toggle('row-frame-manual', state === 'manual');
+          }
+          badge.textContent = label;
+          updatePresentationStats();
+          applyFrameFilter(currentFrameFilter);
+        }
 
         function render() {
           const data = keyframeStore[shot];
@@ -1286,6 +1498,7 @@ const audioSegments = {
             img.style.display = 'block';
             empty.style.display = 'none';
             img.title = 'Ключевой кадр (ручной)';
+            setFrameState('manual', 'Manual');
           } else {
             if (autoCandidates.length) {
               const tryAuto = (idx) => {
@@ -1294,6 +1507,7 @@ const audioSegments = {
                   img.style.display = 'none';
                   empty.style.display = 'grid';
                   empty.textContent = 'нет';
+                  setFrameState('empty', 'Missing');
                   return;
                 }
                 img.onload = () => {
@@ -1302,6 +1516,7 @@ const audioSegments = {
                   img.style.display = 'block';
                   empty.style.display = 'none';
                   img.title = 'Контрольный кадр (авто)';
+                  setFrameState('auto', 'Control');
                 };
                 img.onerror = () => {
                   img.onload = null;
@@ -1316,6 +1531,7 @@ const audioSegments = {
               img.style.display = 'none';
               empty.style.display = 'grid';
               empty.textContent = 'нет';
+              setFrameState('empty', 'Missing');
             }
           }
         }
@@ -1347,6 +1563,8 @@ const audioSegments = {
 
         render();
       });
+
+      applyFrameFilter('all');
 
       function normKey(text) {
         return String(text || '')
@@ -1685,6 +1903,8 @@ const audioSegments = {
         function paint(isReady) {
           row.classList.toggle('shot-ready', isReady);
           if (printMark) printMark.textContent = isReady ? '✓' : '';
+          updatePresentationStats();
+          applyFrameFilter(currentFrameFilter);
         }
 
         check.checked = !!readyStore[shot];
@@ -1698,6 +1918,7 @@ const audioSegments = {
         });
       });
       applyVisibility();
+      updatePresentationStats();
     })();
   </script>
   <script>
