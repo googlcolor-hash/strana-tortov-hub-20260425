@@ -152,6 +152,20 @@
       border:1px solid var(--line); background:#283349; color:var(--text);
     }
     .shot-audio-btn.playing { border-color:#79d992; color:#d8ffe8; background:#1f3b2d; }
+    .shot-comment-bar { margin-top:6px; display:grid; gap:4px; }
+    .shot-comment-trigger {
+      width:100%; padding:4px 6px; border-radius:6px; font-size:11px;
+      border:1px solid var(--line); background:#263247; color:var(--text);
+    }
+    .shot-comment-meta {
+      display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap;
+      color:var(--muted); font-size:10px; line-height:1.35;
+    }
+    .shot-comment-count {
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:18px; height:18px; padding:0 6px; border-radius:999px;
+      background:#1b2432; border:1px solid var(--line-soft); color:#dce7fb; font-weight:700;
+    }
         td.col-scene .char-name { display:block; font-size:14px; font-weight:700; }
     td.col-scene .loc-name { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-top:4px; }
     td.col-scene .mise-text { display:block; font-size:12px; font-weight:500; margin-top:6px; color:var(--text); }
@@ -258,6 +272,46 @@
     .g-col-name { width:18%; }
     .g-col-desc { width:31%; }
     .g-col-prompt { width:39%; }
+    .comment-modal {
+      position:fixed; inset:0; z-index:1200; display:none; align-items:center; justify-content:center;
+      padding:16px; background:rgba(10,14,20,.74); backdrop-filter:blur(8px);
+    }
+    .comment-modal.open { display:flex; }
+    .comment-sheet {
+      width:min(640px, 94vw); max-height:min(82vh, 860px); overflow:auto;
+      border:1px solid var(--line); border-radius:18px; background:linear-gradient(180deg, rgba(33,41,56,.98), rgba(20,26,38,.98));
+      box-shadow:0 24px 72px rgba(0,0,0,.4); padding:16px;
+    }
+    .comment-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .comment-title { margin:0; font-size:20px; }
+    .comment-subtitle { margin-top:4px; color:var(--muted); font-size:12px; line-height:1.45; }
+    .comment-close { min-width:38px; height:38px; padding:0; font-size:18px; }
+    .comment-form { display:grid; gap:10px; }
+    .comment-field { display:grid; gap:5px; }
+    .comment-field label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold); }
+    .comment-field input, .comment-field textarea {
+      width:100%; border:1px solid var(--line); border-radius:10px; background:#182131; color:var(--text);
+      padding:10px 12px; font:inherit;
+    }
+    .comment-field textarea { min-height:110px; resize:vertical; }
+    .comment-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .comment-save { background:linear-gradient(135deg, #466db3, #30496e); border-color:#86aef7; }
+    .comment-note { color:var(--muted); font-size:11px; line-height:1.45; }
+    .comment-list { margin-top:14px; display:grid; gap:8px; }
+    .comment-item {
+      border:1px solid var(--line-soft); border-radius:12px; background:rgba(17,23,33,.58);
+      padding:10px 12px; display:grid; gap:5px;
+    }
+    .comment-item.is-local { border-color:rgba(121,217,146,.24); }
+    .comment-item.is-shared { border-color:rgba(142,184,255,.24); }
+    .comment-item-head { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+    .comment-author { font-weight:700; }
+    .comment-tag {
+      display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px;
+      background:#182131; border:1px solid var(--line-soft); color:#dce7fb; font-size:10px; text-transform:uppercase; letter-spacing:.08em;
+    }
+    .comment-body { white-space:pre-wrap; line-height:1.45; }
+    .comment-empty { color:var(--muted); font-size:12px; line-height:1.45; padding:8px 0 2px; }
     .gimg-wrap { display:grid; gap:4px; justify-items:center; }
     .gimg { width:96px; height:56px; object-fit:cover; border:1px solid var(--line); border-radius:6px; background:#11161f; display:none; cursor:zoom-in; }
     .gimg-empty { width:96px; height:56px; border:1px dashed #627391; border-radius:6px; color:var(--muted); font-size:10px; display:grid; place-items:center; }
@@ -1919,6 +1973,275 @@ const audioSegments = {
       });
       applyVisibility();
       updatePresentationStats();
+    })();
+  </script>
+  <div id="commentModal" class="comment-modal no-print" aria-hidden="true">
+    <div class="comment-sheet" role="dialog" aria-modal="true" aria-labelledby="commentModalTitle">
+      <div class="comment-head">
+        <div>
+          <h2 id="commentModalTitle" class="comment-title">Комментарии к шоту</h2>
+          <div id="commentModalMeta" class="comment-subtitle">Добавь имя и комментарий. После сохранения запись появится в таблице и откроется общий GitHub-черновик для командной истории.</div>
+        </div>
+        <button type="button" id="commentModalClose" class="comment-close" title="Закрыть">×</button>
+      </div>
+      <div class="comment-form">
+        <div class="comment-field">
+          <label for="commentAuthor">Добавить имя</label>
+          <input id="commentAuthor" type="text" maxlength="80" placeholder="Имя / роль">
+        </div>
+        <div class="comment-field">
+          <label for="commentText">Добавить комментарий</label>
+          <textarea id="commentText" placeholder="Комментарий по шоту"></textarea>
+        </div>
+        <div class="comment-actions">
+          <button type="button" id="commentSaveBtn" class="comment-save">Сохранить</button>
+          <div id="commentSaveNote" class="comment-note">Локально сохранится сразу. Общая история шота идёт через GitHub issue.</div>
+        </div>
+      </div>
+      <div id="commentList" class="comment-list"></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const repoOwner = 'googlcolor-hash';
+      const repoName = 'strana-tortov-hub-20260425';
+      const issueLabel = 'shot-comment';
+      const localCommentsKey = 'tortsShotComments.v1';
+      const modal = document.getElementById('commentModal');
+      const modalMeta = document.getElementById('commentModalMeta');
+      const closeBtn = document.getElementById('commentModalClose');
+      const saveBtn = document.getElementById('commentSaveBtn');
+      const authorInput = document.getElementById('commentAuthor');
+      const textInput = document.getElementById('commentText');
+      const saveNote = document.getElementById('commentSaveNote');
+      const commentList = document.getElementById('commentList');
+      const shotRows = Array.from(document.querySelectorAll('tbody tr[data-shot]'));
+      const state = {
+        shot: '',
+        local: loadJson(localCommentsKey, {}),
+        shared: {}
+      };
+
+      function loadJson(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (_) {
+          return fallback;
+        }
+      }
+
+      function saveCommentsLocal() {
+        try {
+          localStorage.setItem(localCommentsKey, JSON.stringify(state.local));
+        } catch (_) {}
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"]/g, function (char) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char] || char;
+        });
+      }
+
+      function normalizeShotFromTitle(title) {
+        const match = String(title || '').match(/^\[(S\d{2}[A-Z]?)\]/i);
+        return match ? match[1].toUpperCase() : '';
+      }
+
+      function formatTs(value) {
+        if (!value) return '';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return date.toLocaleString('ru-RU', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      function parseIssueBody(body) {
+        const text = String(body || '');
+        const nameMatch = text.match(/Имя:\s*(.+)/i);
+        const commentMatch = text.match(/Комментарий:\s*([\s\S]+)/i);
+        return {
+          name: nameMatch ? nameMatch[1].trim() : 'Команда',
+          text: commentMatch ? commentMatch[1].trim() : text.trim()
+        };
+      }
+
+      function getCommentsForShot(shot) {
+        const local = Array.isArray(state.local[shot]) ? state.local[shot] : [];
+        const shared = Array.isArray(state.shared[shot]) ? state.shared[shot] : [];
+        return shared.concat(local);
+      }
+
+      function updateRowCommentMeta(row) {
+        const shot = row.dataset.shot;
+        const box = row.querySelector('.shot-comment-bar');
+        if (!box) return;
+        const countEl = box.querySelector('.shot-comment-count');
+        const metaEl = box.querySelector('.shot-comment-state');
+        const localCount = Array.isArray(state.local[shot]) ? state.local[shot].length : 0;
+        const sharedCount = Array.isArray(state.shared[shot]) ? state.shared[shot].length : 0;
+        const total = localCount + sharedCount;
+        if (countEl) countEl.textContent = String(total);
+        if (metaEl) metaEl.textContent = total ? ('общих: ' + sharedCount + ' · локальных: ' + localCount) : 'пока без комментариев';
+      }
+
+      function renderCommentList(shot) {
+        const comments = getCommentsForShot(shot);
+        if (!comments.length) {
+          commentList.innerHTML = "<div class='comment-empty'>Пока комментариев нет. Первый сохранённый комментарий появится сразу здесь.</div>";
+          return;
+        }
+        commentList.innerHTML = comments.map(function (item) {
+          const isShared = item.source === 'github';
+          const author = escapeHtml(item.name || 'Команда');
+          const text = escapeHtml(item.text || '');
+          const meta = escapeHtml(formatTs(item.created_at || item.ts || ''));
+          const link = isShared && item.url ? "<a class='action-link' href='" + escapeHtml(item.url) + "' target='_blank' rel='noopener'>Открыть issue</a>" : '';
+          return "" +
+            "<div class='comment-item " + (isShared ? "is-shared" : "is-local") + "'>" +
+              "<div class='comment-item-head'>" +
+                "<div class='comment-author'>" + author + "</div>" +
+                "<div class='actions'>" +
+                  "<span class='comment-tag'>" + (isShared ? "GitHub" : "Локально") + "</span>" +
+                  (meta ? "<span class='comment-tag'>" + meta + "</span>" : "") +
+                  link +
+                "</div>" +
+              "</div>" +
+              "<div class='comment-body'>" + text + "</div>" +
+            "</div>";
+        }).join('');
+      }
+
+      function openModal(shot) {
+        state.shot = shot;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        modalMeta.textContent = 'Шот ' + shot + '. Добавь имя и комментарий. После сохранения запись появится здесь и откроется общий GitHub-черновик для команды.';
+        saveNote.textContent = 'Локально сохранится сразу. Для общего сохранения откроется prefilled GitHub issue.';
+        textInput.value = '';
+        const lastAuthor = localStorage.getItem('tortsCommentAuthor') || '';
+        authorInput.value = lastAuthor;
+        renderCommentList(shot);
+        setTimeout(function () {
+          if (authorInput.value.trim()) textInput.focus();
+          else authorInput.focus();
+        }, 30);
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      function buildIssueUrl(shot, author, text) {
+        const title = '[' + shot + '] ' + author;
+        const body = [
+          'Шот: ' + shot,
+          'Имя: ' + author,
+          '',
+          'Комментарий:',
+          text
+        ].join('\n');
+        const base = 'https://github.com/' + repoOwner + '/' + repoName + '/issues/new';
+        const params = new URLSearchParams({
+          title: title,
+          body: body,
+          labels: issueLabel
+        });
+        return base + '?' + params.toString();
+      }
+
+      function attachButtons() {
+        shotRows.forEach(function (row) {
+          const shot = row.dataset.shot;
+          const shotCell = row.querySelector("td.col-shot[data-col='1']");
+          if (!shotCell || shotCell.querySelector('.shot-comment-bar')) return;
+          const wrap = document.createElement('div');
+          wrap.className = 'shot-comment-bar no-print';
+          wrap.innerHTML = "" +
+            "<button type='button' class='shot-comment-trigger'>Добавить комментарий</button>" +
+            "<div class='shot-comment-meta'>" +
+              "<span class='shot-comment-count'>0</span>" +
+              "<span class='shot-comment-state'>пока без комментариев</span>" +
+            "</div>";
+          wrap.querySelector('.shot-comment-trigger').addEventListener('click', function () {
+            openModal(shot);
+          });
+          shotCell.appendChild(wrap);
+          updateRowCommentMeta(row);
+        });
+      }
+
+      async function loadSharedComments() {
+        try {
+          const url = 'https://api.github.com/repos/' + repoOwner + '/' + repoName + '/issues?state=all&labels=' + encodeURIComponent(issueLabel) + '&per_page=100';
+          const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
+          if (!res.ok) return;
+          const issues = await res.json();
+          const shared = {};
+          issues.forEach(function (issue) {
+            if (issue.pull_request) return;
+            const shot = normalizeShotFromTitle(issue.title);
+            if (!shot) return;
+            const parsed = parseIssueBody(issue.body || '');
+            if (!shared[shot]) shared[shot] = [];
+            shared[shot].push({
+              name: parsed.name,
+              text: parsed.text,
+              created_at: issue.created_at,
+              source: 'github',
+              url: issue.html_url
+            });
+          });
+          state.shared = shared;
+          shotRows.forEach(updateRowCommentMeta);
+          if (state.shot) renderCommentList(state.shot);
+        } catch (_) {}
+      }
+
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', function (event) {
+        if (event.target === modal) closeModal();
+      });
+      window.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && modal.classList.contains('open')) closeModal();
+      });
+
+      saveBtn.addEventListener('click', function () {
+        const shot = state.shot;
+        const author = authorInput.value.trim();
+        const text = textInput.value.trim();
+        if (!shot) return;
+        if (!author || !text) {
+          saveNote.textContent = 'Заполни имя и комментарий.';
+          return;
+        }
+        const item = {
+          name: author,
+          text: text,
+          ts: new Date().toISOString(),
+          source: 'local'
+        };
+        if (!Array.isArray(state.local[shot])) state.local[shot] = [];
+        state.local[shot].unshift(item);
+        localStorage.setItem('tortsCommentAuthor', author);
+        saveCommentsLocal();
+        renderCommentList(shot);
+        shotRows.forEach(function (row) {
+          if (row.dataset.shot === shot) updateRowCommentMeta(row);
+        });
+        saveNote.textContent = 'Локально сохранено. Открылся GitHub-черновик для общей истории шота.';
+        textInput.value = '';
+        window.open(buildIssueUrl(shot, author, text), '_blank', 'noopener');
+      });
+
+      attachButtons();
+      loadSharedComments();
     })();
   </script>
   <script>
