@@ -912,6 +912,13 @@
       }
 
       const keyframeStore = loadJson(keyStoreKey);
+      const PUBLISHED_KEYFRAME_ROOT = '../4_Ключевые_кадры/manual_selected_20260428';
+      const publishedKeyframeMap = {
+        S06A: toAssetPath(PUBLISHED_KEYFRAME_ROOT + '/S06A_pm_house.jpg'),
+        S06B: toAssetPath(PUBLISHED_KEYFRAME_ROOT + '/S06B_pm_reading_garden.jpg'),
+        S07A: toAssetPath(PUBLISHED_KEYFRAME_ROOT + '/S07A_pm_mountain.jpg'),
+        S12: toAssetPath(PUBLISHED_KEYFRAME_ROOT + '/S12_palace_entry.jpg')
+      };
       const readyStore = loadJson(readyStoreKey);
       const widthStore = loadJson(widthStoreKey);
       const imageOverlay = document.getElementById('imgOverlay');
@@ -1543,7 +1550,8 @@ const audioSegments = {
         }
 
         function render() {
-          const data = keyframeStore[shot];
+          const data = keyframeStore[shot] || publishedKeyframeMap[shot] || '';
+          const isPublishedManual = !keyframeStore[shot] && !!publishedKeyframeMap[shot];
           const autoCandidates = getAutoControlCandidates(shot);
           img.onerror = null;
           img.onload = null;
@@ -1551,8 +1559,8 @@ const audioSegments = {
             img.src = data;
             img.style.display = 'block';
             empty.style.display = 'none';
-            img.title = 'Ключевой кадр (ручной)';
-            setFrameState('manual', 'Manual');
+            img.title = isPublishedManual ? 'Ключевой кадр (editorial)' : 'Ключевой кадр (ручной)';
+            setFrameState('manual', isPublishedManual ? 'Editorial' : 'Manual');
           } else {
             if (autoCandidates.length) {
               const tryAuto = (idx) => {
