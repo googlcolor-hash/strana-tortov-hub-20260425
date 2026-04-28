@@ -131,10 +131,23 @@
     .g-col-desc { width:31%; }
     .g-col-prompt { width:39%; }
     .gimg-wrap { display:grid; gap:4px; justify-items:center; }
-    .gimg { width:96px; height:56px; object-fit:cover; border:1px solid var(--line); border-radius:6px; background:#11161f; display:none; }
+    .gimg { width:96px; height:56px; object-fit:cover; border:1px solid var(--line); border-radius:6px; background:#11161f; display:none; cursor:zoom-in; }
     .gimg-empty { width:96px; height:56px; border:1px dashed #627391; border-radius:6px; color:var(--muted); font-size:10px; display:grid; place-items:center; }
     .gimg-actions { display:flex; gap:4px; }
     .gimg-btn { width:22px; height:22px; padding:0; line-height:20px; font-weight:700; }
+    .img-overlay {
+      position:fixed; inset:0; background:rgba(6,10,16,.88); z-index:9999;
+      display:none; align-items:center; justify-content:center; padding:18px;
+    }
+    .img-overlay.open { display:flex; }
+    .img-overlay-inner { position:relative; max-width:96vw; max-height:94vh; }
+    .img-overlay img { max-width:96vw; max-height:94vh; border:1px solid var(--line); border-radius:10px; background:#11161f; }
+    .img-overlay-close {
+      position:absolute; top:-12px; right:-12px; width:32px; height:32px;
+      border-radius:50%; font-size:20px; line-height:20px; font-weight:700;
+      border:1px solid var(--line); background:#2f3a4c; color:var(--text); cursor:pointer;
+    }
+    .img-overlay-caption { margin-top:8px; font-size:12px; color:var(--muted); text-align:center; }
     .g-input, .g-text {
       width:100%; border:1px solid var(--line); border-radius:6px; background:#1b2432;
       color:var(--text); padding:6px; font-size:12px; font-family:inherit;
@@ -577,6 +590,14 @@
           </table>
         </div>
       </details>
+    </div>
+  </div>
+
+  <div class='img-overlay' id='imgOverlay' aria-hidden='true'>
+    <div class='img-overlay-inner'>
+      <button type='button' class='img-overlay-close' id='imgOverlayClose' aria-label='Закрыть'>×</button>
+      <img id='imgOverlayImage' alt='preview'>
+      <div class='img-overlay-caption' id='imgOverlayCaption'></div>
     </div>
   </div>
 
