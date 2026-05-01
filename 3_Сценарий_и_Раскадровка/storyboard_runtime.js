@@ -1,5 +1,6 @@
 (() => {
   const COL_VIS_KEY = 'torts_col_visibility_v2';
+  const COL_WIDTH_KEY = 'torts_col_widths_v1';
   const KEYFRAME_STORE_KEY = 'torts_keyframe_inline_v1';
   const DIRECTOR_STORE_KEY = 'torts_director_inline_v1';
   const USER_STORE_KEY = 'torts_user_inline_v1';
@@ -40,6 +41,7 @@
     users: loadJson(USER_STORE_KEY),
     ready: loadJson(READY_STORE_KEY),
     text: loadJson(TEXT_STORE_KEY),
+    widths: loadJson(COL_WIDTH_KEY),
     frameFilter: 'all'
   };
 
@@ -207,14 +209,14 @@
         .user-btn-upload, .user-btn-clear { width:20px; height:20px; border-radius:999px; border:1px solid rgba(128,153,191,.46); background:#1f314d; color:#dce8ff; font-size:12px; line-height:1; cursor:pointer; }
         .user-btn-clear { background:#362035; color:#ffd1e1; }
         .user-wrap[data-user-state='manual'] { border-color:rgba(121,217,146,.46); box-shadow:inset 0 0 0 1px rgba(121,217,146,.1); }
-        .col-video { width:14%; min-width:170px; }
+        .col-video { width:180px; min-width:120px; }
         .video-wrap { display:grid; gap:6px; }
         .video-el {
-          width:100%; aspect-ratio:16 / 9; border:1px solid rgba(98,115,145,.64);
+          width:var(--video-thumb-w, 100%); max-width:100%; aspect-ratio:16 / 9; border:1px solid rgba(98,115,145,.64);
           border-radius:8px; background:#0f1725;
         }
         .video-empty {
-          width:100%; aspect-ratio:16 / 9; border:1px dashed rgba(98,115,145,.64);
+          width:var(--video-thumb-w, 100%); max-width:100%; aspect-ratio:16 / 9; border:1px dashed rgba(98,115,145,.64);
           border-radius:8px; display:flex; align-items:center; justify-content:center;
           color:#93a6c8; font-size:11px; text-align:center; padding:6px;
         }
@@ -309,6 +311,43 @@
     });
   }
 
+  function ensurePromptColumnConsistency() {
+    shots().forEach((row) => {
+      if (row.querySelector('td[data-col="8"]')) return;
+      const td = document.createElement('td');
+      td.className = 'col-prompt';
+      td.setAttribute('data-col', '8');
+      td.innerHTML = `
+        <div class="prompt-actions no-print">
+          <button type="button" class="prompt-copy-btn">Copy</button>
+        </div>
+        <textarea class="g-text" placeholder="Промпт для этого шота"></textarea>
+      `;
+      const readyCell = row.querySelector('td.col-ready');
+      if (readyCell) row.insertBefore(td, readyCell);
+      else row.appendChild(td);
+    });
+
+    document.querySelectorAll('.prompt-copy-btn').forEach((btn) => {
+      if (btn.dataset.boundCopyPrompt === '1') return;
+      btn.dataset.boundCopyPrompt = '1';
+      btn.addEventListener('click', async () => {
+        const td = btn.closest('td.col-prompt');
+        const ta = td ? td.querySelector('textarea.g-text') : null;
+        const text = ta ? String(ta.value || '').trim() : '';
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.classList.add('done');
+          setTimeout(() => btn.classList.remove('done'), 900);
+        } catch {
+          btn.classList.add('fail');
+          setTimeout(() => btn.classList.remove('fail'), 900);
+        }
+      });
+    });
+  }
+
   function ensureUnmappedVideoList() {
     const anchor = document.querySelector('.table-wrap');
     if (!anchor) return;
@@ -327,6 +366,129 @@
 
   function getColChecks() {
     return Array.from(document.querySelectorAll('#colControls input[data-col]'));
+  }
+
+  function getColWidthMap() {
+    if (!state.widths || typeof state.widths !== 'object') state.widths = {};
+    return state.widths;
+  }
+
+  function applyColumnWidth(col, px) {
+    const width = clamp(Math.round(Number(px) || 0), 70, 1400);
+    document.querySelectorAll('[data-col="' + col + '"]').forEach((cell) => {
+      cell.style.setProperty('width', width + 'px', 'important');
+      cell.style.setProperty('min-width', width + 'px', 'important');
+      cell.style.setProperty('max-width', width + 'px', 'important');
+    });
+  }
+
+  function persistColumnWidth(col, px) {
+    const map = getColWidthMap();
+    map[String(col)] = clamp(Math.round(Number(px) || 0), 70, 1400);
+    saveJson(COL_WIDTH_KEY, map);
+  }
+
+  function clearColumnWidths() {
+    state.widths = {};
+    saveJson(COL_WIDTH_KEY, state.widths);
+    document.querySelectorAll('th[data-col], td[data-col]').forEach((cell) => {
+      cell.style.removeProperty('width');
+      cell.style.removeProperty('min-width');
+      cell.style.removeProperty('max-width');
+    });
+  }
+
+  function restoreColumnWidths() {
+    const map = getColWidthMap();
+    Object.keys(map).forEach((col) => applyColumnWidth(col, map[col]));
+  }
+
+  function ensureWidthTools() {
+    const select = document.getElementById('widthCol');
+    if (!select) return;
+    if (!select.querySelector('option[value="9"]')) {
+      const opt = document.createElement('option');
+      opt.value = '9';
+      opt.textContent = 'Видео';
+      select.appendChild(opt);
+    }
+  }
+
+  function bindWidthTools() {
+    const select = document.getElementById('widthCol');
+    const input = document.getElementById('widthPx');
+    const applyBtn = document.getElementById('applyWidth');
+    const resetBtn = document.getElementById('resetWidths');
+    if (!select || !input || !applyBtn || !resetBtn) return;
+
+    const applyCurrent = () => {
+      const col = String(select.value || '').trim();
+      const px = Number(input.value || 0);
+      if (!col || !Number.isFinite(px)) return;
+      applyColumnWidth(col, px);
+      persistColumnWidth(col, px);
+      updateFrameSizingByLayout();
+    };
+
+    applyBtn.addEventListener('click', applyCurrent);
+    input.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        applyCurrent();
+      }
+    });
+
+    select.addEventListener('change', () => {
+      const col = String(select.value || '').trim();
+      const sample = document.querySelector('th[data-col="' + col + '"]');
+      if (!sample) return;
+      const w = Math.round(sample.getBoundingClientRect().width);
+      if (w > 0) input.value = String(w);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      clearColumnWidths();
+      updateFrameSizingByLayout();
+      select.dispatchEvent(new Event('change'));
+    });
+  }
+
+  function installHeaderResizers() {
+    document.querySelectorAll('th[data-col]').forEach((th) => {
+      if (th.querySelector('.col-resizer')) return;
+      const col = th.getAttribute('data-col');
+      if (!col) return;
+      const grip = document.createElement('span');
+      grip.className = 'col-resizer no-print';
+      grip.setAttribute('aria-hidden', 'true');
+      th.style.position = th.style.position || 'sticky';
+      th.appendChild(grip);
+
+      grip.addEventListener('mousedown', (ev) => {
+        ev.preventDefault();
+        const startX = ev.clientX;
+        const startW = Math.round(th.getBoundingClientRect().width);
+        document.body.classList.add('is-resizing');
+
+        const onMove = (mv) => {
+          const delta = mv.clientX - startX;
+          const nextW = clamp(startW + delta, 70, 1400);
+          applyColumnWidth(col, nextW);
+          persistColumnWidth(col, nextW);
+          const widthPx = document.getElementById('widthPx');
+          const widthCol = document.getElementById('widthCol');
+          if (widthPx && widthCol && String(widthCol.value) === String(col)) widthPx.value = String(nextW);
+          updateFrameSizingByLayout();
+        };
+        const onUp = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          document.body.classList.remove('is-resizing');
+        };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    });
   }
 
   function applyColVisibility() {
@@ -390,6 +552,14 @@
     root.style.setProperty('--shot-thumb-h', thumbH + 'px');
     root.style.setProperty('--shot-wrap-w', wrapW + 'px');
     root.style.setProperty('--shot-wrap-h', wrapH + 'px');
+
+    const widthMap = getColWidthMap();
+    const vManual = Number(widthMap['9'] || 0);
+    const vCell = document.querySelector('tbody tr[data-shot] td.col-video:not(.hidden-col)');
+    const vW = Number.isFinite(vManual) && vManual > 0
+      ? clamp(Math.round(vManual - 16), 120, 1200)
+      : (vCell ? Math.max(120, Math.round(vCell.getBoundingClientRect().width - 12)) : 180);
+    root.style.setProperty('--video-thumb-w', vW + 'px');
   }
 
   function initShotJump() {
@@ -640,10 +810,15 @@
     if (window.__tortsRuntimeInitialized) return;
     window.__tortsRuntimeInitialized = true;
     ensureVideoColumnControl();
+    ensurePromptColumnConsistency();
     ensureVideoColumn();
     ensureUserSlotsAndStyles();
     ensureUnmappedVideoList();
+    ensureWidthTools();
     installHorizontalCollapseTools();
+    restoreColumnWidths();
+    installHeaderResizers();
+    bindWidthTools();
     bindMediaControls();
     initReadyColumn();
     initFilters();
