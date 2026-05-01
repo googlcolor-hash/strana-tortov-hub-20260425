@@ -6,6 +6,10 @@
   const USER_STORE_KEY = 'torts_user_inline_v1';
   const READY_STORE_KEY = 'torts_ready_state_v1';
   const TEXT_STORE_KEY = 'torts_text_inline_v1';
+  const DIRECTOR_TEXT_STORE_KEY = 'torts_director_text_v1';
+  const DIRECTOR_TAB_NOTE_STORE_KEY = 'torts_director_tab_notes_v1';
+  const VIDEO_STORE_KEY = 'torts_video_slots_v1';
+  const MASTER_AUDIO_SRC = 'audio/strana_tortov_reading_v2.mp3';
   const VIDEO_REL_DIR = 'video_refs_good_my/';
   const VIDEO_BY_SHOT = {
     S01B: VIDEO_REL_DIR + 'Bird_flocks_pass_202604281841.mp4',
@@ -40,7 +44,10 @@
     directors: loadJson(DIRECTOR_STORE_KEY),
     users: loadJson(USER_STORE_KEY),
     ready: loadJson(READY_STORE_KEY),
+    videos: loadJson(VIDEO_STORE_KEY),
     text: loadJson(TEXT_STORE_KEY),
+    directorText: loadJson(DIRECTOR_TEXT_STORE_KEY),
+    directorTabNotes: loadJson(DIRECTOR_TAB_NOTE_STORE_KEY),
     widths: loadJson(COL_WIDTH_KEY),
     frameFilter: 'all'
   };
@@ -58,8 +65,31 @@
     }
   }
 
+  function getShotVideos(shot) {
+    if (!state.videos || typeof state.videos !== 'object') state.videos = {};
+    const current = state.videos[shot] && typeof state.videos[shot] === 'object' ? state.videos[shot] : {};
+    return {
+      draft: typeof current.draft === 'string' ? current.draft : (VIDEO_BY_SHOT[shot] || ''),
+      director: typeof current.director === 'string' ? current.director : '',
+      mine: typeof current.mine === 'string' ? current.mine : ''
+    };
+  }
+
+  function saveShotVideos(shot, payload) {
+    state.videos[shot] = {
+      draft: String(payload.draft || ''),
+      director: String(payload.director || ''),
+      mine: String(payload.mine || '')
+    };
+    saveJson(VIDEO_STORE_KEY, state.videos);
+  }
+
   function saveJson(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      console.warn('saveJson failed for key:', key, err);
+    }
   }
 
   function getPublishedKeyframes() {
@@ -121,6 +151,7 @@
       if (cell) cell.dataset.frameState = currentState;
       const row = wrap.closest('tr[data-shot]');
       if (row) row.dataset.frameState = currentState;
+      wrap.classList.toggle('storyboard-symbolic', shot === 'S01A' && !!src);
     }
   }
 
@@ -209,8 +240,14 @@
         .user-btn-upload, .user-btn-clear { width:20px; height:20px; border-radius:999px; border:1px solid rgba(128,153,191,.46); background:#1f314d; color:#dce8ff; font-size:12px; line-height:1; cursor:pointer; }
         .user-btn-clear { background:#362035; color:#ffd1e1; }
         .user-wrap[data-user-state='manual'] { border-color:rgba(121,217,146,.46); box-shadow:inset 0 0 0 1px rgba(121,217,146,.1); }
-        .col-video { width:180px; min-width:120px; }
-        .video-wrap { display:grid; gap:6px; }
+        .col-video { width:220px; min-width:160px; }
+        .video-stack { display:grid; gap:8px; }
+        .video-slot { border:1px solid rgba(98,115,145,.52); border-radius:8px; background:rgba(15,23,37,.62); padding:6px; }
+        .video-slot-head { display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:6px; }
+        .video-slot-title { font-size:10px; color:#a9b7d3; text-transform:uppercase; letter-spacing:.08em; }
+        .video-slot-actions { display:flex; gap:4px; }
+        .video-slot-btn { min-width:20px; height:20px; padding:0 6px; border-radius:6px; font-size:11px; line-height:1; }
+        .video-wrap { display:grid; gap:4px; }
         .video-el {
           width:var(--video-thumb-w, 100%); max-width:100%; aspect-ratio:16 / 9; border:1px solid rgba(98,115,145,.64);
           border-radius:8px; background:#0f1725;
@@ -220,7 +257,7 @@
           border-radius:8px; display:flex; align-items:center; justify-content:center;
           color:#93a6c8; font-size:11px; text-align:center; padding:6px;
         }
-        .video-meta { font-size:10px; color:#a9b7d3; line-height:1.3; }
+        .video-meta { font-size:10px; color:#a9b7d3; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .video-link-btn { width:100%; height:24px; font-size:11px; padding:0 8px; border-radius:6px; }
         .video-list { display:grid; gap:6px; margin-top:8px; }
         .video-list a { color:#d2e4ff; font-size:11px; }
@@ -244,7 +281,26 @@
           writing-mode:vertical-rl; transform:rotate(180deg); cursor:pointer; line-height:1.1;
           text-align:center;
         }
+        .collapsed-col-pill.inactive {
+          opacity:.26;
+          filter:saturate(.65);
+        }
+        .collapsed-col-pill.active {
+          opacity:1;
+        }
         .collapsed-col-pill:hover { border-color:#8eb8ff; background:#37527d; }
+        .kf-wrap.storyboard-symbolic .kf-img {
+          filter: grayscale(1) contrast(1.26) brightness(1.08) sepia(.16);
+        }
+        .kf-wrap.storyboard-symbolic::after {
+          content:'';
+          position:absolute;
+          inset:8px;
+          pointer-events:none;
+          border-radius:10px;
+          background:repeating-linear-gradient(135deg, rgba(18,22,30,0) 0 8px, rgba(18,22,30,.08) 8px 9px);
+          mix-blend-mode:multiply;
+        }
       `;
       document.head.appendChild(style);
     }
@@ -292,61 +348,133 @@
       th.className = 'col-video';
       th.setAttribute('data-col', '9');
       th.textContent = 'Видео';
-      const readyHead = headRow.querySelector('th.col-ready');
-      if (readyHead) headRow.insertBefore(th, readyHead);
+      const keyHead = headRow.querySelector('th.col-keyframe');
+      if (keyHead && keyHead.nextSibling) headRow.insertBefore(th, keyHead.nextSibling);
       else headRow.appendChild(th);
     }
 
     shots().forEach((row) => {
       if (row.querySelector('td.col-video')) return;
       const shot = row.dataset.shot || '';
-      const src = VIDEO_BY_SHOT[shot] || '';
       const td = document.createElement('td');
       td.className = 'col-video';
       td.setAttribute('data-col', '9');
-      if (src) {
-        td.innerHTML = `
-          <div class="video-wrap">
-            <video class="video-el" controls preload="metadata">
-              <source src="${src}" type="video/mp4">
-            </video>
-            <button type="button" class="video-link-btn no-print" data-open-video="${src}">Открыть отдельно</button>
-            <div class="video-meta">${src.split('/').pop()}</div>
-          </div>
-        `;
-      } else {
-        td.innerHTML = '<div class="video-empty">Видео пока не добавлено</div>';
-      }
-      const readyCell = row.querySelector('td.col-ready');
-      if (readyCell) row.insertBefore(td, readyCell);
+      td.innerHTML = `
+        <div class="video-stack" data-shot="${shot}">
+          ${renderVideoSlotMarkup(shot, 'draft', 'Черновая')}
+          ${renderVideoSlotMarkup(shot, 'director', 'Режиссёрская')}
+          ${renderVideoSlotMarkup(shot, 'mine', 'Моя')}
+        </div>
+      `;
+      const kfCell = row.querySelector('td.col-keyframe');
+      if (kfCell && kfCell.nextSibling) row.insertBefore(td, kfCell.nextSibling);
       else row.appendChild(td);
     });
+    bindVideoControls();
+  }
 
+  function renderVideoSlotMarkup(shot, slot, title) {
+    const videos = getShotVideos(shot);
+    const src = String(videos[slot] || '');
+    const media = src
+      ? `<div class="video-wrap">
+          <video class="video-el" controls preload="metadata">
+            <source src="${src}" type="video/mp4">
+          </video>
+          <button type="button" class="video-link-btn no-print" data-open-video="${shot}|${slot}">Открыть отдельно</button>
+          <div class="video-meta">${src.split('/').pop()}</div>
+        </div>`
+      : '<div class="video-empty">Видео не добавлено</div>';
+    return `
+      <div class="video-slot" data-shot="${shot}" data-slot="${slot}">
+        <div class="video-slot-head">
+          <div class="video-slot-title">${title}</div>
+          <div class="video-slot-actions no-print">
+            <button type="button" class="video-slot-btn" data-video-add="${shot}|${slot}" title="Добавить ссылку на видео">+</button>
+            <button type="button" class="video-slot-btn" data-video-clear="${shot}|${slot}" title="Удалить видео">×</button>
+          </div>
+        </div>
+        ${media}
+      </div>
+    `;
+  }
+
+  function refreshVideoSlot(shot, slot) {
+    const node = document.querySelector('.video-slot[data-shot="' + shot + '"][data-slot="' + slot + '"]');
+    if (!node) return;
+    const titleMap = { draft: 'Черновая', director: 'Режиссёрская', mine: 'Моя' };
+    node.outerHTML = renderVideoSlotMarkup(shot, slot, titleMap[slot] || slot);
+    bindVideoControls();
+    updateFrameSizingByLayout();
+  }
+
+  function bindVideoControls() {
     document.querySelectorAll('[data-open-video]').forEach((btn) => {
       if (btn.dataset.boundOpenVideo === '1') return;
       btn.dataset.boundOpenVideo = '1';
       btn.addEventListener('click', () => {
-        const src = btn.getAttribute('data-open-video');
+        const key = btn.getAttribute('data-open-video') || '';
+        const [shot, slot] = key.split('|');
+        const videos = getShotVideos(String(shot || ''));
+        const src = String(videos[String(slot || '')] || '');
         if (src) window.open(src, '_self');
+      });
+    });
+    document.querySelectorAll('[data-video-add]').forEach((btn) => {
+      if (btn.dataset.boundVideoAdd === '1') return;
+      btn.dataset.boundVideoAdd = '1';
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-video-add') || '';
+        const [shot, slot] = key.split('|');
+        if (!shot || !slot) return;
+        const videos = getShotVideos(shot);
+        const prev = String(videos[slot] || '');
+        const next = prompt('Вставьте ссылку/путь к видео (.mp4):', prev);
+        if (next === null) return;
+        videos[slot] = String(next || '').trim();
+        saveShotVideos(shot, videos);
+        refreshVideoSlot(shot, slot);
+      });
+    });
+    document.querySelectorAll('[data-video-clear]').forEach((btn) => {
+      if (btn.dataset.boundVideoClear === '1') return;
+      btn.dataset.boundVideoClear = '1';
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-video-clear') || '';
+        const [shot, slot] = key.split('|');
+        if (!shot || !slot) return;
+        const videos = getShotVideos(shot);
+        videos[slot] = '';
+        saveShotVideos(shot, videos);
+        refreshVideoSlot(shot, slot);
       });
     });
   }
 
   function ensurePromptColumnConsistency() {
     shots().forEach((row) => {
-      if (row.querySelector('td[data-col="8"]')) return;
-      const td = document.createElement('td');
-      td.className = 'col-prompt';
-      td.setAttribute('data-col', '8');
-      td.innerHTML = `
-        <div class="prompt-actions no-print">
-          <button type="button" class="prompt-copy-btn">Copy</button>
-        </div>
-        <textarea class="g-text" placeholder="Промпт для этого шота"></textarea>
-      `;
-      const readyCell = row.querySelector('td.col-ready');
-      if (readyCell) row.insertBefore(td, readyCell);
-      else row.appendChild(td);
+      let td = row.querySelector('td[data-col="8"]');
+      if (!td) {
+        td = document.createElement('td');
+        td.className = 'col-prompt';
+        td.setAttribute('data-col', '8');
+        td.innerHTML = `
+          <div class="prompt-actions no-print">
+            <button type="button" class="prompt-copy-btn">Copy</button>
+          </div>
+          <textarea class="g-text" placeholder="Промпт для этого шота"></textarea>
+        `;
+        const readyCell = row.querySelector('td.col-ready');
+        if (readyCell) row.insertBefore(td, readyCell);
+        else row.appendChild(td);
+      }
+      const shot = row.dataset.shot || '';
+      const ta = td.querySelector('textarea.g-text');
+      if (ta && !String(ta.value || '').trim()) {
+        const promptMap = window.TORTS_PROMPT_MAP || {};
+        const p = promptMap[shot] || '';
+        if (p) ta.value = p;
+      }
     });
 
     document.querySelectorAll('.prompt-copy-btn').forEach((btn) => {
@@ -366,6 +494,66 @@
           setTimeout(() => btn.classList.remove('fail'), 900);
         }
       });
+    });
+  }
+
+  function ensureDirectorTextByShot() {
+    shots().forEach((row) => {
+      const shot = row.dataset.shot || '';
+      const keyCell = row.querySelector('td.col-keyframe');
+      if (!keyCell) return;
+      if (!keyCell.querySelector('.director-text-wrap')) {
+        const wrap = document.createElement('div');
+        wrap.className = 'director-text-wrap';
+        wrap.style.cssText = 'margin-top:6px;display:grid;gap:4px;';
+        wrap.innerHTML = `
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#9fc0f5;font-weight:700;">Текст режиссёра</div>
+          <textarea class="director-text-input" data-shot="${shot}" placeholder="Комментарий/задача режиссёра для этого шота" style="width:100%;min-height:56px;border:1px solid #4c5d79;border-radius:8px;background:#182131;color:#eaf0ff;padding:6px;font:inherit;"></textarea>
+        `;
+        keyCell.appendChild(wrap);
+      }
+      const ta = keyCell.querySelector('.director-text-input');
+      if (!ta) return;
+      if (typeof state.directorText[shot] === 'string') ta.value = state.directorText[shot];
+      if (ta.dataset.boundDirectorText === '1') return;
+      ta.dataset.boundDirectorText = '1';
+      const save = () => {
+        state.directorText[shot] = String(ta.value || '');
+        saveJson(DIRECTOR_TEXT_STORE_KEY, state.directorText);
+      };
+      ta.addEventListener('input', save);
+      ta.addEventListener('change', save);
+      ta.addEventListener('blur', save);
+    });
+  }
+
+  function ensureDirectorTextInTabs() {
+    document.querySelectorAll('.glossary-block').forEach((block, idx) => {
+      const inner = block.querySelector('.glossary-inner');
+      if (!inner) return;
+      const key = 'tab_' + idx;
+      if (!inner.querySelector('.director-tab-note')) {
+        const w = document.createElement('div');
+        w.className = 'director-tab-note';
+        w.style.cssText = 'margin:0 0 8px;display:grid;gap:4px;';
+        w.innerHTML = `
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#9fc0f5;font-weight:700;">Текст режиссёра (вкладка)</div>
+          <textarea class="director-tab-note-input" data-tabkey="${key}" placeholder="Комментарий режиссёра для этой вкладки" style="width:100%;min-height:52px;border:1px solid #4c5d79;border-radius:8px;background:#182131;color:#eaf0ff;padding:6px;font:inherit;"></textarea>
+        `;
+        inner.insertBefore(w, inner.firstChild);
+      }
+      const ta = inner.querySelector('.director-tab-note-input[data-tabkey="' + key + '"]');
+      if (!ta) return;
+      if (typeof state.directorTabNotes[key] === 'string') ta.value = state.directorTabNotes[key];
+      if (ta.dataset.boundDirectorTab === '1') return;
+      ta.dataset.boundDirectorTab = '1';
+      const save = () => {
+        state.directorTabNotes[key] = String(ta.value || '');
+        saveJson(DIRECTOR_TAB_NOTE_STORE_KEY, state.directorTabNotes);
+      };
+      ta.addEventListener('input', save);
+      ta.addEventListener('change', save);
+      ta.addEventListener('blur', save);
     });
   }
 
@@ -414,26 +602,24 @@
 
   function renderCollapsedRail() {
     const rail = ensureCollapsedRail();
-    const hidden = getColChecks().filter((c) => !c.checked && String(c.dataset.col) !== '7');
     rail.innerHTML = '';
-    if (!hidden.length) {
-      rail.style.display = 'none';
-      return;
-    }
-    hidden.forEach((chk) => {
+    const all = getColChecks();
+    all.forEach((chk) => {
       const col = chk.dataset.col;
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'collapsed-col-pill';
       btn.textContent = getColHeaderLabel(col);
-      btn.title = 'Показать: ' + getColHeaderLabel(col);
+      const isHidden = !chk.checked;
+      btn.classList.add(isHidden ? 'active' : 'inactive');
+      btn.title = (isHidden ? 'Показать: ' : 'Скрыть: ') + getColHeaderLabel(col);
       btn.addEventListener('click', () => {
-        chk.checked = true;
+        chk.checked = !chk.checked;
         applyColVisibility();
       });
       rail.appendChild(btn);
     });
-    rail.style.display = 'grid';
+    rail.style.display = all.length ? 'grid' : 'none';
   }
 
   function getColWidthMap() {
@@ -682,6 +868,65 @@
     });
   }
 
+  function parseShotClipRange(row) {
+    const meta = row.querySelector('.author-quote-meta');
+    const text = meta ? String(meta.textContent || '') : '';
+    const m = text.match(/Клип:\s*([\d.,]+)\s*[–-]\s*([\d.,]+)\s*сек/i);
+    if (!m) return null;
+    const toSec = (v) => Number(String(v).replace(',', '.'));
+    const start = toSec(m[1]);
+    const end = toSec(m[2]);
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return null;
+    return { start, end };
+  }
+
+  function initShotAudioFromMeta() {
+    const sharedAudio = new Audio(MASTER_AUDIO_SRC);
+    let stopTimer = null;
+    let activeBtn = null;
+
+    const stopCurrent = () => {
+      if (stopTimer) {
+        clearTimeout(stopTimer);
+        stopTimer = null;
+      }
+      sharedAudio.pause();
+      if (activeBtn) activeBtn.classList.remove('playing');
+      activeBtn = null;
+    };
+
+    shots().forEach((row) => {
+      const range = parseShotClipRange(row);
+      if (!range) return;
+      const shotCell = row.querySelector('td.col-shot');
+      if (!shotCell || shotCell.querySelector('.shot-audio')) return;
+      const box = document.createElement('div');
+      box.className = 'shot-audio no-print';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'shot-audio-btn';
+      btn.textContent = '▶ звук';
+      box.appendChild(btn);
+      shotCell.appendChild(box);
+
+      btn.addEventListener('click', async () => {
+        try {
+          stopCurrent();
+          sharedAudio.currentTime = range.start;
+          await sharedAudio.play();
+          btn.classList.add('playing');
+          activeBtn = btn;
+          const ms = Math.max(120, Math.round((range.end - range.start) * 1000));
+          stopTimer = setTimeout(() => {
+            stopCurrent();
+          }, ms);
+        } catch (err) {
+          console.warn('Shot audio play failed', err);
+        }
+      });
+    });
+  }
+
   function installHorizontalCollapseTools() {
     const panel = document.getElementById('colPanel');
     const controls = document.getElementById('colControls');
@@ -707,10 +952,10 @@
           });
         };
         if (mode === 'compact') {
-          setOn(['4', '5', '6', '8'], false);
+          setOn(['4', '5', '6', '8', '9'], false);
           setOn(['1', '2', '3', '7'], true);
         } else if (mode === 'focus-frames') {
-          setOn(['2', '7'], true);
+          setOn(['2', '7', '9'], true);
           setOn(['1', '3', '4', '5', '6', '8'], false);
         } else if (mode === 'show-all') {
           getColChecks().forEach((c) => {
@@ -797,7 +1042,7 @@
   }
 
   function initTextPersistence() {
-    const editable = Array.from(document.querySelectorAll('textarea, input[type="text"], [contenteditable="true"]'));
+    const editable = Array.from(document.querySelectorAll('textarea, input:not([type]), input[type="text"], [contenteditable="true"]'));
     editable.forEach((el) => {
       if (el.dataset.noPersist === '1') return;
       if (el.id === 'shotJumpInput') return;
@@ -853,9 +1098,10 @@
     setText('emptyFrameCount', empty);
     setText('missingFrameCount', empty);
     setText('readyFrameCount', ready);
+    setText('countAll', rows.length);
     setText('countAuto', auto);
     setText('countManual', manual);
-    setText('countMissing', empty);
+    setText('countEmpty', empty);
     setText('countReady', ready);
 
     applyFrameFilter(state.frameFilter || 'all');
@@ -895,6 +1141,63 @@
     }
   }
 
+  function bindTopMenuControls() {
+    const toggleCols = document.getElementById('toggleCols');
+    const panel = document.getElementById('colPanel');
+    const showAll = document.getElementById('showAll');
+    const hideTextCols = document.getElementById('hideTextCols');
+    const presentationBtn = document.getElementById('presentationModeBtn');
+    const compactBtn = document.getElementById('compactModeBtn');
+    if (!toggleCols || !panel) return;
+
+    const closePanel = () => panel.classList.remove('open');
+    toggleCols.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      panel.classList.toggle('open');
+    });
+    document.addEventListener('click', (ev) => {
+      if (!panel.classList.contains('open')) return;
+      const inPanel = panel.contains(ev.target);
+      const onBtn = toggleCols.contains(ev.target);
+      if (!inPanel && !onBtn) closePanel();
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') closePanel();
+    });
+
+    if (showAll) {
+      showAll.addEventListener('click', () => {
+        getColChecks().forEach((c) => { c.checked = true; });
+        applyColVisibility();
+      });
+    }
+    if (hideTextCols) {
+      hideTextCols.addEventListener('click', () => {
+        getColChecks().forEach((c) => {
+          const col = String(c.dataset.col || '');
+          c.checked = !['4', '5', '6', '8', '9'].includes(col);
+        });
+        applyColVisibility();
+      });
+    }
+    if (presentationBtn) {
+      presentationBtn.addEventListener('click', () => {
+        const wrap = document.querySelector('.table-wrap');
+        if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+    if (compactBtn) {
+      compactBtn.addEventListener('click', () => {
+        getColChecks().forEach((c) => {
+          const col = String(c.dataset.col || '');
+          c.checked = ['1', '2', '7', '9'].includes(col);
+        });
+        applyColVisibility();
+      });
+    }
+  }
+
   function init() {
     if (window.__tortsRuntimeInitialized) return;
     window.__tortsRuntimeInitialized = true;
@@ -903,6 +1206,8 @@
     ensureVideoColumn();
     ensureUserSlotsAndStyles();
     ensureUnmappedVideoList();
+    ensureDirectorTextByShot();
+    ensureDirectorTextInTabs();
     ensureWidthTools();
     installHorizontalCollapseTools();
     restoreColumnWidths();
@@ -913,7 +1218,9 @@
     initReadyColumn();
     initFilters();
     initShotJump();
+    initShotAudioFromMeta();
     initTextPersistence();
+    bindTopMenuControls();
     updateSummary();
     updateFrameSizingByLayout();
   }
