@@ -4,13 +4,16 @@
   const USER_STORE_KEY = 'torts_user_inline_v1';
   const READY_STORE_KEY = 'torts_ready_state_v1';
   const PUBLISHED_DIRECTOR_MAP = {
-    S06A: 'director_refs_20260430/S06A_director.jpg',
-    S06B: 'director_refs_20260430/S06B_director.jpg',
-    S06C: 'director_refs_20260430/S06C_director.jpg',
-    S07A: 'director_refs_20260430/S07A_director.jpg',
-    S07B: 'director_refs_20260430/S07B_director.jpg',
-    S08: 'director_refs_20260430/S08_director.jpg',
-    S12: 'director_refs_20260430/S12_director.jpg'
+    S03A: 'director_refs_20260501/S03A_director.jpg',
+    S04: 'director_refs_20260501/S04_director.jpg',
+    S05A: 'director_refs_20260501/S05A_director.jpg',
+    S06A: 'director_refs_20260501/S06A_director.jpg',
+    S07A: 'director_refs_20260501/S07A_director.jpg',
+    S08: 'director_refs_20260501/S08_director.jpg',
+    S09: 'director_refs_20260501/S09_director.jpg',
+    S10A: 'director_refs_20260501/S10A_director.jpg',
+    S11A: 'director_refs_20260501/S11A_director.jpg',
+    S12: 'director_refs_20260501/S12_director.jpg'
   };
 
   const state = {
@@ -335,3 +338,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
+
