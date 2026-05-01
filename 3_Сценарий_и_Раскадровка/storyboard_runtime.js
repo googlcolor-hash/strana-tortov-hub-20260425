@@ -4,14 +4,30 @@
   const DIRECTOR_STORE_KEY = 'torts_director_inline_v1';
   const USER_STORE_KEY = 'torts_user_inline_v1';
   const READY_STORE_KEY = 'torts_ready_state_v1';
+  const VIDEO_REL_DIR = 'video_refs_good_my/';
+  const VIDEO_BY_SHOT = {
+    S01B: VIDEO_REL_DIR + 'Bird_flocks_pass_202604281841.mp4',
+    S03A: VIDEO_REL_DIR + 'Donut_Cookie_perform_202604281910.mp4',
+    S04B: VIDEO_REL_DIR + '[08_S04B]_Shot_S04B._202604281914.mp4',
+    S05A: VIDEO_REL_DIR + '[09_S05A]_Shot_S05A._202604281924.mp4',
+    S05B: VIDEO_REL_DIR + 'Blin_counts_scrolls_202604281928.mp4'
+  };
+  const UNMAPPED_VIDEOS = [
+    VIDEO_REL_DIR + 'Empty_prompt_handling_202604281937.mp4',
+    VIDEO_REL_DIR + 'grok-video-5219139a-9424-4d1e-a752-e96bd16a1c03.mp4',
+    VIDEO_REL_DIR + 'grok-video-761b53e1-9ca4-426e-9671-5b73671b02ee (2).mp4',
+    VIDEO_REL_DIR + 'grok-video-e11d7809-1fd8-42d2-a347-8360225da0cf.mp4'
+  ];
   const PUBLISHED_DIRECTOR_MAP = {
     S03A: 'director_refs_20260501/S03A_director.jpg',
-    S04: 'director_refs_20260501/S04_director.jpg',
+    S04A: 'director_refs_20260501/S04_director.jpg',
+    S04B: 'director_refs_20260501/S04_director.jpg',
     S05A: 'director_refs_20260501/S05A_director.jpg',
     S06A: 'director_refs_20260501/S06A_director.jpg',
     S07A: 'director_refs_20260501/S07A_director.jpg',
     S08: 'director_refs_20260501/S08_director.jpg',
-    S09: 'director_refs_20260501/S09_director.jpg',
+    S09A: 'director_refs_20260501/S09_director.jpg',
+    S09B: 'director_refs_20260501/S09_director.jpg',
     S10A: 'director_refs_20260501/S10A_director.jpg',
     S11A: 'director_refs_20260501/S11A_director.jpg',
     S12: 'director_refs_20260501/S12_director.jpg'
@@ -189,6 +205,21 @@
         .user-btn-upload, .user-btn-clear { width:20px; height:20px; border-radius:999px; border:1px solid rgba(128,153,191,.46); background:#1f314d; color:#dce8ff; font-size:12px; line-height:1; cursor:pointer; }
         .user-btn-clear { background:#362035; color:#ffd1e1; }
         .user-wrap[data-user-state='manual'] { border-color:rgba(121,217,146,.46); box-shadow:inset 0 0 0 1px rgba(121,217,146,.1); }
+        .col-video { width:14%; min-width:170px; }
+        .video-wrap { display:grid; gap:6px; }
+        .video-el {
+          width:100%; aspect-ratio:16 / 9; border:1px solid rgba(98,115,145,.64);
+          border-radius:8px; background:#0f1725;
+        }
+        .video-empty {
+          width:100%; aspect-ratio:16 / 9; border:1px dashed rgba(98,115,145,.64);
+          border-radius:8px; display:flex; align-items:center; justify-content:center;
+          color:#93a6c8; font-size:11px; text-align:center; padding:6px;
+        }
+        .video-meta { font-size:10px; color:#a9b7d3; line-height:1.3; }
+        .video-link-btn { width:100%; height:24px; font-size:11px; padding:0 8px; border-radius:6px; }
+        .video-list { display:grid; gap:6px; margin-top:8px; }
+        .video-list a { color:#d2e4ff; font-size:11px; }
       `;
       document.head.appendChild(style);
     }
@@ -217,6 +248,79 @@
       block.appendChild(head);
       block.appendChild(wrap);
     });
+  }
+
+  function ensureVideoColumnControl() {
+    const controls = document.getElementById('colControls');
+    if (!controls) return;
+    if (!controls.querySelector('input[data-col="9"]')) {
+      const label = document.createElement('label');
+      label.innerHTML = '<input type="checkbox" data-col="9" checked> <span>Видео</span>';
+      controls.appendChild(label);
+    }
+  }
+
+  function ensureVideoColumn() {
+    const headRow = document.querySelector('#scenarioTable thead tr');
+    if (headRow && !headRow.querySelector('th.col-video')) {
+      const th = document.createElement('th');
+      th.className = 'col-video';
+      th.setAttribute('data-col', '9');
+      th.textContent = 'Видео';
+      const readyHead = headRow.querySelector('th.col-ready');
+      if (readyHead) headRow.insertBefore(th, readyHead);
+      else headRow.appendChild(th);
+    }
+
+    shots().forEach((row) => {
+      if (row.querySelector('td.col-video')) return;
+      const shot = row.dataset.shot || '';
+      const src = VIDEO_BY_SHOT[shot] || '';
+      const td = document.createElement('td');
+      td.className = 'col-video';
+      td.setAttribute('data-col', '9');
+      if (src) {
+        td.innerHTML = `
+          <div class="video-wrap">
+            <video class="video-el" controls preload="metadata">
+              <source src="${src}" type="video/mp4">
+            </video>
+            <button type="button" class="video-link-btn no-print" data-open-video="${src}">Открыть отдельно</button>
+            <div class="video-meta">${src.split('/').pop()}</div>
+          </div>
+        `;
+      } else {
+        td.innerHTML = '<div class="video-empty">Видео пока не добавлено</div>';
+      }
+      const readyCell = row.querySelector('td.col-ready');
+      if (readyCell) row.insertBefore(td, readyCell);
+      else row.appendChild(td);
+    });
+
+    document.querySelectorAll('[data-open-video]').forEach((btn) => {
+      if (btn.dataset.boundOpenVideo === '1') return;
+      btn.dataset.boundOpenVideo = '1';
+      btn.addEventListener('click', () => {
+        const src = btn.getAttribute('data-open-video');
+        if (src) window.open(src, '_self');
+      });
+    });
+  }
+
+  function ensureUnmappedVideoList() {
+    const anchor = document.querySelector('.table-wrap');
+    if (!anchor) return;
+    if (document.getElementById('unmappedVideoList')) return;
+    const block = document.createElement('div');
+    block.id = 'unmappedVideoList';
+    block.className = 'legend';
+    block.innerHTML = `
+      <h2>Видео без привязки к шоту</h2>
+      <div class="video-list">
+        ${UNMAPPED_VIDEOS.map((v) => `<a href="${v}" target="_self">${v.split('/').pop()}</a>`).join('')}
+      </div>
+    `;
+    anchor.parentNode.insertBefore(block, anchor.nextSibling);
   }
 
   function getColChecks() {
@@ -261,22 +365,60 @@
     return checks.filter((c) => c.checked).length;
   }
 
-  function updateFrameSizingByLayout() {
-    const root = document.documentElement;
+  function getEffectiveKeyframeCellWidth() {
+    const sampleCell = document.querySelector('tbody tr[data-shot] td.col-keyframe:not(.hidden-col)');
+    if (sampleCell && sampleCell.clientWidth > 40) return sampleCell.clientWidth;
+    const sampleHead = document.querySelector('th.col-keyframe:not(.hidden-col)');
+    if (sampleHead && sampleHead.clientWidth > 40) return sampleHead.clientWidth;
     const wrap = document.querySelector('.table-wrap');
     const width = wrap ? wrap.clientWidth : window.innerWidth;
     const visibleCols = Math.max(2, visibleColumnCount());
+    return width / visibleCols;
+  }
 
-    const baseCell = width / visibleCols;
-    const thumbW = clamp(Math.round(baseCell * 0.88), 128, 360);
+  function updateFrameSizingByLayout() {
+    const root = document.documentElement;
+    const baseCell = getEffectiveKeyframeCellWidth();
+    const thumbW = clamp(Math.round(baseCell * 0.9), 128, 420);
     const thumbH = Math.round(thumbW * 9 / 16);
-    const wrapW = clamp(thumbW + 24, 150, 384);
+    const wrapW = clamp(thumbW + 24, 150, 444);
     const wrapH = thumbH + 28;
 
     root.style.setProperty('--shot-thumb-w', thumbW + 'px');
     root.style.setProperty('--shot-thumb-h', thumbH + 'px');
     root.style.setProperty('--shot-wrap-w', wrapW + 'px');
     root.style.setProperty('--shot-wrap-h', wrapH + 'px');
+  }
+
+  function initShotJump() {
+    const input = document.getElementById('shotJumpInput');
+    const btn = document.getElementById('jumpShotBtn');
+    const datalist = document.getElementById('shotJumpList');
+    if (!input || !btn) return;
+
+    const ids = shots().map((r) => (r.dataset.shot || '').trim()).filter(Boolean);
+    if (datalist) {
+      datalist.innerHTML = ids.map((id) => '<option value="' + id + '"></option>').join('');
+    }
+
+    const go = () => {
+      const raw = String(input.value || '').trim().toUpperCase();
+      if (!raw) return;
+      const row = document.querySelector('tr[data-shot="' + raw + '"]');
+      if (!row) return;
+      if (row.style.display === 'none') applyFrameFilter('all');
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      row.classList.add('shot-focus-flash');
+      setTimeout(() => row.classList.remove('shot-focus-flash'), 1200);
+    };
+
+    btn.addEventListener('click', go);
+    input.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        go();
+      }
+    });
   }
 
   function installHorizontalCollapseTools() {
@@ -456,11 +598,17 @@
   }
 
   function init() {
+    if (window.__tortsRuntimeInitialized) return;
+    window.__tortsRuntimeInitialized = true;
+    ensureVideoColumnControl();
+    ensureVideoColumn();
     ensureUserSlotsAndStyles();
+    ensureUnmappedVideoList();
     installHorizontalCollapseTools();
     bindMediaControls();
     initReadyColumn();
     initFilters();
+    initShotJump();
     updateSummary();
     updateFrameSizingByLayout();
   }

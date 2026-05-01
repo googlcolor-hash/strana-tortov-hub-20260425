@@ -1,0 +1,15 @@
+{
+  "mapped": {
+    "S01B": "video_refs_good_my/Bird_flocks_pass_202604281841.mp4",
+    "S03A": "video_refs_good_my/Donut_Cookie_perform_202604281910.mp4",
+    "S04B": "video_refs_good_my/[08_S04B]_Shot_S04B._202604281914.mp4",
+    "S05A": "video_refs_good_my/[09_S05A]_Shot_S05A._202604281924.mp4",
+    "S05B": "video_refs_good_my/Blin_counts_scrolls_202604281928.mp4"
+  },
+  "unmapped": [
+    "video_refs_good_my/Empty_prompt_handling_202604281937.mp4",
+    "video_refs_good_my/grok-video-5219139a-9424-4d1e-a752-e96bd16a1c03.mp4",
+    "video_refs_good_my/grok-video-761b53e1-9ca4-426e-9671-5b73671b02ee (2).mp4",
+    "video_refs_good_my/grok-video-e11d7809-1fd8-42d2-a347-8360225da0cf.mp4"
+  ]
+}
