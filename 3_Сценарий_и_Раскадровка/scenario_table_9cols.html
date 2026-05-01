@@ -18,6 +18,7 @@
       --ok:#79d992;
       --warn:#ffcf70;
       --shadow:0 16px 44px rgba(0,0,0,.28);
+      --quickbar-offset:0px;
     }
     * { box-sizing: border-box; }
     html, body {
@@ -146,7 +147,7 @@
       white-space:normal;
     }
     th {
-      position:sticky; top:0; z-index:2; background:rgba(49,60,79,.96);
+      position:sticky; top:var(--quickbar-offset); z-index:2; background:rgba(49,60,79,.96);
       backdrop-filter: blur(8px);
     }
     td.col-shot, td.col-ready { text-align:center; }
@@ -185,6 +186,7 @@
     .col-ready { width:56px !important; min-width:56px !important; max-width:56px !important; }
     th.col-ready {
       position:sticky;
+      top:var(--quickbar-offset);
       right:0;
       z-index:5;
       background:#2f3a4c;
