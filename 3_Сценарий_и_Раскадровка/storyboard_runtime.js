@@ -1,6 +1,6 @@
 (() => {
   const COL_VIS_KEY = 'torts_col_visibility_v2';
-  const COL_WIDTH_KEY = 'torts_col_widths_v1';
+  const COL_WIDTH_KEY = 'torts_col_widths_v2';
   const KEYFRAME_STORE_KEY = 'torts_keyframe_inline_v1';
   const DIRECTOR_STORE_KEY = 'torts_director_inline_v1';
   const USER_STORE_KEY = 'torts_user_inline_v1';
@@ -224,6 +224,27 @@
         .video-link-btn { width:100%; height:24px; font-size:11px; padding:0 8px; border-radius:6px; }
         .video-list { display:grid; gap:6px; margin-top:8px; }
         .video-list a { color:#d2e4ff; font-size:11px; }
+        .col-collapse-strip {
+          position:absolute; left:0; top:0; width:12px; height:100%;
+          border-right:1px solid rgba(142,184,255,.32);
+          background:linear-gradient(180deg, rgba(142,184,255,.18), rgba(142,184,255,.08));
+          cursor:pointer; opacity:.9;
+        }
+        .col-collapse-strip:hover { opacity:1; background:linear-gradient(180deg, rgba(142,184,255,.34), rgba(142,184,255,.14)); }
+        th[data-col] { position:sticky; padding-left:14px; }
+        .collapsed-cols-rail {
+          position:fixed; left:4px; top:120px; z-index:55;
+          display:grid; gap:4px; max-height:70vh; overflow:auto;
+          padding:6px; border:1px solid rgba(142,184,255,.24);
+          border-radius:10px; background:rgba(15,22,34,.7); backdrop-filter:blur(8px);
+        }
+        .collapsed-col-pill {
+          width:18px; min-height:58px; border-radius:8px; border:1px solid rgba(142,184,255,.35);
+          background:rgba(38,52,76,.88); color:#dce9ff; font-size:10px; padding:4px 2px;
+          writing-mode:vertical-rl; transform:rotate(180deg); cursor:pointer; line-height:1.1;
+          text-align:center;
+        }
+        .collapsed-col-pill:hover { border-color:#8eb8ff; background:#37527d; }
       `;
       document.head.appendChild(style);
     }
@@ -368,6 +389,53 @@
     return Array.from(document.querySelectorAll('#colControls input[data-col]'));
   }
 
+  function getColCheckById(col) {
+    return document.querySelector('#colControls input[data-col="' + String(col) + '"]');
+  }
+
+  function getColHeaderLabel(col) {
+    const th = document.querySelector('th[data-col="' + String(col) + '"]');
+    if (th) return (th.textContent || '').trim();
+    const lbl = document.querySelector('#colControls input[data-col="' + String(col) + '"]')?.closest('label');
+    return lbl ? (lbl.textContent || '').trim() : String(col);
+  }
+
+  function ensureCollapsedRail() {
+    let rail = document.getElementById('collapsedColsRail');
+    if (!rail) {
+      rail = document.createElement('div');
+      rail.id = 'collapsedColsRail';
+      rail.className = 'collapsed-cols-rail no-print';
+      rail.style.display = 'none';
+      document.body.appendChild(rail);
+    }
+    return rail;
+  }
+
+  function renderCollapsedRail() {
+    const rail = ensureCollapsedRail();
+    const hidden = getColChecks().filter((c) => !c.checked && String(c.dataset.col) !== '7');
+    rail.innerHTML = '';
+    if (!hidden.length) {
+      rail.style.display = 'none';
+      return;
+    }
+    hidden.forEach((chk) => {
+      const col = chk.dataset.col;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'collapsed-col-pill';
+      btn.textContent = getColHeaderLabel(col);
+      btn.title = 'Показать: ' + getColHeaderLabel(col);
+      btn.addEventListener('click', () => {
+        chk.checked = true;
+        applyColVisibility();
+      });
+      rail.appendChild(btn);
+    });
+    rail.style.display = 'grid';
+  }
+
   function getColWidthMap() {
     if (!state.widths || typeof state.widths !== 'object') state.widths = {};
     return state.widths;
@@ -491,6 +559,26 @@
     });
   }
 
+  function installHeaderCollapseStrips() {
+    document.querySelectorAll('th[data-col]').forEach((th) => {
+      const col = String(th.getAttribute('data-col') || '');
+      if (!col || col === '7') return;
+      if (th.querySelector('.col-collapse-strip')) return;
+      const strip = document.createElement('span');
+      strip.className = 'col-collapse-strip no-print';
+      strip.title = 'Свернуть столбец';
+      strip.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const chk = getColCheckById(col);
+        if (!chk) return;
+        chk.checked = false;
+        applyColVisibility();
+      });
+      th.appendChild(strip);
+    });
+  }
+
   function applyColVisibility() {
     const checks = getColChecks();
     const vis = {};
@@ -504,6 +592,7 @@
       cell.classList.toggle('hidden-col', !isShown);
     });
     localStorage.setItem(COL_VIS_KEY, JSON.stringify(vis));
+    renderCollapsedRail();
     updateFrameSizingByLayout();
   }
 
@@ -818,6 +907,7 @@
     installHorizontalCollapseTools();
     restoreColumnWidths();
     installHeaderResizers();
+    installHeaderCollapseStrips();
     bindWidthTools();
     bindMediaControls();
     initReadyColumn();
