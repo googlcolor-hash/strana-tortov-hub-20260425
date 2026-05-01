@@ -4,6 +4,7 @@
   const DIRECTOR_STORE_KEY = 'torts_director_inline_v1';
   const USER_STORE_KEY = 'torts_user_inline_v1';
   const READY_STORE_KEY = 'torts_ready_state_v1';
+  const TEXT_STORE_KEY = 'torts_text_inline_v1';
   const VIDEO_REL_DIR = 'video_refs_good_my/';
   const VIDEO_BY_SHOT = {
     S01B: VIDEO_REL_DIR + 'Bird_flocks_pass_202604281841.mp4',
@@ -38,6 +39,7 @@
     directors: loadJson(DIRECTOR_STORE_KEY),
     users: loadJson(USER_STORE_KEY),
     ready: loadJson(READY_STORE_KEY),
+    text: loadJson(TEXT_STORE_KEY),
     frameFilter: 'all'
   };
 
@@ -522,6 +524,43 @@
     return Array.from(document.querySelectorAll('tr[data-shot]'));
   }
 
+  function makeTextPersistKey(el) {
+    const row = el.closest('tr[data-shot]');
+    const cell = el.closest('td[data-col],th[data-col]');
+    const table = el.closest('table');
+    const tableIdx = table ? Array.from(document.querySelectorAll('table')).indexOf(table) : -1;
+    const rowIdx = row ? (row.dataset.shot || '') : (el.closest('tr') ? Array.from(el.closest('tr').parentNode.children).indexOf(el.closest('tr')) : -1);
+    const cls = (el.className || '').toString().replace(/\s+/g, '.');
+    const tag = el.tagName.toLowerCase();
+    const col = cell ? (cell.getAttribute('data-col') || '') : '';
+    const id = el.id || '';
+    return [tag, id, cls, 't' + tableIdx, 'r' + rowIdx, 'c' + col].join('|');
+  }
+
+  function initTextPersistence() {
+    const editable = Array.from(document.querySelectorAll('textarea, input[type="text"], [contenteditable="true"]'));
+    editable.forEach((el) => {
+      if (el.dataset.noPersist === '1') return;
+      if (el.id === 'shotJumpInput') return;
+      const key = makeTextPersistKey(el);
+      const saved = state.text[key];
+      if (typeof saved === 'string') {
+        if (el.matches('[contenteditable="true"]')) el.textContent = saved;
+        else el.value = saved;
+      }
+      if (el.dataset.boundTextPersist === '1') return;
+      el.dataset.boundTextPersist = '1';
+      const onSave = () => {
+        const value = el.matches('[contenteditable="true"]') ? (el.textContent || '') : (el.value || '');
+        state.text[key] = value;
+        saveJson(TEXT_STORE_KEY, state.text);
+      };
+      el.addEventListener('input', onSave);
+      el.addEventListener('change', onSave);
+      el.addEventListener('blur', onSave);
+    });
+  }
+
   function applyFrameFilter(filter) {
     state.frameFilter = filter;
     shots().forEach((row) => {
@@ -609,6 +648,7 @@
     initReadyColumn();
     initFilters();
     initShotJump();
+    initTextPersistence();
     updateSummary();
     updateFrameSizingByLayout();
   }
