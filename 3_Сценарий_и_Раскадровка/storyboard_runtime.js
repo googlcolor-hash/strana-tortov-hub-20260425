@@ -417,7 +417,7 @@
         const [shot, slot] = key.split('|');
         const videos = getShotVideos(String(shot || ''));
         const src = String(videos[String(slot || '')] || '');
-        if (src) window.open(src, '_self');
+        if (src) window.open(src, '_blank', 'noopener,noreferrer');
       });
     });
     document.querySelectorAll('[data-video-add]').forEach((btn) => {
@@ -837,6 +837,12 @@
     root.style.setProperty('--video-thumb-w', vW + 'px');
   }
 
+  function updateStickyOffsets() {
+    const quick = document.querySelector('.quickbar');
+    const h = quick ? Math.round(quick.getBoundingClientRect().height) : 0;
+    document.documentElement.style.setProperty('--quickbar-offset', h + 'px');
+  }
+
   function initShotJump() {
     const input = document.getElementById('shotJumpInput');
     const btn = document.getElementById('jumpShotBtn');
@@ -882,18 +888,22 @@
 
   function initShotAudioFromMeta() {
     const sharedAudio = new Audio(MASTER_AUDIO_SRC);
-    let stopTimer = null;
+    sharedAudio.preload = 'metadata';
     let activeBtn = null;
+    let activeRange = null;
 
     const stopCurrent = () => {
-      if (stopTimer) {
-        clearTimeout(stopTimer);
-        stopTimer = null;
-      }
       sharedAudio.pause();
       if (activeBtn) activeBtn.classList.remove('playing');
       activeBtn = null;
+      activeRange = null;
     };
+
+    const onTimeUpdate = () => {
+      if (!activeRange) return;
+      if (sharedAudio.currentTime >= activeRange.end) stopCurrent();
+    };
+    sharedAudio.addEventListener('timeupdate', onTimeUpdate);
 
     shots().forEach((row) => {
       const range = parseShotClipRange(row);
@@ -905,21 +915,30 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'shot-audio-btn';
-      btn.textContent = '▶ звук';
+      btn.textContent = `▶ ${range.start.toFixed(1)}–${range.end.toFixed(1)} c`;
       box.appendChild(btn);
       shotCell.appendChild(box);
 
       btn.addEventListener('click', async () => {
         try {
           stopCurrent();
-          sharedAudio.currentTime = range.start;
+          if (Number.isFinite(sharedAudio.duration) && sharedAudio.duration > 0) {
+            sharedAudio.currentTime = range.start;
+          } else {
+            await new Promise((resolve) => {
+              const once = () => {
+                sharedAudio.removeEventListener('loadedmetadata', once);
+                resolve();
+              };
+              sharedAudio.addEventListener('loadedmetadata', once, { once: true });
+              sharedAudio.load();
+            });
+            sharedAudio.currentTime = range.start;
+          }
           await sharedAudio.play();
           btn.classList.add('playing');
           activeBtn = btn;
-          const ms = Math.max(120, Math.round((range.end - range.start) * 1000));
-          stopTimer = setTimeout(() => {
-            stopCurrent();
-          }, ms);
+          activeRange = range;
         } catch (err) {
           console.warn('Shot audio play failed', err);
         }
@@ -974,7 +993,10 @@
     restoreColVisibility();
     applyColVisibility();
 
-    window.addEventListener('resize', updateFrameSizingByLayout, { passive: true });
+    window.addEventListener('resize', () => {
+      updateFrameSizingByLayout();
+      updateStickyOffsets();
+    }, { passive: true });
   }
 
   function initReadyColumn() {
@@ -1223,6 +1245,7 @@
     bindTopMenuControls();
     updateSummary();
     updateFrameSizingByLayout();
+    updateStickyOffsets();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
