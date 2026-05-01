@@ -1,4 +1,5 @@
 (() => {
+  const COL_VIS_KEY = 'torts_col_visibility_v2';
   const KEYFRAME_STORE_KEY = 'torts_keyframe_inline_v1';
   const DIRECTOR_STORE_KEY = 'torts_director_inline_v1';
   const USER_STORE_KEY = 'torts_user_inline_v1';
@@ -23,6 +24,10 @@
     ready: loadJson(READY_STORE_KEY),
     frameFilter: 'all'
   };
+
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
 
   function loadJson(key) {
     try {
@@ -156,11 +161,24 @@
       const style = document.createElement('style');
       style.id = 'storyboard-user-slot-style';
       style.textContent = `
-        .kf-img, .kf-empty, .dir-img, .dir-empty, .user-img, .user-empty { width:192px !important; height:108px !important; }
+        :root {
+          --shot-thumb-w: 192px;
+          --shot-thumb-h: 108px;
+          --shot-wrap-w: 216px;
+          --shot-wrap-h: 128px;
+        }
+        .kf-img, .kf-empty, .dir-img, .dir-empty, .user-img, .user-empty {
+          width:var(--shot-thumb-w) !important;
+          height:var(--shot-thumb-h) !important;
+        }
+        .kf-wrap, .dir-wrap, .user-wrap {
+          width:var(--shot-wrap-w) !important;
+          min-height:var(--shot-wrap-h) !important;
+        }
         .user-head { margin-top:6px; margin-bottom:4px; color:#a6bddf; font-size:11px; text-transform:uppercase; letter-spacing:.08em; text-align:center; font-weight:700; }
         .user-wrap {
           position:relative; display:flex; align-items:center; justify-content:center;
-          width:216px; min-height:128px; border:1px solid rgba(120,146,182,.34);
+          border:1px solid rgba(120,146,182,.34);
           border-radius:12px; background:rgba(12,18,30,.6); overflow:visible;
           margin-top:8px; margin-left:auto; margin-right:auto;
         }
@@ -199,6 +217,116 @@
       block.appendChild(head);
       block.appendChild(wrap);
     });
+  }
+
+  function getColChecks() {
+    return Array.from(document.querySelectorAll('#colControls input[data-col]'));
+  }
+
+  function applyColVisibility() {
+    const checks = getColChecks();
+    const vis = {};
+    checks.forEach((input) => {
+      vis[input.dataset.col] = !!input.checked;
+    });
+
+    document.querySelectorAll('th[data-col], td[data-col]').forEach((cell) => {
+      const col = cell.getAttribute('data-col');
+      const isShown = vis[col] !== false;
+      cell.classList.toggle('hidden-col', !isShown);
+    });
+    localStorage.setItem(COL_VIS_KEY, JSON.stringify(vis));
+    updateFrameSizingByLayout();
+  }
+
+  function restoreColVisibility() {
+    let saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(COL_VIS_KEY) || 'null');
+    } catch {
+      saved = null;
+    }
+    if (!saved || typeof saved !== 'object') return;
+    getColChecks().forEach((input) => {
+      const key = input.dataset.col;
+      if (Object.prototype.hasOwnProperty.call(saved, key)) {
+        input.checked = !!saved[key];
+      }
+    });
+  }
+
+  function visibleColumnCount() {
+    const checks = getColChecks();
+    if (!checks.length) return 8;
+    return checks.filter((c) => c.checked).length;
+  }
+
+  function updateFrameSizingByLayout() {
+    const root = document.documentElement;
+    const wrap = document.querySelector('.table-wrap');
+    const width = wrap ? wrap.clientWidth : window.innerWidth;
+    const visibleCols = Math.max(2, visibleColumnCount());
+
+    const baseCell = width / visibleCols;
+    const thumbW = clamp(Math.round(baseCell * 0.88), 128, 360);
+    const thumbH = Math.round(thumbW * 9 / 16);
+    const wrapW = clamp(thumbW + 24, 150, 384);
+    const wrapH = thumbH + 28;
+
+    root.style.setProperty('--shot-thumb-w', thumbW + 'px');
+    root.style.setProperty('--shot-thumb-h', thumbH + 'px');
+    root.style.setProperty('--shot-wrap-w', wrapW + 'px');
+    root.style.setProperty('--shot-wrap-h', wrapH + 'px');
+  }
+
+  function installHorizontalCollapseTools() {
+    const panel = document.getElementById('colPanel');
+    const controls = document.getElementById('colControls');
+    if (!panel || !controls) return;
+
+    if (!panel.querySelector('.col-collapse-tools')) {
+      const bar = document.createElement('div');
+      bar.className = 'col-collapse-tools';
+      bar.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px;';
+      bar.innerHTML = `
+        <button type="button" data-cact="compact">Свернуть текстовые</button>
+        <button type="button" data-cact="focus-frames">Фокус на кадрах</button>
+        <button type="button" data-cact="show-all">Показать все</button>
+      `;
+      panel.insertBefore(bar, controls);
+      bar.addEventListener('click', (ev) => {
+        const btn = ev.target.closest('button[data-cact]');
+        if (!btn) return;
+        const mode = btn.getAttribute('data-cact');
+        const setOn = (arr, on) => {
+          getColChecks().forEach((c) => {
+            if (arr.includes(c.dataset.col)) c.checked = on;
+          });
+        };
+        if (mode === 'compact') {
+          setOn(['4', '5', '6', '8'], false);
+          setOn(['1', '2', '3', '7'], true);
+        } else if (mode === 'focus-frames') {
+          setOn(['2', '7'], true);
+          setOn(['1', '3', '4', '5', '6', '8'], false);
+        } else if (mode === 'show-all') {
+          getColChecks().forEach((c) => {
+            c.checked = true;
+          });
+        }
+        applyColVisibility();
+      });
+    }
+
+    getColChecks().forEach((input) => {
+      if (input.dataset.boundColVis === '1') return;
+      input.dataset.boundColVis = '1';
+      input.addEventListener('change', applyColVisibility);
+    });
+    restoreColVisibility();
+    applyColVisibility();
+
+    window.addEventListener('resize', updateFrameSizingByLayout, { passive: true });
   }
 
   function initReadyColumn() {
@@ -329,14 +457,15 @@
 
   function init() {
     ensureUserSlotsAndStyles();
+    installHorizontalCollapseTools();
     bindMediaControls();
     initReadyColumn();
     initFilters();
     updateSummary();
+    updateFrameSizingByLayout();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
-
 
