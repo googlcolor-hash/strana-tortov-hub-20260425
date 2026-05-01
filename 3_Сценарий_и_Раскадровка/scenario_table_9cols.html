@@ -136,7 +136,15 @@
       overflow:hidden; max-height:none; box-shadow:var(--shadow);
     }
     table { width:100%; min-width:0; border-collapse:collapse; table-layout:fixed; }
-    th, td { border:1px solid var(--line); padding:6px; vertical-align:top; font-size:12px; word-break:break-word; }
+    th, td {
+      border:1px solid var(--line);
+      padding:6px;
+      vertical-align:top;
+      font-size:12px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+      white-space:normal;
+    }
     th {
       position:sticky; top:0; z-index:2; background:rgba(49,60,79,.96);
       backdrop-filter: blur(8px);
