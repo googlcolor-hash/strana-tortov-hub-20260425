@@ -148,7 +148,9 @@
       white-space:normal;
     }
     th {
-      position:sticky; top:var(--quickbar-offset); z-index:2; background:rgba(49,60,79,.96);
+      position:static;
+      z-index:2;
+      background:rgba(49,60,79,.96);
       backdrop-filter: blur(8px);
     }
     td.col-shot, td.col-ready { text-align:center; }
@@ -186,9 +188,8 @@
     .col-cam { width:12%; }
     .col-ready { width:56px !important; min-width:56px !important; max-width:56px !important; }
     th.col-ready {
-      position:sticky;
-      top:var(--quickbar-offset);
-      right:0;
+      position:static;
+      right:auto;
       z-index:5;
       background:#2f3a4c;
     }
